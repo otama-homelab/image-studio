@@ -4,3 +4,11 @@ __pycache__
 *.pyc
 .cache
 .venv
+.env.*
+*.pem
+*.key
+secrets/
+image-studio-cache/
+.env
+docs/
+README.md

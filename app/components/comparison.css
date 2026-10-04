@@ -1,0 +1,19 @@
+.comparison { --split: 50%; color: var(--body-text-color); }
+.comparison [hidden] { display: none !important; }
+.comparison-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 0 2px 14px; }
+.preview-caption { font-size: 13px; font-weight: 650; }
+.preview-size { color: var(--body-text-color-subdued); font: 11px ui-monospace,monospace; }
+.comparison-stage { position: relative; height: clamp(350px,43vw,520px); overflow: hidden; border: 1px solid var(--border-color-primary); border-radius: 18px; background: var(--background-fill-secondary); }
+.comparison-empty { height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 14px; color: var(--body-text-color-subdued); padding: 20px; text-align: center; box-sizing: border-box; }
+.comparison-empty svg { opacity: .5; margin-bottom: 4px; }
+.comparison-empty strong { font-size: 14px; font-weight: 500; }
+.comparison-empty > span { font-size: 12px; }
+.comparison-stage > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.comparison-before { clip-path: inset(0 calc(100% - var(--split)) 0 0); }
+.comparison-tags { position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; pointer-events: none; }
+.comparison-tags > span { color: #fff; background: #15261ac9; backdrop-filter: blur(6px); border-radius: 8px; padding: 6px 10px; font-size: 11px; }
+.comparison-line { position: absolute; top: 0; bottom: 0; left: var(--split); width: 2px; transform: translateX(-1px); background: white; box-shadow: 0 0 0 1px #0001; pointer-events: none; }
+.comparison-line > span { position: absolute; top: 50%; left: 1px; transform: translate(-50%,-50%); width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid #fff8; border-radius: 50%; background: #fff; color: #245d49; box-shadow: 0 2px 12px #0002; font-size: 24px; }
+.comparison-slider { position: absolute; inset: 0; margin: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; touch-action: pan-y; }
+.comparison-stage:focus-within { outline: 3px solid #75a891; outline-offset: 3px; }
+.comparison-hint { text-align: center; margin-top: 12px; color: var(--body-text-color-subdued); font-size: 11px; }

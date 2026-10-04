@@ -27,7 +27,7 @@ if __name__ == '__main__':
     tools = [("証明写真", build_portrait)]
     with gr.Blocks(title="Image Studio", delete_cache=(300, 3600)) as demo:
         gr.HTML(HEADER)
-        with gr.Tabs():
+        with gr.Tabs(elem_id="studio-tools"):
             for name, build_tool in tools:
                 with gr.Tab(name):
                     build_tool()

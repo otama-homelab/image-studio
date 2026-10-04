@@ -143,7 +143,7 @@ def build():
                 with gr.Column(scale=4, min_width=280, elem_classes=['studio-controls']):
                     gr.Markdown('#### 写真を選ぶ', elem_classes=['panel-title'])
                     source = gr.Image(type='numpy', sources=['upload'], label='元写真', show_label=False,
-                                      height=230, format='png', buttons=[], elem_id='background-source')
+                                      height=230, placeholder='クリックして写真を選択', format='png', buttons=[], elem_id='background-source')
                     color = component('palette', '#F5F3EF', elem_id='background-palette')
                     with gr.Accordion('切り抜きの詳細設定', open=False):
                         refine = gr.Checkbox(value=True, label='髪・輪郭を精密に補正')
@@ -169,7 +169,7 @@ def build():
             with gr.Row(elem_classes=['studio-workspace']):
                 with gr.Column(scale=4, min_width=280, elem_classes=['studio-controls']):
                     crop_source = gr.Image(type='pil', sources=['upload'], label='トリミングする写真',
-                                           height=210, format='png', buttons=[], elem_id='crop-source')
+                                           height=210, placeholder='クリックして写真を選択', format='png', buttons=[], elem_id='crop-source')
                     preset = gr.Dropdown(list(SIZES), value=list(SIZES)[0], label='写真のサイズ')
                     with gr.Row(visible=False) as custom:
                         width = gr.Number(value=30, minimum=9, maximum=152, label='幅（mm）')
@@ -202,7 +202,7 @@ def build():
             with gr.Row(elem_classes=['studio-workspace']):
                 with gr.Column(scale=4, min_width=280, elem_classes=['studio-controls']):
                     print_source = gr.Image(type='pil', sources=['upload'], label='印刷する写真',
-                                            height=230, format='png', buttons=[], elem_id='print-source')
+                                            height=230, placeholder='クリックして写真を選択', format='png', buttons=[], elem_id='print-source')
                     paper = gr.Dropdown(list(PAPERS), value=list(PAPERS)[0], label='印刷用紙')
                     layout = gr.Button('印刷レイアウトを作成', variant='primary', elem_classes=['studio-primary'])
                     gr.Markdown('**実際のサイズ／100%で印刷**\n\n「用紙に合わせる」「自動拡大」はOFFにしてください。提出先の要件と印刷後の実寸も確認してください。', elem_classes=['studio-help'])

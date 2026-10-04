@@ -45,7 +45,7 @@ CSS = '''
 .step-heading p { font-size: 12px; color: var(--body-text-color-subdued); line-height: 1.8; margin: 0; }
 .studio-workspace { gap: 24px !important; align-items: flex-start !important; }
 .studio-controls { box-sizing: border-box; background: var(--block-background-fill) !important; border: 1px solid var(--border-color-primary) !important; border-radius: 20px !important; padding: 20px !important; gap: 18px !important; }
-.studio-preview { gap: 14px !important; min-width: 0 !important; }
+.studio-preview { gap: 14px !important; min-width: 280px !important; }
 .panel-title h4 { font-size: 13px !important; margin: 0 !important; font-weight: 650 !important; }
 .studio-help { color: var(--body-text-color-subdued); font-size: 11px !important; line-height: 1.8 !important; }
 .studio-help p { font-size: 11px !important; }
@@ -59,7 +59,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid #75a891 !important; o
  .studio-header { padding-bottom: 14px; }
  .studio-badge { display: none; }
  .studio-controls { padding: 16px !important; }
- .studio-workspace { gap: 20px !important; }
+ .studio-workspace { gap: 20px !important; flex-direction: column !important; }
+ .studio-workspace > .studio-controls, .studio-workspace > .studio-preview { width: 100% !important; min-width: 0 !important; flex: auto !important; }
  #studio-steps [role=tab] { padding: 9px 14px !important; }
 }
 '''

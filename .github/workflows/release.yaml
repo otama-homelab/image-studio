@@ -54,6 +54,8 @@ jobs:
           context: .
           push: true
           platforms: linux/amd64
+          cache-from: type=registry,ref=ghcr.io/otama-homelab/image-studio:buildcache
+          cache-to: type=registry,ref=ghcr.io/otama-homelab/image-studio:buildcache,mode=max
           build-args: VERSION=${{ steps.version.outputs.version }}
           tags: |
             ghcr.io/otama-homelab/image-studio:${{ steps.version.outputs.version }}

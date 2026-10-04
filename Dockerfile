@@ -1,8 +1,4 @@
 FROM python:3.12-slim-bookworm
-ARG VERSION
-LABEL org.opencontainers.image.source="https://github.com/otama-homelab/image-studio" \
-      org.opencontainers.image.title="Image Studio" \
-      org.opencontainers.image.version="${VERSION}"
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libgomp1 libdrm-amdgpu1 libglib2.0-0 ca-certificates \
     && rm -rf /var/lib/apt/lists/*
@@ -25,3 +21,8 @@ USER 1000:1000
 WORKDIR /app
 EXPOSE 7860
 ENTRYPOINT ["/app/entrypoint.sh"]
+
+ARG VERSION
+LABEL org.opencontainers.image.source="https://github.com/otama-homelab/image-studio" \
+      org.opencontainers.image.title="Image Studio" \
+      org.opencontainers.image.version="${VERSION}"

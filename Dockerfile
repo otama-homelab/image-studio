@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir -r /app/requirements.txt \
     && rm -rf /root/.cache
 COPY app/ /app/
 COPY entrypoint.sh /app/entrypoint.sh
-RUN python -c "import torch, cv2, gradio as gr; from image_studio_theme import theme; from image_studio_ui import build; theme(); print('Runtime imports OK:', torch.__version__)"
+RUN cd /app && python -c "import torch, cv2, gradio as gr; from image_studio_theme import theme; from image_studio_ui import build; theme(); print('Runtime imports OK:', torch.__version__)"
 RUN chmod 755 /app/entrypoint.sh && useradd --uid 1000 --create-home studio
 ENV HOME=/tmp HF_HOME=/cache/huggingface GRADIO_TEMP_DIR=/tmp/photos \
     GRADIO_ANALYTICS_ENABLED=False PYTHONUNBUFFERED=1 NUMBA_CACHE_DIR=/cache/numba

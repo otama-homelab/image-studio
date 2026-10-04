@@ -160,7 +160,7 @@ def build():
                             background_print = gr.Button('この画像をそのまま印刷へ →')
                         gr.Markdown('そのまま印刷する場合は、ピクセル数から300dpiの実寸を計算します。', elem_classes=['studio-help'])
             background_outputs = [background_preview, background_file, alpha, background_result, background_actions]
-            gr.on([source.change, color.input, refine.input], reset_background, outputs=background_outputs,
+            gr.on([source.input, color.input, refine.input], reset_background, outputs=background_outputs,
                   queue=False, show_progress='hidden')
             run.click(process_background, [source, color, refine], background_outputs)
 
@@ -192,7 +192,7 @@ def build():
                         next_print = gr.Button('この写真を印刷へ →')
             controls = [crop_source, preset, width, height, zoom, horizontal, vertical]
             crop_outputs = [crop_preview, crop_file, crop_result, crop_actions]
-            gr.on([crop_source.change, preset.change, width.change, height.change, zoom.change, horizontal.change, vertical.change],
+            gr.on([crop_source.input, preset.change, width.change, height.change, zoom.change, horizontal.change, vertical.change],
                   update_crop, controls, crop_outputs, show_progress='hidden')
             center.click(center_face, [crop_source, preset, width, height], [zoom, horizontal, vertical])
             save.click(save_crop, controls, crop_outputs)
@@ -215,9 +215,13 @@ def build():
                         layout_file = gr.DownloadButton('印刷PNGを保存', elem_id='print-download')
                         pdf = gr.DownloadButton('印刷PDFを保存', variant='primary', elem_id='pdf-download')
             print_outputs = [layout_preview, layout_file, pdf, note, print_actions]
-            gr.on([print_source.change, paper.change], reset_print, outputs=print_outputs, queue=False, show_progress='hidden')
+            gr.on([print_source.input, paper.change], reset_print, outputs=print_outputs, queue=False, show_progress='hidden')
             layout.click(create_layout, [print_source, paper], print_outputs)
 
-    next_crop.click(move_to_crop, background_result, [crop_source, steps])
-    next_print.click(move_to_print, crop_result, [print_source, steps])
-    background_print.click(move_to_print, background_result, [print_source, steps])
+    next_crop.click(move_to_crop, background_result, [crop_source, steps]).then(
+        update_crop, [crop_source, preset, width, height, zoom, horizontal, vertical],
+        [crop_preview, crop_file, crop_result, crop_actions])
+    next_print.click(move_to_print, crop_result, [print_source, steps]).then(
+        reset_print, outputs=print_outputs, queue=False)
+    background_print.click(move_to_print, background_result, [print_source, steps]).then(
+        reset_print, outputs=print_outputs, queue=False)

@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Require main branch
         run: test "${{ github.ref }}" = refs/heads/main
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
           fetch-depth: 0

@@ -8,7 +8,7 @@ COPY app/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt \
     && pip install --no-cache-dir --force-reinstall --no-deps opencv-python-headless==4.11.0.86 \
     && pip check \
-    && apt-mark manual libstdc++6 \
+    && apt-mark manual libstdc++6 libatomic1 \
     && apt-get purge -y build-essential && apt-get autoremove -y \
     && rm -rf /root/.cache
 COPY app/ /app/

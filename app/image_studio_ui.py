@@ -113,8 +113,7 @@ def build():
     gr.Markdown('色を整える。画角を決める。紙にする。', elem_classes=['workflow-intro'])
     with gr.Tabs() as steps:
         with gr.Tab('01  背景変更',id='background'):
-            gr.Markdown('### 背景を、好きな色に。
-写真を選び、背景色を指定してください。顔や肌色はそのまま残します。')
+            gr.Markdown('### 背景を、好きな色に。\n写真を選び、背景色を指定してください。顔や肌色はそのまま残します。')
             with gr.Row():
                 with gr.Column():
                     source=gr.Image(type='numpy',sources=['upload'],label='元写真',height=360,format='png')
@@ -135,8 +134,7 @@ def build():
                         background_print=gr.Button('この画像をそのまま印刷へ →')
                     gr.Markdown('そのまま印刷する場合は、現在のピクセル数を300dpiの寸法として使います。印刷タブで1枚の大きさを確認できます。')
         with gr.Tab('02  トリミング',id='crop'):
-            gr.Markdown('### ちょうどいい、一枚に。
-用途に合うサイズを選び、右のプレビューで位置を調整します。元写真も直接使えます。')
+            gr.Markdown('### ちょうどいい、一枚に。\n用途に合うサイズを選び、右のプレビューで位置を調整します。元写真も直接使えます。')
             with gr.Row():
                 with gr.Column():
                     crop_source=gr.Image(type='pil',sources=['upload'],label='トリミングする写真',height=360,format='png')
@@ -162,8 +160,7 @@ def build():
             center.click(center_face,[crop_source,preset,width,height],[zoom,horizontal,vertical])
             save.click(export_frame,controls,[crop_preview,crop_file,crop_result])
         with gr.Tab('03  印刷',id='print'):
-            gr.Markdown('### 写真を並べて、印刷へ。
-用紙を選ぶだけで、実寸を保った印刷用PDFとPNGを作成します。')
+            gr.Markdown('### 写真を並べて、印刷へ。\n用紙を選ぶだけで、実寸を保った印刷用PDFとPNGを作成します。')
             with gr.Row():
                 with gr.Column():
                     print_source=gr.Image(type='pil',sources=['upload'],label='印刷する写真',height=300,format='png')

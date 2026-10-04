@@ -1,0 +1,66 @@
+name: Bump version
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Semantic version increment
+        required: true
+        type: choice
+        default: patch
+        options: [patch, minor, major]
+permissions:
+  contents: write
+  packages: write
+concurrency:
+  group: image-studio-release
+  cancel-in-progress: false
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
+    steps:
+      - name: Require main branch
+        run: test "${{ github.ref }}" = refs/heads/main
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Increment version
+        id: version
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: |
+          python - <<'PY'
+          import os, re
+          from pathlib import Path
+          current = Path('VERSION').read_text().strip()
+          if not re.fullmatch(r'\d+\.\d+\.\d+', current):
+              raise SystemExit('VERSION must contain MAJOR.MINOR.PATCH')
+          major, minor, patch = map(int, current.split('.'))
+          bump = os.environ['BUMP']
+          if bump == 'major': major, minor, patch = major + 1, 0, 0
+          elif bump == 'minor': minor, patch = minor + 1, 0
+          elif bump == 'patch': patch += 1
+          else: raise SystemExit('Invalid increment')
+          version = f'{major}.{minor}.{patch}'
+          Path('VERSION').write_text(version + '\n')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f'tag=v{version}\n')
+          PY
+      - name: Commit and tag
+        env:
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add VERSION
+          git commit -m "Release $RELEASE_TAG"
+          git tag "$RELEASE_TAG"
+          git push --atomic origin main "$RELEASE_TAG"
+  publish:
+    needs: bump
+    uses: ./.github/workflows/release.yaml
+    with:
+      tag: ${{ needs.bump.outputs.tag }}
+    secrets: inherit

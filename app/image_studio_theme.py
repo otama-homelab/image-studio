@@ -7,7 +7,7 @@ def theme():
         primary_hue=gr.themes.colors.emerald,
         secondary_hue=gr.themes.colors.teal,
         neutral_hue=gr.themes.colors.slate,
-        font=[gr.themes.GoogleFont('Noto Sans JP'), 'system-ui', 'sans-serif'],
+        font=['Noto Sans JP', 'system-ui', 'sans-serif'],
     ).set(
         body_background_fill='#f4f5f2', body_background_fill_dark='#111b18',
         block_background_fill='#ffffff', block_background_fill_dark='#192722',

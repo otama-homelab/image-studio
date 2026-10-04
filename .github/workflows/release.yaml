@@ -2,6 +2,11 @@ name: Release image
 on:
   push:
     tags: ['v*.*.*']
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       tag:
@@ -30,6 +35,8 @@ jobs:
           test "${RELEASE_TAG#v}" = "$(cat VERSION)"
           echo "version=${RELEASE_TAG#v}" >> "$GITHUB_OUTPUT"
           echo "tag=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
+      - name: Check application syntax
+        run: python -m compileall -q app
       - name: Free runner disk for ROCm wheels
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost /usr/share/swift

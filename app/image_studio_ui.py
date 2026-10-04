@@ -128,7 +128,7 @@ def build():
                 with gr.Column():
                     background_preview=gr.Image(label='背景変更の結果',interactive=False,height=360,format='png')
                     with gr.Row():
-                        background_file=gr.File(label='背景付きPNG');alpha=gr.File(label='透過PNG')
+                        background_file=gr.File(label='背景付きPNG',interactive=False,height=90);alpha=gr.File(label='透過PNG',interactive=False,height=90)
                     with gr.Row():
                         next_crop=gr.Button('この画像をトリミングへ →')
                         background_print=gr.Button('この画像をそのまま印刷へ →')
@@ -153,7 +153,7 @@ def build():
                     save=gr.Button('このサイズで保存',variant='primary')
                 with gr.Column():
                     crop_preview=gr.Image(label='トリミングの結果',interactive=False,height=360,format='png')
-                    crop_file=gr.File(label='写真PNG・300dpi')
+                    crop_file=gr.File(label='写真PNG・300dpi',interactive=False,height=90)
                     next_print=gr.Button('この写真を印刷へ →')
             controls=[crop_source,preset,width,height,zoom,horizontal,vertical]
             gr.on([crop_source.change,preset.change,width.change,height.change,zoom.change,horizontal.change,vertical.change],lambda *args: (frame(*args),None,None),controls,[crop_preview,crop_result,crop_file],show_progress='hidden')
@@ -170,7 +170,7 @@ def build():
                     layout_preview=gr.Image(label='印刷プレビュー',interactive=False,height=360,format='png')
                     note=gr.Markdown()
                     with gr.Row():
-                        layout_file=gr.File(label='印刷PNG');pdf=gr.File(label='印刷PDF')
+                        layout_file=gr.File(label='印刷PNG',interactive=False,height=90);pdf=gr.File(label='印刷PDF',interactive=False,height=90)
             layout.click(print_layout,[print_source,paper],[layout_preview,layout_file,pdf,note])
             gr.Markdown('実際のサイズ／100%で印刷してください。用紙に合わせる・自動拡大はOFF。提出先の要件と印刷後の実寸も確認してください。')
     run.click(change_background,[source,color,refine],[background_preview,background_file,alpha,background_result])

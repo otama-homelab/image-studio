@@ -10,7 +10,6 @@ RUN pip install --no-cache-dir torch==2.12.1+rocm7.2 torchvision==0.27.1+rocm7.2
     --index-url https://download.pytorch.org/whl/rocm7.2
 COPY app/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt \
-    && pip uninstall -y opencv-python \
     && pip install --no-cache-dir --force-reinstall --no-deps opencv-python-headless==4.11.0.86 \
     && pip check \
     && apt-get purge -y build-essential && apt-get autoremove -y \

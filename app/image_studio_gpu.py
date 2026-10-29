@@ -1,5 +1,7 @@
 """BiRefNet HR on ROCm, exposed through rembg's session contract."""
 import gc
+import os
+import sys
 import time
 import numpy as np
 import torch
@@ -7,6 +9,7 @@ from PIL import Image
 from torchvision import transforms
 from transformers import AutoModelForImageSegmentation
 from rembg.sessions.base import BaseSession
+from image_studio_runtime import runtime
 
 MODEL_NAME = 'birefnet-hr-matting (AMD GPU · 2048px)'
 HR_MODEL_NAME = MODEL_NAME
@@ -16,6 +19,31 @@ MODELS = {
 
 model = None
 active_model = None
+
+
+def runtime_model_status():
+    refiner = sys.modules.get('image_studio_refinement')
+    loaded = {'birefnet': model is not None,
+              'vitmatte': refiner is not None and refiner.model is not None}
+    return {'backend': os.environ.get('IMAGE_STUDIO_BACKEND', 'rocm'),
+            'model_loaded': any(loaded.values()), 'models_loaded': loaded}
+
+
+def unload_model():
+    """Called only under the drained RuntimeGate with no active jobs."""
+    global model, active_model
+    if os.environ.get('IMAGE_STUDIO_BACKEND', 'rocm') != 'rocm':
+        raise RuntimeError('Runtime model release is supported only for ROCm')
+    if torch.cuda.is_initialized():
+        torch.cuda.synchronize()
+    refiner = sys.modules.get('image_studio_refinement')
+    if refiner is not None:
+        refiner.unload_model()
+    model = None
+    active_model = None
+    gc.collect()
+    if torch.cuda.is_initialized():
+        torch.cuda.empty_cache()
 
 
 def load_model(name=MODEL_NAME):
@@ -37,6 +65,7 @@ def load_model(name=MODEL_NAME):
     return model
 
 
+@runtime.job
 def predict_mask(rgb, name=MODEL_NAME, refine=True):
     started = time.monotonic()
     net = load_model(name)

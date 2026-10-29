@@ -1,0 +1,7 @@
+# Reuse the exact validated ROCm runtime; this layer adds only application code.
+FROM ghcr.io/otama-homelab/image-studio:1.1.2@sha256:595baddaaa6f7da014adbca700aa28079877f532952c3d4964774c6507e50304
+COPY --chown=1000:1000 app/image_studio_app.py app/image_studio_backend.py app/image_studio_gpu.py app/image_studio_face.py app/image_studio_refinement.py app/image_studio_runtime.py /app/
+RUN python -c "import pathlib; [compile(p.read_text(), str(p), 'exec') for p in pathlib.Path('/app').glob('image_studio_*.py')]"
+ARG SOURCE_REVISION
+LABEL org.opencontainers.image.version="1.1.2-runtime-control" \
+      org.opencontainers.image.revision="${SOURCE_REVISION}"

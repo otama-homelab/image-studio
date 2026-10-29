@@ -5,6 +5,7 @@ import numpy as np
 import torch
 from PIL import Image
 from transformers import VitMatteForImageMatting, VitMatteImageProcessor
+from image_studio_runtime import runtime
 
 REPOSITORY = 'hustvl/vitmatte-base-distinctions-646'
 REVISION = 'b58373f8dbbfbeb58157456e2e4949f9f872aa18'
@@ -25,6 +26,7 @@ def make_trimap(mask):
     return trimap
 
 
+@runtime.job
 def refine_alpha(image, mask):
     global model, processor
     trimap = make_trimap(mask)
@@ -53,3 +55,10 @@ def refine_alpha(image, mask):
     refined[trimap == 0] = 0
     print(f'ViTMatte Base edge refinement: {time.monotonic()-started:.2f}s', flush=True)
     return refined
+
+
+def unload_model():
+    """Drop the refinement model under the common drained runtime gate."""
+    global model, processor
+    model = None
+    processor = None

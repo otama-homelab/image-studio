@@ -1,0 +1,22 @@
+name: Runtime control tests
+on:
+  pull_request:
+    paths: ['app/**', 'tests/**', '.github/workflows/runtime-tests.yaml']
+  push:
+    branches: [main]
+    paths: ['app/**', 'tests/**', '.github/workflows/runtime-tests.yaml']
+permissions:
+  contents: read
+jobs:
+  runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Check application syntax
+        run: python -m compileall -q app
+      - name: Test drain, release and local control
+        run: python -m unittest discover -s tests -v

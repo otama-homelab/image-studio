@@ -5,10 +5,12 @@ import onnxruntime as ort
 from insightface.app import FaceAnalysis
 from PIL import Image
 from image_studio_gpu import predict_mask
+from image_studio_runtime import runtime
 
 analyzer = None
 
 
+@runtime.job
 def head_geometry(image):
     global analyzer
     if analyzer is None:

@@ -7,11 +7,13 @@ from PIL import Image, ImageOps
 from rembg import remove
 from rembg.bg import apply_background_color
 from image_studio_gpu import PortraitSession
+from image_studio_runtime import runtime
 import gradio as gr
 
 SESSIONS = {True: PortraitSession(refine=True), False: PortraitSession(refine=False)}
 
 
+@runtime.job(paused_error=gr.Error)
 def change_background(image, color, refine):
     if image is None:
         raise gr.Error('写真をアップロードしてください。')

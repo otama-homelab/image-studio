@@ -47,7 +47,7 @@
 }
 
 @layer components {
- .brand { @apply inline-flex min-h-11 items-center gap-2.5 text-lg font-semibold no-underline; color:var(--color-text); }
+ .brand { @apply inline-flex min-h-11 items-center gap-2.5 text-lg font-semibold tracking-normal no-underline; color:var(--color-text); }
  .brand img { @apply size-8 shrink-0; }
  .badge { @apply rounded-full border border-line px-3 py-1 text-xs text-muted; }
  .journey { @apply min-w-0; }

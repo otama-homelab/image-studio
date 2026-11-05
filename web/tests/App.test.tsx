@@ -319,7 +319,10 @@ test.each([['crop',true],['crop',false],['original',true],['original',false]] as
  let oldUrl:string|null=null;
  if(withPrevious){
   fireEvent.change(within(screen.getByRole('complementary',{name:'写真と設定'})).getByLabelText(/写真を選/),{target:{files:[new File(['old'],'old.png',{type:'image/png'})]}});
-  await screen.findByAltText(alt);display();oldUrl=screen.getByAltText(alt).getAttribute('src');
+  await screen.findByAltText(alt);
+  // The image DOM can precede the mock cropper's passive effect that registers media callbacks.
+  if(mode==='crop')await waitFor(()=>expect(mocks.oldLoads.length).toBeGreaterThan(0));
+  display();oldUrl=screen.getByAltText(alt).getAttribute('src');
  }
  let current=true;
  await act(async()=>{expect(await handle.current!.importPhoto(new File(['candidate'],'transfer.png',{type:'image/png'}),()=>current,()=>current)).toBe(true);});

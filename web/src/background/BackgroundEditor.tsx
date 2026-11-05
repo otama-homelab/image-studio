@@ -239,7 +239,7 @@ export function BackgroundEditor({active,runtime,onCrop,onRevision,onActivity}:P
   {notice&&<p role="status">{t(notice)}</p>}
  </>;
  return <div className="app background-editor mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 md:px-8">
-  <header><Brand/><div className="ml-auto flex flex-wrap items-center justify-end gap-3"><a className="text-sm" href="#/crop">{t("背景を変えずにサイズ調整")}</a><LanguageSwitcher/></div></header>
+  <header><Brand/><LanguageSwitcher/></header>
   <EditorNavigation current="background" backgroundAvailable={!!runtime}/>
   <main className="flex min-w-0 flex-col gap-6" aria-busy={busy}><section className="journey" aria-labelledby="background-title"><h1 id="background-title" tabIndex={-1}>{t("写真の背景を整える")}</h1>
    <ol aria-label={t("背景編集の手順")}><li aria-current={!photo?'step':undefined}>{t("1 写真を選ぶ")}</li><li aria-current={photo&&!output?'step':undefined}>{t("2 背景を除去・色を選ぶ")}</li><li aria-current={output?'step':undefined}>{t("3 PNG保存・サイズ調整へ")}</li></ol>

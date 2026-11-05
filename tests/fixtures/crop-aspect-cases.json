@@ -1,0 +1,237 @@
+{
+  "schemaVersion": 1,
+  "reference": "Pillow 12.3.0 Image.resize RGB Lanczos",
+  "pattern": "(x*37+y*59+c*83)%256",
+  "cases": [
+    {
+      "name": "vertical-one",
+      "source": [
+        1,
+        16384
+      ],
+      "output": [
+        1,
+        4096
+      ],
+      "box": [
+        0,
+        0.125,
+        1,
+        16383.875
+      ],
+      "sourceSha256": "4d727c6a6cca5bc17355c229b97054cb65cd68aff878a49c8cf8591c7701ff9a",
+      "rgbSha256": "32ef70cc96a71a85dd118a155e5dd12ef63f0cbfe8393abcab629220d791065a"
+    },
+    {
+      "name": "horizontal-one",
+      "source": [
+        16384,
+        1
+      ],
+      "output": [
+        4096,
+        1
+      ],
+      "box": [
+        0.125,
+        0,
+        16383.875,
+        1
+      ],
+      "sourceSha256": "75b8bf887d5268c871be9fbabca333b0f3c53bb9646f2e70a64cd4474ccfc567",
+      "rgbSha256": "d32d8b2a355e71235418e2e88a67e6d221b64a2f2aa4c6ba8e66cec26cd6c801"
+    },
+    {
+      "name": "vertical-fractional",
+      "source": [
+        3,
+        16384
+      ],
+      "output": [
+        7,
+        4096
+      ],
+      "box": [
+        0.25,
+        0.5,
+        2.75,
+        16383.5
+      ],
+      "sourceSha256": "09f8d4db012157561348ba6695e6f25157198e9323cbaf5c0adf8ec7f7b759ea",
+      "rgbSha256": "6f978ec430ac858a2e872c7e1d85b247384d7183bd2b57698ed22fa8669d3b8c"
+    },
+    {
+      "name": "horizontal-fractional",
+      "source": [
+        16384,
+        3
+      ],
+      "output": [
+        4096,
+        7
+      ],
+      "box": [
+        0.5,
+        0.25,
+        16383.5,
+        2.75
+      ],
+      "sourceSha256": "2493b8101f86806c0cefedb1624fa6f14cdc24758ec7c8dc7687a72402965015",
+      "rgbSha256": "f7f40fbaf8a24864dc085b135688f7b6532622333fe1bf74194bf4a8483b143e"
+    },
+    {
+      "name": "wide-upscale-thin",
+      "source": [
+        37,
+        23
+      ],
+      "output": [
+        4096,
+        1
+      ],
+      "box": [
+        0.125,
+        10.25,
+        36.875,
+        12.75
+      ],
+      "sourceSha256": "3fd3697194d996d3f06806c46e5477bace67224e9bfbd024e8efcc83bf2a1615",
+      "rgbSha256": "a5f2ec072339f76e450efebee76e5bec30f3c49dfdcdbab0c88bbbfa91758216"
+    },
+    {
+      "name": "tall-upscale-thin",
+      "source": [
+        23,
+        37
+      ],
+      "output": [
+        1,
+        4096
+      ],
+      "box": [
+        10.25,
+        0.125,
+        12.75,
+        36.875
+      ],
+      "sourceSha256": "a64e1cb70816f41fa2fc60d3b8905a09e78a83d38068cd901d00ba8e15389289",
+      "rgbSha256": "1b5a934e849395af6c79eb36f88b2a17d08370a1324343fa0195fdee5ef25f7a"
+    },
+    {
+      "name": "portrait-mixed",
+      "source": [
+        3,
+        19
+      ],
+      "output": [
+        97,
+        2051
+      ],
+      "box": [
+        0.125,
+        0.375,
+        2.875,
+        18.625
+      ],
+      "sourceSha256": "5db4b6a666fae195d279a89f2e734c4e3807715da4c94ba0f39a05d8d99cfa22",
+      "rgbSha256": "2e665cfd200bac702790b331c7aa3bd1c6a12d3827e4f37ef1ea98311ce84132"
+    },
+    {
+      "name": "landscape-mixed",
+      "source": [
+        19,
+        3
+      ],
+      "output": [
+        2051,
+        97
+      ],
+      "box": [
+        0.375,
+        0.125,
+        18.625,
+        2.875
+      ],
+      "sourceSha256": "5c60dab43e828e2745167bfa13b794f0f8deb2a040da32a6510623ca6a619aec",
+      "rgbSha256": "f60bbe4e6a8ed04374ef5dfc4292c2062fdba04b97858a3975a811b17522a4ad"
+    }
+  ],
+  "workerCases": [
+    {
+      "name": "worker-tall",
+      "source": [
+        3,
+        4096
+      ],
+      "output": [
+        7,
+        1024
+      ],
+      "box": [
+        0.25,
+        0.5,
+        2.75,
+        4095.5
+      ],
+      "sourceSha256": "a8dc7e7871b2c2d31f500c4b8f2266e5c93556e32c9252bdf8f97f46b503487d",
+      "rgbSha256": "f483dc96ebb770816a4f5365a2c5b5033d28099d25a62c0a8ee6d51f9b190e23"
+    },
+    {
+      "name": "worker-wide",
+      "source": [
+        4096,
+        3
+      ],
+      "output": [
+        1024,
+        7
+      ],
+      "box": [
+        0.5,
+        0.25,
+        4095.5,
+        2.75
+      ],
+      "sourceSha256": "187f5b9039ec9c577e2f99ee6a481831e5a73c5ede48dce72d3f70d3fc61d58d",
+      "rgbSha256": "cfe5763dd2d70901afd092fa84f65fcedd1ffd0a2f674cfcfb351bfd65bc7c84"
+    },
+    {
+      "name": "worker-one-tall",
+      "source": [
+        1,
+        4096
+      ],
+      "output": [
+        1,
+        1024
+      ],
+      "box": [
+        0,
+        0.125,
+        1,
+        4095.875
+      ],
+      "sourceSha256": "00b0d41d28b2a3b5d849fdfdef4e541d0fd3337615d0a9b5ad364d47d1dfe064",
+      "rgbSha256": "39aab66aeb67d0e21292ca107acacecc2dadaaad5bd488a60204688b42f0e508"
+    },
+    {
+      "name": "worker-one-wide",
+      "source": [
+        4096,
+        1
+      ],
+      "output": [
+        1024,
+        1
+      ],
+      "box": [
+        0.125,
+        0,
+        4095.875,
+        1
+      ],
+      "sourceSha256": "3f701f6e8a2a25bdd8d658074a15f15aade0b15e82bb5204635a6677c1b9c8a9",
+      "rgbSha256": "86c2a088c03474bed6478e3234d1366330c39339217282a5b2bcadf147fb7710"
+    }
+  ]
+}

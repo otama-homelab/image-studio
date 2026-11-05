@@ -1,0 +1,8 @@
+const hub='https://huggingface.co/fixture/models/resolve/'+'a'.repeat(40)+'/';
+const asset=name=>'/assets/'+'b'.repeat(64)+'/'+name;
+export function browserReleaseFixture(){
+ const command=(model,id,pack)=>({type:'prepare',model,modelVersion:id,source:{mode:'library-resources',releaseId:id,cacheNamespace:'image-studio-'+pack,resources:[{name:'config.json',url:hub+pack+'/config.json',bytes:4,sha256:'c'.repeat(64)}],archive:{url:hub+'packs/'+pack+'.zip',bytes:104,sha256:'d'.repeat(63)+String(['modnet','hr-gpu','matte-gpu','hr-cpu','matte-cpu'].indexOf(pack))}}});
+ const variant=(role,provider)=>({modelWorker:asset(role+'-'+provider+'.js'),label:role+' '+provider,description:'説明',executionProvider:provider,modelCancellation:'cooperative-model-cancel-v1',defaultRefine:role==='hr',prepareBackground:command(role,role+'-'+provider,role==='modnet'?'modnet':'hr-'+(provider==='wasm'?'cpu':'gpu')),...(role==='hr'?{prepareMatte:command('matte',role+'-'+provider,'matte-'+(provider==='wasm'?'cpu':'gpu'))}:{})});
+ const primary=variant('modnet','wasm');
+ return {workers:{model:primary.modelWorker,foreground:asset('foreground-worker.js'),export:asset('export-worker.js'),thumbnail:asset('thumbnail-worker.js'),trimap:asset('trimap-worker.js')},modelNoticesHref:asset('MODEL_NOTICES.txt'),executionProvider:'wasm',modelLabel:'軽量 CPU',downloadDescription:'説明',modelCancellation:primary.modelCancellation,foregroundCancellation:'cooperative-foreground-cancel-v1',trimapCancellation:'cooperative-trimap-cancel-v1',prepareBackground:primary.prepareBackground,modelVariants:[variant('modnet','webgpu'),variant('hr','webgpu'),variant('hr','wasm')]};
+}

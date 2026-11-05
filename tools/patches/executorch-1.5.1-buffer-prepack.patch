@@ -1,0 +1,20 @@
+diff --git a/backends/vulkan/runtime/graph/ops/impl/Staging.cpp b/backends/vulkan/runtime/graph/ops/impl/Staging.cpp
+index 37c8b4d..c1861d9 100644
+--- a/backends/vulkan/runtime/graph/ops/impl/Staging.cpp
++++ b/backends/vulkan/runtime/graph/ops/impl/Staging.cpp
+@@ -190,12 +190,9 @@ void add_prepack_standard_node(
+   }
+ 
+   std::vector<PushConstantDataInfo> pcs;
+-  if (graph.is_buffer_storage(tensor)) {
+-    pcs = {
+-        graph.sizes_pc_of(tensor),
+-        graph.strides_pc_of(tensor),
+-        graph.numel_pc_of(tensor)};
+-  } else if (is_nchw_to_bitw8_shader(shader)) {
++  // nchw_to_buffer reads BufferMetadata and declares no push constants.
++  // Requesting legacy four-dimensional PCs rejects otherwise valid ND buffers.
++  if (!graph.is_buffer_storage(tensor) && is_nchw_to_bitw8_shader(shader)) {
+     pcs = {graph.sizes_pc_of(tensor)};
+   }
+ 

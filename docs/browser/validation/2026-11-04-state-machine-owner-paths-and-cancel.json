@@ -1,0 +1,104 @@
+{
+  "status": "I05-all-session-construction-paths-and-retired-cancel-outcomes-fixed",
+  "contract": "docs/browser/state-machine.md",
+  "findings": [
+    {
+      "kind": "missed-session-construction-path",
+      "previousFixIncomplete": true,
+      "red": "Photo-first cases pass but model-first cases fail for runtime replacement and pagehide",
+      "resolution": "Both paths use the existing BackgroundEditor ensureSession function with owner-gated callback",
+      "cases": [
+        "photo/runtime",
+        "photo/pagehide",
+        "model/runtime",
+        "model/pagehide"
+      ]
+    },
+    {
+      "kind": "retired-cancel-outcome",
+      "red": "After new runtime/photo adoption, retired cancel resolution or rejection displays obsolete success/error",
+      "resolution": "Capture owner and epoch before cancellation; only current operation may publish resolve/reject outcome",
+      "cases": [
+        "retired-resolved",
+        "retired-rejected"
+      ]
+    }
+  ],
+  "validation": {
+    "initialOwnerRegression": {
+      "failedModelFirst": 2,
+      "passedPhotoFirst": 2
+    },
+    "cancelRegressionFailed": 2,
+    "greenOwnerCases": 6,
+    "fullUi": {
+      "files": 27,
+      "passed": 312
+    },
+    "typecheckInitiallyFailed": "TS18047 on session.current after ensureSession; changed photo path to use the returned local owner for setPhoto/getState",
+    "finalSourceFocusedUi": {
+      "passed": 75,
+      "scope": "All backgroundEditor tests after local owner type correction"
+    },
+    "finalTypecheckBuildPassed": true,
+    "distFiles": 14,
+    "distBytes": 8173746
+  },
+  "sourceFiles": [
+    {
+      "path": "web/src/background/BackgroundEditor.tsx",
+      "bytes": 34527,
+      "sha256": "52ee447c870c0971180f1730ec5014cc82a9ff31f0aba6c418ee5fe9fa59e4ad"
+    },
+    {
+      "path": "web/tests/backgroundEditor.test.tsx",
+      "bytes": 63017,
+      "sha256": "9675c97d84c6b2f63705a31ebba44e764435f3294e7f9a3f8b7ec2a486a5b7ff"
+    },
+    {
+      "path": "docs/browser/state-machine.md",
+      "bytes": 16912,
+      "sha256": "03d1f4d823b5c9e6cf715be8d9756087732e34f0709d599083cb85afa527bb2d"
+    }
+  ],
+  "logs": [
+    {
+      "path": "image-studio-browser-evaluation/state-machine-owner-paths-01/all-owner-green.log",
+      "sha256": "8e276f6553fe401d04b9deff2ad8aa51b50665305b7ddd36eec28583834214ad"
+    },
+    {
+      "path": "image-studio-browser-evaluation/state-machine-owner-paths-01/all-ui.log",
+      "sha256": "39a0bf752807837d67063d1db826936681bc24f249020fed4220cc1ed7befac9"
+    },
+    {
+      "path": "image-studio-browser-evaluation/state-machine-owner-paths-01/build-green.log",
+      "sha256": "86b5e6bb980667583c867dd3ae856d1531d81915e91683ee340132d818e73ef0"
+    },
+    {
+      "path": "image-studio-browser-evaluation/state-machine-owner-paths-01/build.log",
+      "sha256": "a17c12d39875d2b8d6afa9669f1591e5c400faaebfc089138841935fb522997a"
+    },
+    {
+      "path": "image-studio-browser-evaluation/state-machine-owner-paths-01/cancel-outcome-red.log",
+      "sha256": "fdf57773894c4ecc79125c10566b2e75c66d0589b54cc011cb95ef252e0b31db"
+    },
+    {
+      "path": "image-studio-browser-evaluation/state-machine-owner-paths-01/final-background-ui.log",
+      "sha256": "fc3f6a25a929f9e2c1779510653169ceb1b4bcf0eb81a17c5677b95535f31bda"
+    },
+    {
+      "path": "image-studio-browser-evaluation/state-machine-owner-paths-01/model-first-green.log",
+      "sha256": "a4c837fc8883e7688c8e998323a7bbb70599941701942a5a136d5688ee43bf36"
+    },
+    {
+      "path": "image-studio-browser-evaluation/state-machine-owner-paths-01/model-first-red.log",
+      "sha256": "f6c4f7bcc898c3283eef2dda8f8cd15d6bd685bc691b1ac4e8024babdcbfb622"
+    }
+  ],
+  "limits": [
+    "I05 regression event coverage only; no exhaustive state-machine/model-checking claim",
+    "Real BFCache, blocked Worker shutdown and all await interleavings remain separate",
+    "Current source differs from source13 fixed native candidate; re-capture and relevant native acceptance remain",
+    "No deploy, HF upload/visibility, GPU/Gufo configuration change or real inference this turn"
+  ]
+}

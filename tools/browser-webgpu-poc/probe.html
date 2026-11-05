@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Image Studio WebGPU Worker probe</title>
+<style>body{font:16px system-ui;max-width:60rem;margin:3rem auto;padding:0 1rem}button{font:inherit;padding:.6rem 1rem}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f4f6;padding:1rem}</style>
+<h1>WebGPU Worker 実行確認</h1>
+<p>この端末で専用WorkerからGPUを取得し、小さな計算を実行します。写真やモデルは取得・送信しません。モデル推論の合格判定には使いません。</p>
+<button id="run">GPUを確認する</button>
+<button id="cancel" disabled>中止</button>
+<pre id="result" aria-live="polite">未実行</pre>
+<script type="module">
+const run = document.querySelector('#run');
+const cancel = document.querySelector('#cancel');
+const output = document.querySelector('#result');
+let worker;
+let generation = 0;
+function finish() { worker?.terminate(); worker = undefined; run.disabled = false; cancel.disabled = true; }
+run.onclick = () => {
+  const token = ++generation;
+  window.probeResult = undefined;
+  worker = new Worker('./probe-worker.js?v=' + Date.now(), {type:'module'});
+  run.disabled = true; cancel.disabled = false; output.textContent = '確認中';
+  worker.onmessage = ({data}) => {
+    if (generation !== token) return;
+    const report = {userAgent:navigator.userAgent,secureContext:isSecureContext,...data};
+    window.probeResult = report;
+    output.textContent = JSON.stringify(report,null,2);
+    finish();
+  };
+  worker.onerror = (event) => {
+    if (generation !== token) return;
+    window.probeResult = {status:'worker-error',message:event.message};
+    output.textContent = JSON.stringify(window.probeResult); finish();
+  };
+  worker.postMessage({type:'probe'});
+};
+cancel.onclick = () => { ++generation; finish(); output.textContent = '中止しました'; };
+</script>
+</html>

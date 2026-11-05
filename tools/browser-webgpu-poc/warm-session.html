@@ -1,0 +1,41 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>保存済みモデルのsession準備</title>
+<h1>保存済みモデルのsession準備</h1>
+<p>以前の専用profileのOPFSモデルを使います。未保存の場合は停止します。推論は実行しません。</p>
+<button id="start">保存済みモデルを準備・解放</button><button id="cancel">中止</button><pre id="status" role="status"></pre>
+<script type="module">
+const probe=window.warmSession={state:'idle',events:[]};let generation=0,stopActive=()=>{};
+const note=data=>{probe.events.push(data);document.querySelector('#status').textContent=JSON.stringify(data,null,2);};
+document.querySelector('#cancel').onclick=()=>{++generation;stopActive();probe.state='cancelled';note({type:'cancelled'});};
+document.querySelector('#start').onclick=async()=>{
+ if(probe.state!=='idle')return;
+ const token=++generation;probe.state='preparing';const started=performance.now();let worker;
+ const stop=()=>{worker?.terminate();worker=null;};stopActive=stop;
+ const check=()=>{if(token!==generation)throw Error('cancelled');};
+ try{
+  const mode=new URLSearchParams(location.search).get('storage-cache')||'default';
+  if(!['default','lazyRelease'].includes(mode))throw Error('Unsupported warm-session cache mode');
+  const response=await fetch('/config.json',{cache:'no-store'});if(!response.ok)throw Error('Configuration fetch failed');
+  const config=await response.json();check();
+  // This diagnostic is reserved for the fixed HR initialization experiment.
+  const expected=[['model-fp32-means-01.onnx',9757686,'584924efc01f490d3393eeff623fcfb0d807120e878d32a4b130a61f80aa1e41'],['model.onnx.data',447632368,'364eab4994414fb107c1ec7680dd98202ec4ddb3b8d3dcc87f5a5f887890bb7c']];
+  if(config.runtimeVersion!=='1.31.1'||config.precision!=='float16'||!Array.isArray(config.files)||config.files.length!==2||expected.some(([name,bytes,sha])=>!config.files.some(file=>file.name===name&&file.bytes===bytes&&file.sha256===sha)))throw Error('Unexpected HR warm-session contract');
+  const tuple=files=>files.map(f=>[f.name,f.bytes,f.sha256]).sort((a,b)=>a[0].localeCompare(b[0]));
+  check();probe.config={modelId:config.modelId,runtimeVersion:config.runtimeVersion,files:tuple(config.files)};
+  probe.configFetchMs=performance.now()-started;
+  worker=new Worker('/model-worker.js',{type:'module'});
+  worker.onerror=()=>{if(token!==generation)return;probe.state='error';note({type:'error',code:'worker-error'});stop();};
+  worker.onmessage=({data})=>{
+   if(token!==generation)return;
+   note(data);
+   if(data.type==='ready'){
+    if(data.modelId!==config.modelId||data.runtimeVersion!==config.runtimeVersion||data.modelSource!=='opfs-warm'||data.modelNetworkBytes!==0||data.strict!==true){probe.state='error';note({type:'error',code:'ready-contract-mismatch'});stop();return;}
+    probe.ready=data;probe.readyFromClickMs=performance.now()-started;
+    probe.state='releasing';worker.postMessage({type:'dispose',jobId:2});
+   }else if(data.type==='disposed'){
+    probe.disposed=data;stop();probe.state='complete';probe.totalMs=performance.now()-started;
+   }else if(data.type==='error'||data.type==='device-lost'){probe.state='error';stop();}
+  };
+  probe.state='loading';worker.postMessage({type:'load',jobId:1,config,modelSource:'opfs-warm',strict:config.precision==='float16',diagnostic:false,storageBufferCacheMode:mode});
+ }catch(error){stop();if(token!==generation)return;probe.state='error';note({type:'error',message:error.message});}
+};
+</script></html>

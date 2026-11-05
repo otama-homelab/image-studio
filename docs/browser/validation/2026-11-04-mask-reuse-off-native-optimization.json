@@ -1,0 +1,699 @@
+{
+  "date": "2026-11-04",
+  "status": "retained-base-mask-reused-with-refinement-off-and-on-native-output-preserved",
+  "buildInfo": {
+    "schemaVersion": 1,
+    "appVersion": "0.1.0",
+    "sourceId": "sha256:c87924e5e1d98fe17cade8f8e16f7b341abbe9aba5ca733aa453d74effbecd6e"
+  },
+  "artifactId": "sha256:6ba51e4a5f72249fc3f2f5311181c3b2f26aa9f2a472ac33957b6477101ef524",
+  "nativeEvidenceDirectory": "image-studio-browser-evaluation/mask-reuse-fixed-gpu-toggle-01",
+  "baselineEvidenceDirectory": "image-studio-browser-evaluation/paired-notice-gpu-refine-toggle-01",
+  "baselineWasIntentionalPriorContract": true,
+  "nativeCases": [
+    {
+      "label": "off-first",
+      "bytes": 2230782,
+      "sha256": "6041c352a1d33911b530496d74bc0628753e7a808654cf4fefa3a10a3d7373f9",
+      "width": 1086,
+      "height": 1448,
+      "stateBeforeRun": {
+        "checked": false,
+        "photos": [
+          {
+            "height": 1448,
+            "src": "blob:http://127.0.0.1:17861/4a4c3614-7189-4ca7-9a7a-cfeff2bdfb50",
+            "width": 1086
+          }
+        ],
+        "saved": 0
+      },
+      "action": "背景を除去してPNGを作成",
+      "consent": "モデルを取得して処理しますか？\n\nこの構成全体（輪郭補正用を含む）のモデル資源は約1209MiBです。\n\nGPUモードの必須APIを検出しました。実際の対応・メモリ確保・処理成功は保証しません。実行時にも対応を確認します。\n\n今回の処理：背景除去のみ\n\n今回の処理で未保存のモデル資源：約830MiB\n\n今回のモデルのダウンロード見積り：約830MiB\n\nブラウザ保存領域の空き見積り：約10240MiB\n\n保存データの削除・破損が見つかった場合、今回使うモデル資源の全量（約830MiB）を再取得することがあります。\n\n保存容量と、実行中に使うRAM（作業用メモリ）・GPUメモリ（VRAM）は別です。GPU推論でもRAMを使います。\n\n保存済みデータも内容を検証します。実行用プログラムの通信は別途発生します。保存容量の見積りはRAM・VRAMや処理成功の保証ではありません。写真は送信しません。\n\n写真と設定に戻る\n取得・検証して処理を始める",
+      "observations": [
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景除去モデルを読み込み・検証しています…  ",
+          "label": "off-first",
+          "elapsedSeconds": 0.416
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景除去モデルを読み込み・検証しています…  ",
+          "label": "off-first",
+          "elapsedSeconds": 2.484
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景除去モデルを読み込み・検証しています…  ",
+          "label": "off-first",
+          "elapsedSeconds": 4.547
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景除去モデルを読み込み・検証しています…  ",
+          "label": "off-first",
+          "elapsedSeconds": 6.618
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景除去モデルを読み込み・検証しています…  ",
+          "label": "off-first",
+          "elapsedSeconds": 8.685
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景除去モデルを読み込み・検証しています…  ",
+          "label": "off-first",
+          "elapsedSeconds": 10.742
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景除去モデルを読み込み・検証しています…  ",
+          "label": "off-first",
+          "elapsedSeconds": 12.814
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景除去モデルを読み込み・検証しています…  ",
+          "label": "off-first",
+          "elapsedSeconds": 14.884
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（1 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 17.028
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（4 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 19.12
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（6 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 21.228
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（8 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 23.342
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（10 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 25.439
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（12 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 27.542
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（15 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 29.642
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（16 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 31.745
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（19 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 33.85
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（20 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 35.949
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（22 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 38.056
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（24 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 40.144
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（25 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 42.252
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（26 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 44.346
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（27 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 46.41
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（28 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 48.489
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（29 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 50.558
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（30 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 52.651
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（32 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 54.761
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（33 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 56.829
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（35 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 58.896
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（36 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 60.973
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（37 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 63.071
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（39 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 65.18
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（40 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 67.279
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（41 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 69.366
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（43 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 71.425
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（44 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 73.499
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "背景を除去しています…（46 / 46）  ",
+          "label": "off-first",
+          "elapsedSeconds": 75.578
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "透過部分の色を整えています…  ",
+          "label": "off-first",
+          "elapsedSeconds": 77.652
+        },
+        {
+          "alerts": [],
+          "busy": false,
+          "saved": true,
+          "status": "PNGを作成しました。仕上がりを確認して保存、またはサイズ調整へ進んでください。  ",
+          "label": "off-first",
+          "elapsedSeconds": 79.728
+        }
+      ],
+      "secondsIncludingConsentObservedResultAndNativeSave": 81.46
+    },
+    {
+      "label": "on",
+      "bytes": 2180411,
+      "sha256": "5b583f097bec35e4cd4ad70eb0c031a850ba26df0629fc6ebfc0a5de251f1f36",
+      "width": 1086,
+      "height": 1448,
+      "stateBeforeRun": {
+        "checked": true,
+        "photos": [
+          {
+            "height": 1448,
+            "src": "blob:http://127.0.0.1:17861/4a4c3614-7189-4ca7-9a7a-cfeff2bdfb50",
+            "width": 1086
+          }
+        ],
+        "saved": 0
+      },
+      "action": "輪郭を補正してPNGを作成",
+      "consent": "モデルを取得して処理しますか？\n\nこの構成全体（輪郭補正用を含む）のモデル資源は約1209MiBです。\n\nGPUモードの必須APIを検出しました。実際の対応・メモリ確保・処理成功は保証しません。実行時にも対応を確認します。\n\n今回の処理：この写真の切り抜き情報を再利用して輪郭補正\n\n今回の処理で未保存のモデル資源：約379MiB\n\n今回のモデルのダウンロード見積り：約379MiB\n\nブラウザ保存領域の空き見積り：約10240MiB\n\n保存データの削除・破損が見つかった場合、今回使うモデル資源の全量（約379MiB）を再取得することがあります。\n\n保存容量と、実行中に使うRAM（作業用メモリ）・GPUメモリ（VRAM）は別です。GPU推論でもRAMを使います。\n\n保存済みデータも内容を検証します。実行用プログラムの通信は別途発生します。保存容量の見積りはRAM・VRAMや処理成功の保証ではありません。写真は送信しません。\n\n写真と設定に戻る\n取得・検証して処理を始める",
+      "observations": [
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "輪郭補正の範囲を作っています…  ",
+          "label": "on",
+          "elapsedSeconds": 0.401
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "輪郭補正モデルを読み込み・検証しています…  ",
+          "label": "on",
+          "elapsedSeconds": 2.465
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "輪郭補正モデルを読み込み・検証しています…  ",
+          "label": "on",
+          "elapsedSeconds": 4.529
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "輪郭補正モデルを読み込み・検証しています…  ",
+          "label": "on",
+          "elapsedSeconds": 6.59
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "輪郭補正モデルを読み込み・検証しています…  ",
+          "label": "on",
+          "elapsedSeconds": 8.668
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "輪郭を補正しています…  ",
+          "label": "on",
+          "elapsedSeconds": 10.766
+        },
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "透過部分の色を整えています…  ",
+          "label": "on",
+          "elapsedSeconds": 12.833
+        },
+        {
+          "alerts": [],
+          "busy": false,
+          "saved": true,
+          "status": "PNGを作成しました。仕上がりを確認して保存、またはサイズ調整へ進んでください。  ",
+          "label": "on",
+          "elapsedSeconds": 14.905
+        }
+      ],
+      "secondsIncludingConsentObservedResultAndNativeSave": 16.753
+    },
+    {
+      "label": "off-again",
+      "bytes": 2230782,
+      "sha256": "6041c352a1d33911b530496d74bc0628753e7a808654cf4fefa3a10a3d7373f9",
+      "width": 1086,
+      "height": 1448,
+      "stateBeforeRun": {
+        "checked": false,
+        "photos": [
+          {
+            "height": 1448,
+            "src": "blob:http://127.0.0.1:17861/4a4c3614-7189-4ca7-9a7a-cfeff2bdfb50",
+            "width": 1086
+          }
+        ],
+        "saved": 0
+      },
+      "action": "補正せずにPNGを作成",
+      "consent": "モデルを取得して処理しますか？\n\nこの構成全体（輪郭補正用を含む）のモデル資源は約1209MiBです。\n\nGPUモードの必須APIを検出しました。実際の対応・メモリ確保・処理成功は保証しません。実行時にも対応を確認します。\n\n今回の処理：この写真の切り抜き情報を再利用（輪郭補正なし）\n\n今回の処理で未保存のモデル資源：約0MiB\n\n今回のモデルのダウンロード見積り：約0MiB\n\nブラウザ保存領域の空き見積り：約10240MiB\n\n保存データの削除・破損が見つかった場合、今回使うモデル資源の全量（約0MiB）を再取得することがあります。\n\n保存容量と、実行中に使うRAM（作業用メモリ）・GPUメモリ（VRAM）は別です。GPU推論でもRAMを使います。\n\n保存済みデータも内容を検証します。実行用プログラムの通信は別途発生します。保存容量の見積りはRAM・VRAMや処理成功の保証ではありません。写真は送信しません。\n\n写真と設定に戻る\n取得・検証して処理を始める",
+      "observations": [
+        {
+          "alerts": [],
+          "busy": true,
+          "saved": false,
+          "status": "透過部分の色を整えています…  ",
+          "label": "off-again",
+          "elapsedSeconds": 0.427
+        },
+        {
+          "alerts": [],
+          "busy": false,
+          "saved": true,
+          "status": "PNGを作成しました。仕上がりを確認して保存、またはサイズ調整へ進んでください。  ",
+          "label": "off-again",
+          "elapsedSeconds": 2.489
+        }
+      ],
+      "secondsIncludingConsentObservedResultAndNativeSave": 4.155
+    }
+  ],
+  "priorOffAgainSeconds": 71.347,
+  "currentOffAgainSeconds": 4.155,
+  "timingScope": "Consent, polling and native PNG save; two serial runs on one AMD node, not a statistically controlled benchmark or general speed guarantee",
+  "allThreeSavedPngsMatchBaselineBytes": true,
+  "modelZipGets": 2,
+  "guard": {
+    "phase": "finished",
+    "container": "plan36-webgpu-ct-01",
+    "hostInitPid": 1367885,
+    "gufoRestorePolicy": "user-only",
+    "scope": "Current paired source GPU refinement OFF-ON-OFF, same photo and mask reuse; private TLS mirror;5GiB RAM/GPU growth4GiB/serial600s",
+    "budget": {
+      "browserCgroupMaxBytes": 5368709120,
+      "browserRssSumMaxBytes": 5368709120,
+      "hostReserveBytes": 3221225472,
+      "gpuGrowthBytes": 4294967296,
+      "gpuFreeBytes": 1073741824,
+      "seconds": 600
+    },
+    "baselineGpuBytes": 169684992,
+    "browserCgroup": "/proc/1367885/root/sys/fs/cgroup/system.slice/plan36-ct-browser.service",
+    "samples": 573,
+    "maxima": {
+      "gpuUsedBytes": 3085213696,
+      "cgroupMemoryBytes": 4552130560,
+      "rssSumBytes": 5261615104
+    },
+    "minHostAvailableBytes": 25469952000,
+    "cgroupMemoryPeakBytes": 4593078272,
+    "interactionStartedAtUtc": "2026-11-04T03:28:11.132660+00:00",
+    "runDoneSignalled": true,
+    "gpuUsedAfterBytes": 169684992
+  },
+  "cleanup": {
+    "host": "192.168.100.104",
+    "query_ok": true,
+    "guestCleanup": {
+      "removed": [
+        "/work/plan36/cache/profile-mask-reuse-fixed-gpu-toggle-01",
+        "/work/plan36/mask-reuse-fixed-gpu-toggle-01",
+        "/tmp/plan36-mask-reuse-fixed-gpu-toggle-01"
+      ],
+      "allocatedBytesRemoved": 2584412160,
+      "requiredModelPayloadsPreserved": true
+    },
+    "proxyRemoveExit": 0,
+    "containerStopExit": 0,
+    "containerStatus": "Stopped",
+    "gufoReplicas": 0,
+    "gpuUsedBytes": 169684992,
+    "gpuClientCount": 0,
+    "tunnelStopSignalled": true,
+    "tunnelListeningAfter": false
+  },
+  "baselineCleanup": {
+    "host": "192.168.100.104",
+    "query_ok": true,
+    "guestCleanup": {
+      "removed": [
+        "/work/plan36/cache/profile-paired-notice-gpu-refine-toggle-01",
+        "/work/plan36/paired-notice-gpu-refine-toggle-01",
+        "/tmp/plan36-paired-notice-gpu-refine-toggle-01"
+      ],
+      "allocatedBytesRemoved": 2586071040,
+      "requiredModelPayloadsPreserved": true
+    },
+    "proxyRemoveExit": 0,
+    "containerStopExit": 0,
+    "containerStatus": "Stopped",
+    "gufoReplicas": 0,
+    "gpuUsedBytes": 169684992,
+    "gpuClientCount": 0,
+    "tunnelStopSignalled": true,
+    "tunnelListeningAfter": false
+  },
+  "checks": [
+    {
+      "label": "full-ui",
+      "exit": 0,
+      "seconds": 40.843
+    },
+    {
+      "label": "full-domain",
+      "exit": 0,
+      "seconds": 9.153
+    },
+    {
+      "label": "full-scripts",
+      "exit": 0,
+      "seconds": 2.095
+    },
+    {
+      "label": "normal-build",
+      "exit": 0,
+      "seconds": 5.524
+    },
+    {
+      "label": "configured-build",
+      "exit": 0,
+      "seconds": 3.101
+    }
+  ],
+  "pixelComparison": {
+    "status": "same-photo-on-off-alpha-change-measured-not-quality-accepted",
+    "inputs": {
+      "off-first": {
+        "bytes": 2230782,
+        "sha256": "6041c352a1d33911b530496d74bc0628753e7a808654cf4fefa3a10a3d7373f9"
+      },
+      "on": {
+        "bytes": 2180411,
+        "sha256": "5b583f097bec35e4cd4ad70eb0c031a850ba26df0629fc6ebfc0a5de251f1f36"
+      },
+      "off-again": {
+        "bytes": 2230782,
+        "sha256": "6041c352a1d33911b530496d74bc0628753e7a808654cf4fefa3a10a3d7373f9"
+      }
+    },
+    "allThreePngsMatchPreChangeBytes": true,
+    "shape": [
+      1086,
+      1448
+    ],
+    "changedAlphaPixels": 185022,
+    "maxAlphaChangeU8": 184,
+    "meanAlphaChangeU8": 0.41759701576060965,
+    "alphaChangeRelativeToOffNotGroundTruth": {
+      "status": "measured_not_accepted",
+      "alpha_units": "0..1",
+      "all": {
+        "pixels": 1572528,
+        "mae": 0.0016376353559239593,
+        "max_error": 0.7215686274509804
+      },
+      "boundary": {
+        "pixels": 97810,
+        "mae": 0.021210229516609832,
+        "max_error": 0.7215686274509804
+      },
+      "definite_foreground_violations": 0,
+      "definite_background_violations": 0
+    },
+    "referenceTrimap": {
+      "origin": "Reconstructed from the saved same-run native OFF alpha using the existing Python reference function and OpenCV4.11.0; not an intercepted ON Worker input",
+      "rawSha256": "5e862d3f86f86c5d9e91729713ac92ed140265a30f4055026d7678993973c28f",
+      "counts": {
+        "0": 723858,
+        "128": 97810,
+        "255": 750860
+      },
+      "functionAstSha256": "18900a40b3952c6ace4c865c8d05ecb09c15594ed08bab387e088ed00e17d68a"
+    },
+    "opaqueRgb": {
+      "off-first": {
+        "pixels": 764844,
+        "inputRgbMismatchPixels": 0
+      },
+      "on": {
+        "pixels": 770798,
+        "inputRgbMismatchPixels": 0
+      },
+      "off-again": {
+        "pixels": 764844,
+        "inputRgbMismatchPixels": 0
+      }
+    },
+    "limits": [
+      "One synthetic portrait; no general quality or human acceptance",
+      "ON/OFF differences are intended refinement changes, not errors against ground truth",
+      "Reconstructed reference trimap does not prove exact Worker input correspondence",
+      "No new numeric acceptance tolerance or winning-model claim"
+    ]
+  },
+  "limits": [
+    "CPU/backend-independent serial and session tests pass; no new CPU native inference",
+    "New working-code candidate is not yet archived or paired on HF; old source12 fixed pair remains historical",
+    "One synthetic portrait and local TLS mirror; not general quality, real-device, print or anonymous HF/Pages acceptance",
+    "Stage labels sampled every2seconds; no intercepted Worker command trace",
+    "No public deployment or source availability claim"
+  ],
+  "changedSourceAndTestFiles": [
+    {
+      "path": "tools/browser-library-adapter/serial-inference.mjs",
+      "bytes": 4066,
+      "sha256": "628d9e02f35e452332db68d7b9e392fee1b66684f916270d48bb61b64e219d03"
+    },
+    {
+      "path": "web/src/background/runtime.ts",
+      "bytes": 6340,
+      "sha256": "999403c193f9d81f73070b780108ef253ae354c607ff79b0d03d299d67a7cd3a"
+    },
+    {
+      "path": "web/src/background/BackgroundEditor.tsx",
+      "bytes": 34247,
+      "sha256": "49ad421954d4b86868e2fb8dc96a233ed2df0beaa9bce8cdf6fc61ee5032b975"
+    },
+    {
+      "path": "tests/test_serial_inference.mjs",
+      "bytes": 7900,
+      "sha256": "23ac23d7dd14792ecca456e0ae0aba11d92d09536793516274884de2cc333865"
+    },
+    {
+      "path": "tests/background_session.test.mjs",
+      "bytes": 17159,
+      "sha256": "fd2e994871c5c3203b520f828b58ad2aca594f92cab1c7c52338e672fbcf1698"
+    },
+    {
+      "path": "web/tests/backgroundRuntimeScope.test.tsx",
+      "bytes": 11295,
+      "sha256": "54a87358d1cf92766f427ea07d8c5b997b2235e1ca546320127c17e256fcf80d"
+    },
+    {
+      "path": "web/tests/backgroundEditor.test.tsx",
+      "bytes": 60013,
+      "sha256": "7caccb14386f77f46270dcbd56e60af4b630a81266674a822a82ff7c50c785da"
+    }
+  ],
+  "automatedCounts": {
+    "ui": 306,
+    "domainWorker": 631,
+    "buildScripts": 24
+  },
+  "privateDistributionGuardRejected": true
+}

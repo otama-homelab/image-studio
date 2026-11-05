@@ -1,0 +1,243 @@
+{
+  "date": "2026-11-02",
+  "status": "candidate_documents_only_not_a_distribution_approval",
+  "documents": [
+    {
+      "repository": "ZhengPeng7/BiRefNet",
+      "revision": "2713d1293ce8a923d5878f1f30177b78770bf24c",
+      "url": "https://raw.githubusercontent.com/ZhengPeng7/BiRefNet/2713d1293ce8a923d5878f1f30177b78770bf24c/LICENSE",
+      "file": "BiRefNet-code-LICENSE.txt",
+      "sha256": "92a7089e0915fc32bc40067560b398f1e6a7a5958abd7d04eda393629a5acefb",
+      "scope": "upstream code; model weights declaration is recorded separately"
+    },
+    {
+      "repository": "hustvl/ViTMatte",
+      "revision": "c9601ac08223f57c3ff8820162ad4591fa0bfe1b",
+      "url": "https://raw.githubusercontent.com/hustvl/ViTMatte/c9601ac08223f57c3ff8820162ad4591fa0bfe1b/LICENSE",
+      "file": "ViTMatte-code-LICENSE.txt",
+      "sha256": "14d074b534e2301f5d035d6425868d2627530d36e5be81e0a62876f7e8ecd108",
+      "scope": "upstream code; model weights declaration is recorded separately"
+    },
+    {
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+      "file": "Apache-2.0.txt",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "scope": "standard license text referenced by ViTMatte model card; no model-specific NOTICE inferred"
+    },
+    {
+      "file": "MODNet-code-LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/ZHKKKe/MODNet/28165a451e4610c9d77cfdf925a94610bb2810fb/LICENSE",
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "scope": "MODNet upstream code/models license evidence; not conversion provenance or distribution approval"
+    },
+    {
+      "file": "MODNet-upstream-README.txt",
+      "url": "https://raw.githubusercontent.com/ZHKKKe/MODNet/28165a451e4610c9d77cfdf925a94610bb2810fb/README.md",
+      "bytes": 6475,
+      "sha256": "be9f8603539c2e1820e1eb0d58eb75b348e30bfd2de45799500b2cd6aa2ad9ed",
+      "scope": "MODNet upstream code/models license evidence; not conversion provenance or distribution approval"
+    },
+    {
+      "file": "MODNet-ONNX-model-card.txt",
+      "url": "https://huggingface.co/Xenova/modnet/raw/fa2fa546052fba4c08921230a26cc69a333fca12/README.md",
+      "bytes": 2793,
+      "sha256": "1da7732f6fb4907d9922af2c9d6a1aa8b851f6d6d7641fb0c335e341f1305be8",
+      "scope": "Fixed ONNX repository model-card declaration, not upstream-weight equality proof"
+    },
+    {
+      "file": "BiRefNet-lite-upstream-model-card.txt",
+      "repository": "ZhengPeng7/BiRefNet_lite",
+      "revision": "aa62cd87eafb9cc43056d08ef3615a14628b831d",
+      "url": "https://huggingface.co/ZhengPeng7/BiRefNet_lite/resolve/aa62cd87eafb9cc43056d08ef3615a14628b831d/README.md",
+      "sha256": "22fe432bdd706e8079ee1c53dcd6192962291d023c84d5416df3c983f6e665a2",
+      "scope": "MIT model-card declaration only; original checkpoint correspondence and distribution approval incomplete"
+    },
+    {
+      "file": "BiRefNet-lite-native-ONNX-model-card.txt",
+      "repository": "senty-au/BiRefNet_lite-ONNX-dynamic",
+      "revision": "173d635935b93839608b9b9039da8d1d212471e9",
+      "url": "https://huggingface.co/senty-au/BiRefNet_lite-ONNX-dynamic/resolve/173d635935b93839608b9b9039da8d1d212471e9/README.md",
+      "sha256": "be1648eb5ec0fb422966f84b9dc467ac67d38566c003ec8e803c5f82384fa896",
+      "scope": "MIT model-card declaration only; original checkpoint correspondence and distribution approval incomplete"
+    },
+    {
+      "file": "BiRefNet-HR-model-card.txt",
+      "repository": "ZhengPeng7/BiRefNet_HR-matting",
+      "revision": "5d6b6f8adcb5b417c871b1d84ceaae9871355b7f",
+      "url": "https://huggingface.co/ZhengPeng7/BiRefNet_HR-matting/raw/5d6b6f8adcb5b417c871b1d84ceaae9871355b7f/README.md",
+      "bytes": 11522,
+      "sha256": "834ba4551d22697900286f26909064338c1e04dd44a8feb43e2992c0d644334b",
+      "scope": "fixed model license declaration; graph/weights/release audit remains separate"
+    },
+    {
+      "file": "ViTMatte-model-card.txt",
+      "repository": "hustvl/vitmatte-base-distinctions-646",
+      "revision": "b58373f8dbbfbeb58157456e2e4949f9f872aa18",
+      "url": "https://huggingface.co/hustvl/vitmatte-base-distinctions-646/raw/b58373f8dbbfbeb58157456e2e4949f9f872aa18/README.md",
+      "bytes": 1718,
+      "sha256": "8989345ec2ce5963f28d0398cf2230059e10c3107a0bbbac4f26f21e29f3b1d3",
+      "scope": "fixed model license declaration; graph/weights/release audit remains separate"
+    },
+    {
+      "repository": "CoderViking/birefnet-lite-onnx",
+      "revision": "dc06453148f01ef4131f17e9b791345e32e8ee78",
+      "url": "https://huggingface.co/CoderViking/birefnet-lite-onnx/resolve/dc06453148f01ef4131f17e9b791345e32e8ee78/README.md",
+      "file": "BiRefNet-lite-static-ONNX-model-card.txt",
+      "bytes": 3663,
+      "sha256": "757ffb9ce12523172fd714f2de34d071eed473663dc5d1bab3150a5a30823e37",
+      "scope": "Fixed static conversion/source card evidence only; no distribution approval or complete weight license audit"
+    },
+    {
+      "repository": "ZhengPeng7/BiRefNet_lite",
+      "revision": "7838f1c3472f827cd8ce13ab5ccc2ce48077360f",
+      "url": "https://huggingface.co/ZhengPeng7/BiRefNet_lite/resolve/7838f1c3472f827cd8ce13ab5ccc2ce48077360f/README.md",
+      "file": "BiRefNet-lite-static-source-model-card.txt",
+      "bytes": 8715,
+      "sha256": "8babb69ff6a8aa0c77e4c7e4aebccc9b68addae5a27d9b743a033d4cf145e3f9",
+      "scope": "Fixed static conversion/source card evidence only; no distribution approval or complete weight license audit"
+    },
+    {
+      "file": "MODNet-upstream-ONNX-README.txt",
+      "url": "https://raw.githubusercontent.com/ZHKKKe/MODNet/28165a451e4610c9d77cfdf925a94610bb2810fb/onnx/README.md",
+      "bytes": 1540,
+      "sha256": "bb11f61107456a6f49a2989517bd82a2ccb7f71031f00f30a21ff1c0d55f20f3",
+      "scope": "Official repository links the exact ONNX binary used by Xenova/modnet; conversion credited to manthan3C273"
+    },
+    {
+      "file": "Selected-model-CHANGES.txt",
+      "bytes": 41485,
+      "sha256": "448a7e269af7b6f5533b863dd33ceaa958bf6230aae9d9283e9f69807b81c5fc",
+      "scope": "Local modification record for HR GPU46/CPU406 and ViTMatte CPU query chunks/three-phase derivatives, exact resources and source subset bindings; not release approval"
+    },
+    {
+      "file": "MODNet-artifact-CHANGES.txt",
+      "bytes": 1286,
+      "sha256": "474528a7ce5f4de382cfa2e4d1c3f7d17dc4c461ccc7411dbd5e8fb8cd64df6b",
+      "scope": "Image Studio artifact identity/change record; Hub metadata verified against locally hashed unchanged ONNX, not original checkpoint or distribution approval"
+    },
+    {
+      "repository": "microsoft/Swin-Transformer",
+      "revision": "f82860bfb5225915aca09c3227159ee9e1df874d",
+      "url": "https://raw.githubusercontent.com/microsoft/Swin-Transformer/f82860bfb5225915aca09c3227159ee9e1df874d/LICENSE",
+      "file": "Swin-Transformer-LICENSE.txt",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+      "scope": "MIT full text for Microsoft Swin code carrying its original copyright header inside the pinned BiRefNet remote source; not a claim of unchanged upstream source or separately downloaded backbone weights"
+    }
+  ],
+  "models": [
+    {
+      "repository": "ZhengPeng7/BiRefNet_HR-matting",
+      "revision": "5d6b6f8adcb5b417c871b1d84ceaae9871355b7f",
+      "model_card_url": "https://huggingface.co/ZhengPeng7/BiRefNet_HR-matting/raw/5d6b6f8adcb5b417c871b1d84ceaae9871355b7f/README.md",
+      "model_card_sha256": "834ba4551d22697900286f26909064338c1e04dd44a8feb43e2992c0d644334b",
+      "declared_license": "mit",
+      "license_evidence": "model card YAML; no standalone LICENSE or NOTICE in this fixed revision root",
+      "root_files": [
+        ".gitattributes",
+        "BiRefNet_config.py",
+        "README.md",
+        "birefnet.py",
+        "config.json",
+        "handler.py",
+        "model.safetensors",
+        "requirements.txt"
+      ]
+    },
+    {
+      "repository": "hustvl/vitmatte-base-distinctions-646",
+      "revision": "b58373f8dbbfbeb58157456e2e4949f9f872aa18",
+      "model_card_url": "https://huggingface.co/hustvl/vitmatte-base-distinctions-646/raw/b58373f8dbbfbeb58157456e2e4949f9f872aa18/README.md",
+      "model_card_sha256": "8989345ec2ce5963f28d0398cf2230059e10c3107a0bbbac4f26f21e29f3b1d3",
+      "declared_license": "apache-2.0",
+      "license_evidence": "model card YAML; no standalone LICENSE or NOTICE in this fixed revision root",
+      "root_files": [
+        ".gitattributes",
+        "README.md",
+        "config.json",
+        "model.safetensors",
+        "preprocessor_config.json",
+        "pytorch_model.bin"
+      ]
+    },
+    {
+      "repository": "Xenova/modnet",
+      "revision": "fa2fa546052fba4c08921230a26cc69a333fca12",
+      "model_card_url": "https://huggingface.co/Xenova/modnet/raw/fa2fa546052fba4c08921230a26cc69a333fca12/README.md",
+      "model_card_file": "MODNet-ONNX-model-card.txt",
+      "model_card_sha256": "1da7732f6fb4907d9922af2c9d6a1aa8b851f6d6d7641fb0c335e341f1305be8",
+      "declared_license": "apache-2.0",
+      "license_evidence": "Fixed model card YAML plus upstream README expressly covering code, models and demos excluding doc/gif files",
+      "upstream_repository": "ZHKKKe/MODNet",
+      "upstream_revision": "28165a451e4610c9d77cfdf925a94610bb2810fb",
+      "upstream_license_file": "MODNet-code-LICENSE.txt",
+      "upstream_statement_file": "MODNet-upstream-README.txt",
+      "root_files": [
+        ".gitattributes",
+        "README.md",
+        "config.json",
+        "onnx/model.onnx",
+        "onnx/model_bnb4.onnx",
+        "onnx/model_fp16.onnx",
+        "onnx/model_q4.onnx",
+        "onnx/model_q4f16.onnx",
+        "onnx/model_quantized.onnx",
+        "onnx/model_uint8.onnx",
+        "preprocessor_config.json",
+        "quantize_config.json"
+      ],
+      "license_or_notice_in_fixed_onnx_root": false,
+      "onnx_file": "onnx/model.onnx",
+      "onnx_bytes": 25888640,
+      "onnx_sha256": "07c308cf0fc7e6e8b2065a12ed7fc07e1de8febb7dc7839d7b7f15dd66584df9",
+      "remaining": [
+        "Record adopted binary/processor/runtime/foreground notices in the actual immutable release",
+        "Full publication acceptance is separate"
+      ],
+      "officialOnnxLineage": {
+        "repository": "ZHKKKe/MODNet",
+        "revision": "28165a451e4610c9d77cfdf925a94610bb2810fb",
+        "readmeFile": "MODNet-upstream-ONNX-README.txt",
+        "downloadUrl": "https://drive.google.com/uc?export=download&id=1cgycTQlYXpTh26gB9FTnthE7AvruV8hd",
+        "bytes": 25888640,
+        "sha256": "07c308cf0fc7e6e8b2065a12ed7fc07e1de8febb7dc7839d7b7f15dd66584df9",
+        "exactByteMatchToAdoptedFp32": true,
+        "conversionContributor": "manthan3C273",
+        "checkpointNameInOfficialRecipe": "modnet_photographic_portrait_matting.ckpt",
+        "note": "Official linked mutable download captured by SHA; identity to official ONNX proven, original checkpoint rebuild/training provenance not audited"
+      }
+    },
+    {
+      "repository": "CoderViking/birefnet-lite-onnx",
+      "revision": "dc06453148f01ef4131f17e9b791345e32e8ee78",
+      "model_card_file": "BiRefNet-lite-static-ONNX-model-card.txt",
+      "declared_license": "mit",
+      "license_evidence": "Converted card YAML/API MIT declaration; source pinned card has MIT badge only. No standalone LICENSE/NOTICE in inspected fixed roots. Not a full distribution approval.",
+      "onnx_file": "birefnet-lite-1024.onnx",
+      "onnx_bytes": 199681624,
+      "onnx_sha256": "50a57872cc739192446da2a934159f957c81af8b5a161dfda8e3daa51660ca67",
+      "upstream_repository": "ZhengPeng7/BiRefNet_lite",
+      "upstream_revision": "7838f1c3472f827cd8ce13ab5ccc2ce48077360f",
+      "upstream_checkpoint_sha256": "4417d89795250e698c3cb0ae8df15743810065f646f48a694fdfa7ca052d0815",
+      "source_card_file": "BiRefNet-lite-static-source-model-card.txt",
+      "conversion_source_url": "https://huggingface.co/CoderViking/birefnet-lite-onnx/resolve/dc06453148f01ef4131f17e9b791345e32e8ee78/export_birefnet_lite.py",
+      "conversion_source_sha256": "505d0236097b0aeb3390528acf68a9d7b1441b178c2d716cc9305b92df26751b",
+      "conversion_source_executed": false,
+      "browser_python_dependency": false,
+      "remaining": [
+        "Full graph/numerical/quality/resource acceptance",
+        "Clarify conversion source licensing attribution if redistributing exporter source; inspected script lacks standalone license/copyright header",
+        "Publisher exact conversion dependency versions and environment not captured",
+        "Adopted model/runtime/processor/foreground/toolchain binary notice audit and actual release acceptance"
+      ]
+    }
+  ],
+  "remaining": [
+    "Audit exact exported/rewritten graph and any transferred source against these notices",
+    "Include source revision, original weights SHA, graph/data SHA and transformation change record in adopted R2 release",
+    "Audit adopted runtime/processor/WASM dependency notices and actual release bundle",
+    "A11 model/runtime adoption and final distribution conditions remain unaccepted"
+  ],
+  "activity": "Historical text/metadata capture plus 2026-11-02 bounded official linked MODNet ONNX download and exact byte comparison; no model session/GPU/inference"
+}

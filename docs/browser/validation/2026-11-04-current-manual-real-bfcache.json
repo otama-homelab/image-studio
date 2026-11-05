@@ -1,0 +1,170 @@
+{
+  "status": "current-manual-build-real-bfcache-pagehide-reset-and-output-recovery-verified",
+  "buildInfo": {
+    "schemaVersion": 1,
+    "appVersion": "0.1.0",
+    "sourceId": "sha256:aecd470d65be09d6ddc6b7167782c272e952654a34abc8c9cdfcd61c296aa7ab"
+  },
+  "artifactFiles": [
+    {
+      "path": "LICENSE.txt",
+      "bytes": 1082,
+      "sha256": "4451fa4126ecd2892354ce4585b489b7ad624692283d2ba6d587bd8e4f7ec360"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.txt",
+      "bytes": 30054,
+      "sha256": "ed27785525a572a6958dd6a7f9a2f564bacbda154deae203230b84c2a5ac5f79"
+    },
+    {
+      "path": "_headers",
+      "bytes": 621,
+      "sha256": "8a03398ddb73c6ffafc6d4d9ba3f37d00486d951ee4fd353b92350a8cffe2007"
+    },
+    {
+      "path": "assets/crop.worker-D9Pwnmvc.js",
+      "bytes": 145044,
+      "sha256": "ccf7e494476902da61564ef38363e3eac5a045389fe4556e9947b423d47b85f3"
+    },
+    {
+      "path": "assets/es-bHcqClnJ.js",
+      "bytes": 421135,
+      "sha256": "afea668250e68c53215d6b3b57126ac95f9118f91cc67affc173576929a89b5f"
+    },
+    {
+      "path": "assets/index-CXzkQgVL.css",
+      "bytes": 13044,
+      "sha256": "a7046b7afd4c6e21f568e0943342e8f102fc1f5d236d1413ee9e0f32c8931759"
+    },
+    {
+      "path": "assets/index-Ct2WxEnY.js",
+      "bytes": 351804,
+      "sha256": "0cbd05fe56f3a208d7d7849a2ca4fd5dd477c6437d83c1da9cca8118ba74b976"
+    },
+    {
+      "path": "build-info.json",
+      "bytes": 139,
+      "sha256": "dba6af7dd733ce7f221771cded8c020922e6cefb8b42b90da7f94d781a9c47bf"
+    },
+    {
+      "path": "examples/fictional-portrait-modnet-cpu-v1.png",
+      "bytes": 2297950,
+      "sha256": "8ef80121f72498d3ddc4ccb064d0b9739df0b884bdebd6a2bc9a2beeb7f63fee"
+    },
+    {
+      "path": "examples/fictional-portrait-modnet-cpu-v1.webp",
+      "bytes": 1124712,
+      "sha256": "7cc645f242d00daefeb9848c383bb0f092d40e537d9608e9d93842034f2d1616"
+    },
+    {
+      "path": "examples/fictional-portrait-v1.png",
+      "bytes": 2296528,
+      "sha256": "ffd8a813329f8c4a2d1dd17a2d3b24a36c97c73059fc921d8cb1ad05cdbfb258"
+    },
+    {
+      "path": "examples/fictional-portrait-v1.webp",
+      "bytes": 1491042,
+      "sha256": "93306909297da228be4999f10e1270ebb75aa7553aec5f20b8e6a50900e4bed8"
+    },
+    {
+      "path": "index.html",
+      "bytes": 587,
+      "sha256": "ac0cc7cef6688525896b8e4ef5a9f3dbd5b83e4089b8b465474cfd0703e2051e"
+    },
+    {
+      "path": "logo.svg",
+      "bytes": 316,
+      "sha256": "76e1a7091f18de717b93393aec3b59b06140358836b90490508d7b6bb6e4883d"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "web/src/App.tsx",
+      "sha256": "9db71d90e6441bf1f4a64fa9bb8e82314c4e43aa6ff5dc6c36d26eb9da9e67ad"
+    },
+    {
+      "path": "web/src/background/BackgroundEditor.tsx",
+      "sha256": "52ee447c870c0971180f1730ec5014cc82a9ff31f0aba6c418ee5fe9fa59e4ad"
+    },
+    {
+      "path": "web/src/export/useCropSave.ts",
+      "sha256": "623cfeff2f8e686635a8a63bc21ca21402a0cb8f2800deff9093732f7c707b62"
+    }
+  ],
+  "navigation": {
+    "sameInMemoryDocumentId": true,
+    "pagehidePersisted": true,
+    "pageshowPersisted": true,
+    "resetPhotoAndDownloadsBeforeRecovery": true,
+    "newPhotoAndPngLinkAfterRestore": true
+  },
+  "beforeNavigationNativePng": {
+    "bytes": 263942,
+    "sha256": "5028372c9c50bfd02531b1b375c480a81f04b3584da787abb0d930a8bc570382",
+    "width": 354,
+    "height": 472,
+    "dpi": [
+      299.9994,
+      299.9994
+    ]
+  },
+  "afterRestoreScope": "New real crop processing completed with one new prepared download link; second native save bytes were not downloaded",
+  "harnessCorrection": "Initial image count included logo.svg. Inspected actual remaining image and corrected predicate to Blob-source images; continued in same browser/document without rerunning navigation or first crop. No product failure found.",
+  "guard": {
+    "phase": "finished",
+    "container": "plan36-webgpu-ct-01",
+    "hostInitPid": 1438676,
+    "gufoRestorePolicy": "user-only",
+    "scope": "Current manual app real BFCache navigation, native crop save and pagehide recovery; GPU disabled;5GiB RAM/serial600s",
+    "budget": {
+      "browserCgroupMaxBytes": 5368709120,
+      "browserRssSumMaxBytes": 5368709120,
+      "hostReserveBytes": 3221225472,
+      "gpuGrowthBytes": 4294967296,
+      "gpuFreeBytes": 1073741824,
+      "seconds": 600
+    },
+    "baselineGpuBytes": 169684992,
+    "browserCgroup": "/proc/1438676/root/sys/fs/cgroup/system.slice/plan36-ct-browser.service",
+    "samples": 464,
+    "maxima": {
+      "gpuUsedBytes": 171622400,
+      "cgroupMemoryBytes": 299335680,
+      "rssSumBytes": 1326305280
+    },
+    "minHostAvailableBytes": 28849311744,
+    "cgroupMemoryPeakBytes": 306167808,
+    "interactionStartedAtUtc": "2026-11-04T05:08:19.020396+00:00",
+    "runDoneSignalled": true,
+    "gpuUsedAfterBytes": 169684992
+  },
+  "cleanup": {
+    "host": "192.168.100.104",
+    "query_ok": true,
+    "guestCleanup": {
+      "removed": [
+        "/work/plan36/cache/profile-current-bfcache-manual-01",
+        "/work/plan36/current-bfcache-manual-01",
+        "/tmp/plan36-current-bfcache-manual-01"
+      ],
+      "allocatedBytesRemoved": 22888448,
+      "requiredModelPayloadsPreserved": true
+    },
+    "proxyRemoveExit": 0,
+    "containerStopExit": 0,
+    "containerStatus": "Stopped",
+    "gufoReplicas": 0,
+    "gpuUsedBytes": 169684992,
+    "gpuClientCount": 0,
+    "tunnelStopSignalled": true,
+    "tunnelListeningAfter": false
+  },
+  "productionCodeChanged": false,
+  "limits": [
+    "One Linux Chrome CPU container/manual crop idle-navigation case, not all BFCache eligibility or lifecycle scenarios",
+    "Lifecycle instrumentation added through CDP, not shipped in application",
+    "No background/model session, active inference cancellation, restored transfer, physical touch or other browsers",
+    "Loopback copied Pages headers; no real Pages/HF or public deployment",
+    "Actual URL revocation not intercepted; photo/download state reset observed and old links absent"
+  ]
+}

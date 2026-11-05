@@ -1,0 +1,107 @@
+{
+  "status": "defined-state-machine-stop-and-await-boundaries-conform-without-production-change",
+  "contract": "docs/browser/state-machine.md",
+  "invariants": [
+    "I03",
+    "I05",
+    "I06",
+    "I07",
+    "I11",
+    "I12"
+  ],
+  "transitions": [
+    "B06",
+    "B08",
+    "B09",
+    "B10",
+    "B11",
+    "B12"
+  ],
+  "awaitMatrix": {
+    "boundaries": [
+      "hr:prepare",
+      "hr:infer",
+      "hr:dispose",
+      "trimap",
+      "matte:prepare",
+      "matte:infer",
+      "matte:dispose",
+      "foreground"
+    ],
+    "intents": [
+      "context-change",
+      "cancel"
+    ],
+    "lateOutcomes": [
+      "resolve",
+      "reject"
+    ],
+    "cases": 32,
+    "assertions": [
+      "Only event prefix up to suspended boundary is executed",
+      "No commit; stale or cancelled result according to intent",
+      "One owned cleanup; no running/stopping job after settlement",
+      "Temporary registered alpha released; original RGB asset retained"
+    ]
+  },
+  "closeMatrix": {
+    "cases": 2,
+    "eventOrder": [
+      "start foreground",
+      "request close twice",
+      "original execution settles cancelled while model shutdown remains pending",
+      "attempt operation and gate reuse",
+      "resolve delayed shutdown; success or failure"
+    ],
+    "assertions": [
+      "Close promise shared; closed immediately rejects operations",
+      "Busy and gate ownership persist until pending stop settles",
+      "On success gate reuse admitted; on failed stop global gate stays blocked",
+      "No final photo, mask or result after terminal close"
+    ]
+  },
+  "validation": {
+    "initialFocused": {
+      "tests": 80,
+      "passed": 80,
+      "scope": "First 16 context-change await cases plus close and related existing tests"
+    },
+    "finalDomain": {
+      "tests": 665,
+      "passed": 665,
+      "failed": 0,
+      "skipped": 0
+    },
+    "productionCodeChanged": false,
+    "noInferenceOrDeployment": true
+  },
+  "sources": [
+    {
+      "path": "tests/test_serial_inference.mjs",
+      "sha256": "1dc46992b5118a70ffe28252b03b34249d320ca866cf32615758717d9f727156"
+    },
+    {
+      "path": "tests/background_session.test.mjs",
+      "sha256": "1b1d47c4998bc9c08005fc97d4f0e0c35cc79a1d537ccad7bb6337307d2d8039"
+    },
+    {
+      "path": "docs/browser/state-machine.md",
+      "sha256": "b08dca75b405be0bfa6f759f76a9c4f330121eabfabc281a574b76c4244ad489"
+    }
+  ],
+  "logs": [
+    {
+      "path": "image-studio-browser-evaluation/state-machine-stop-boundaries-01/all-domain.log",
+      "sha256": "e12e1baad99031916ec34e5b7d1680d7dc2b15e49dfd95caa7bd563807318396"
+    },
+    {
+      "path": "image-studio-browser-evaluation/state-machine-stop-boundaries-01/focused.log",
+      "sha256": "44f050f84dfc72cf10057c987a32132b8b5158228fac28ed19641b7ea6f0a683"
+    }
+  ],
+  "limits": [
+    "Controlled async adapters; not real model kernels, Worker/GPU shutdown or BFCache",
+    "Full pipeline eight-await path only; retained-mask/trimap fallback/backend/shape/repeated-event product not exhaustive",
+    "New current-source capture/native acceptance, public delivery, real-device/human/print and final rights gates remain"
+  ]
+}

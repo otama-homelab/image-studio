@@ -1,5 +1,18 @@
 # Image Studio
 
+写真の背景・サイズ・印刷を整えるアプリです。実行環境が異なる2つの実装があります。
+
+| 実装 | 処理場所と状態 | 開発・起動の入口 |
+|---|---|---|
+| ブラウザ版 `web/` | 利用者の端末内で処理する静的アプリ。開発中・本番未公開 | [Web版の現状と開発手順](web/README.md) |
+| ROCmサーバー版 `app/` | AMD GPUサーバー内で処理する既存コンテナ版 | [サーバー版の起動手順](docs/running.md) |
+
+ブラウザ版はMODNetと高画質BiRefNet HR＋ViTMatteをCPU/GPUで明示選択する構成です。非公開候補で背景処理・サイズ調整・PNG/PDF保存、GPU最大2000×2000と取消復帰を確認しています。高画質CPUは非常に遅く、多くのRAMを使います。TS8130でのA4実寸印刷と評価画像1枚の目視確認も記録済みですが、一般画質・Windows/NVIDIA・iOSの受入は継続中です。現在は[公開前レビュー](docs/browser/publication-review.md)の修正後、HF配布とPages Previewを準備しています。
+
+ブラウザ版の配信方針は `main` → preview、`VERSION`と一致する安定版タグ → productionです。[リリース手順](docs/releases.md#ブラウザ版trunkはpreviewタグは本番)を参照してください。
+
+## ROCmサーバー版
+
 日本語で使える、AMD GPU向けの写真編集アプリです。「証明写真」の中に背景変更・トリミング・印刷の3つのタブがあります。
 
 | やりたいこと | 操作 |
@@ -12,13 +25,15 @@
 
 ## ドキュメント
 
+ブラウザ版は[Web開発手順](web/README.md)と[責務・変更先](docs/browser/modules-and-ownership.md)、両版のリリースは[公開手順](docs/releases.md)を参照してください。以下の利用・起動・処理構成の説明はサーバー版向けです。
+
 - **使う:** [写真の編集と印刷](docs/usage.md)
 - **起動する:** [コンテナの実行・保存先・GPU設定](docs/running.md)
 - **開発する:** [処理の構成・UIの拡張・確認方法](docs/development.md)
 - **公開する:** [バージョン更新・ビルド・リリース](docs/releases.md)
 - **困ったとき:** [起動・処理・印刷のトラブルシューティング](docs/troubleshooting.md)
 
-## 実行環境
+## サーバー版の実行環境
 
 現在のイメージは **linux/amd64・ROCm 7.2対応AMD GPU** 向けです。AMD Radeon 8060Sで動作確認しています。CPUのみ・NVIDIA GPU向けのイメージは提供していません。
 
@@ -28,10 +43,14 @@ ghcr.io/otama-homelab/image-studio:1.1.2
 
 アプリはポート7860、UID/GID 1000で動作します。GPUアクセスと書き込み可能なモデルキャッシュが必要です。Python依存はイメージにインストール済みで、venv・起動時のpipインストールは不要です。[起動手順](docs/running.md)を参照してください。
 
-## モデルと利用条件
+## サーバー版のモデルと利用条件
 
 BiRefNet_HR-mattingで人物のマスクを作り、任意のViTMatte補正とrembgの前景色推定・背景合成を行います。顔の自動配置はInsightFaceの顔検出・ランドマークと人物マスクを使います。
 
 モデルは初回起動時に公式配布元から取得し、リビジョンとSHA256を[prepare_models.py](app/prepare_models.py)で固定しています。InsightFaceの学習済みモデルには非商用研究用途の条件があります。各モデルの利用条件を確認してください。
 
 提出用写真の加工可否は提出先の要件を確認してください。背景変更を認めない提出先では、適切な背景で撮影した元写真を「トリミング」に直接アップロードします。
+
+## ライセンス
+
+アプリ本体のコードは[MIT License](LICENSE)です。依存ライブラリ・学習済みモデルは、それぞれの利用条件と権利表示に従います。アプリのMITはモデルの条件を置き換えません。

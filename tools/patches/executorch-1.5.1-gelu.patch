@@ -1,0 +1,60 @@
+diff --git a/backends/vulkan/runtime/graph/ops/glsl/unary_op.glsl b/backends/vulkan/runtime/graph/ops/glsl/unary_op.glsl
+index 5ef891e..63b3c54 100644
+--- a/backends/vulkan/runtime/graph/ops/glsl/unary_op.glsl
++++ b/backends/vulkan/runtime/graph/ops/glsl/unary_op.glsl
+@@ -52,6 +52,22 @@ $if DYNAMIC_PARAMS:
+     return is_int != 0 ? float(int(value)) : uintBitsToFloat(value);
+   }
+ 
++// GELU approximate="none": evaluate the erf form rather than the tanh form.
++// The polynomial approximates erf to float32 accuracy; validated separately
++// against torch.nn.functional.gelu across the inference input range.
++float gelu_erf(float x) {
++  const float z = x * 0.7071067811865475;
++  const float t = 1.0 / (1.0 + 0.3275911 * abs(z));
++  const float poly = (((((1.061405429 * t - 1.453152027) * t)
++      + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t;
++  const float erf_value = sign(z) * (1.0 - poly * exp(-z * z));
++  return 0.5 * x * (1.0 + erf_value);
++}
++
++vec4 gelu_erf(vec4 x) {
++  return vec4(gelu_erf(x.x), gelu_erf(x.y), gelu_erf(x.z), gelu_erf(x.w));
++}
++
+ #ifdef USING_BUFFER
+ 
+ void main() {
+diff --git a/backends/vulkan/runtime/graph/ops/glsl/unary_op.yaml b/backends/vulkan/runtime/graph/ops/glsl/unary_op.yaml
+index 0331a15..fd19ec9 100644
+--- a/backends/vulkan/runtime/graph/ops/glsl/unary_op.yaml
++++ b/backends/vulkan/runtime/graph/ops/glsl/unary_op.yaml
+@@ -32,6 +32,8 @@ unary_op:
+       OPERATOR: exp(X)
+     - NAME: gelu
+       OPERATOR: 0.5 * X * (1 + tanh(sqrt(2 / 3.141593) * (X + 0.044715 * X * X * X)))
++    - NAME: gelu_erf
++      OPERATOR: gelu_erf(X)
+     - NAME: neg
+       OPERATOR: -X
+     - NAME: sigmoid
+diff --git a/backends/vulkan/runtime/graph/ops/impl/UnaryOp.cpp b/backends/vulkan/runtime/graph/ops/impl/UnaryOp.cpp
+index d17f577..9404f25 100644
+--- a/backends/vulkan/runtime/graph/ops/impl/UnaryOp.cpp
++++ b/backends/vulkan/runtime/graph/ops/impl/UnaryOp.cpp
+@@ -177,11 +177,11 @@ float get_val_or_inf(ComputeGraph& graph, const ValueRef& val, bool max) {
+   }
+ 
+ void gelu(ComputeGraph& graph, const std::vector<ValueRef>& args) {
+-  // args[1] is the `approximate` string
+-  // https://fburl.com/code/9omngmyo
+-  // currently only `approximate = "tanh"` is supported
++  const auto approximation = graph.extract_string(args[1]);
++  VK_CHECK_COND(approximation == "none" || approximation == "tanh");
+   return add_unary_op_node(
+-      graph, args[0], kDummyFloat, kDummyFloat, args[2], "gelu");
++      graph, args[0], kDummyFloat, kDummyFloat, args[2],
++      approximation == "none" ? "gelu_erf" : "gelu");
+ }
+ 
+ DEFINE_ACTIVATION_FN(abs);

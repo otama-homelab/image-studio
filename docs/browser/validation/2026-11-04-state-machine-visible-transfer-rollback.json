@@ -1,0 +1,103 @@
+{
+  "status": "first-visible-transfer-origin-guard-and-rollback-fixed",
+  "contract": "docs/browser/state-machine.md",
+  "invariants": [
+    "I02",
+    "I05",
+    "I08",
+    "I10"
+  ],
+  "transition": "Verifying -> Rollback when origin changes after decode adoption but before first visible success",
+  "before": "displayReady discarded held verified source without rechecking origin validity",
+  "resolution": "At the existing App.displayReady commit point, recheck origin before releasing previous photo or resetting framing; stale candidate is revoked, outputs invalidated, prior verified photo/file/origin restored or Empty if absent",
+  "tests": {
+    "red": {
+      "failed": 4,
+      "matrix": [
+        "crop/previous",
+        "crop/empty",
+        "print/previous",
+        "print/empty"
+      ]
+    },
+    "green": {
+      "passed": 4,
+      "alsoChecks": "Candidate URL revoked, previous URL preserved, old crop callbacks cannot re-adopt discarded candidate"
+    },
+    "rootIntegration": {
+      "passed": 1,
+      "events": [
+        "Prepare crop output",
+        "Keep independent verified print photo",
+        "Accept crop transfer replacement",
+        "Leave before first print display",
+        "Change crop framing",
+        "Return print and receive first display event",
+        "Restore independent print photo and recreate output"
+      ],
+      "assertions": [
+        "Previous URL preserved; candidate URL revoked",
+        "Prior download not resurrected",
+        "No stale-origin warning on restored independent source",
+        "Recreated print PNG available"
+      ]
+    },
+    "fullUi": {
+      "files": 27,
+      "passed": 317
+    },
+    "typecheckAndBuildPassed": true,
+    "distFiles": 14,
+    "distBytes": 8174058
+  },
+  "harnessCorrection": "Initial Root integration acted on file input before original route rendered; corrected by waiting for its heading. This fixture failure is separate from four product RED cases.",
+  "sourceFiles": [
+    {
+      "path": "web/src/App.tsx",
+      "sha256": "9db71d90e6441bf1f4a64fa9bb8e82314c4e43aa6ff5dc6c36d26eb9da9e67ad"
+    },
+    {
+      "path": "web/tests/App.test.tsx",
+      "sha256": "409a732e37d381bcdc84d39e784b534ca04beace6cf760b410d9a3edc8cd3173"
+    },
+    {
+      "path": "web/tests/handoff.test.tsx",
+      "sha256": "2587627a3b20a9104a891fba6bcfb1213e1e3f14e46a28fa83d42bc5569f1548"
+    },
+    {
+      "path": "docs/browser/state-machine.md",
+      "sha256": "043e51be1cf8677dbbb938b3b15bac1f066877e53bf37e00c1bfcb509b097995"
+    }
+  ],
+  "logs": [
+    {
+      "path": "image-studio-browser-evaluation/state-machine-visible-transfer-01/all-ui.log",
+      "sha256": "71dde2e03f57d58851449d34cd4012de10567e717f726f9316396178f6f69835"
+    },
+    {
+      "path": "image-studio-browser-evaluation/state-machine-visible-transfer-01/build.log",
+      "sha256": "34f88a9545263b13b7881d07cd3fb7faabf7ca2c731a9a3f46dcdc03ece9ea9b"
+    },
+    {
+      "path": "image-studio-browser-evaluation/state-machine-visible-transfer-01/green.log",
+      "sha256": "2ccd1147d29ff730037c5746d5441e93b921bed438eb7eae6adaac00318f253a"
+    },
+    {
+      "path": "image-studio-browser-evaluation/state-machine-visible-transfer-01/red.log",
+      "sha256": "7182aee4fa4908dd95177f18e212a77befa5580a6bfa04f1fedadc7593eaeabb"
+    },
+    {
+      "path": "image-studio-browser-evaluation/state-machine-visible-transfer-01/root-integration-retry.log",
+      "sha256": "c0f4d2ac63496e6b5543f3794910b197dff045af628226216574b7276a0dc361"
+    },
+    {
+      "path": "image-studio-browser-evaluation/state-machine-visible-transfer-01/root-integration.log",
+      "sha256": "940c1f038b24ebaf0f58782af4e5c3175bc6d8bcb1e59a2d800abf85a8562a3f"
+    }
+  ],
+  "limits": [
+    "DOM-controlled media events; no native image decoding, physical device or real BFCache proof",
+    "Existing native candidates predate current App and BackgroundEditor corrections; no automatic acceptance inheritance",
+    "No public deployment, HF write, GPU inference or Gufo setting change"
+  ]
+}

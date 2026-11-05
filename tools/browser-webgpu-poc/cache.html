@@ -1,0 +1,13 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>モデル保存の診断</title>
+<h1>モデル保存の診断（GPU不使用）</h1>
+<p>専用profileで実行。coldは空の診断領域に取得し、warmは保存済みfileを再検証します。本番cacheの受入ではありません。</p>
+<button id="cold">未取得から保存</button><button id="warm">保存済みを検証</button><button id="cancel">中止</button>
+<pre id="status" role="status"></pre>
+<script type="module">
+let worker;const probe=window.cacheProbe={state:'idle',documentId:crypto.randomUUID(),events:[],config:null};
+probe.config=await(await fetch('/config.json',{cache:'no-store'})).json();
+function create(){worker=new Worker('/cache-worker.mjs',{type:'module'});worker.onmessage=({data})=>{probe.events.push(data);if(data.type==='result'||data.type==='error')probe.state=data.type;document.querySelector('#status').textContent=JSON.stringify(data,null,2);};worker.onerror=()=>{probe.state='error';probe.events.push({type:'error',code:'worker-error'});};}
+create();
+for(const mode of ['cold','warm'])document.querySelector('#'+mode).onclick=()=>{if(probe.state==='running')return;probe.state='running';worker.postMessage({mode,files:probe.config.files,modelId:probe.config.modelId});};
+document.querySelector('#cancel').onclick=()=>{worker.terminate();probe.state='cancelled';probe.events.push({type:'cancelled'});create();};
+</script></html>

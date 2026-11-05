@@ -1,0 +1,12 @@
+{
+  "name": "image-studio-browser-build",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Pinned build dependencies for Image Studio browser model Workers",
+  "devDependencies": {
+    "@huggingface/transformers": "4.3.2",
+    "onnxruntime-web": "1.31.1",
+    "hash-wasm": "4.12.0",
+    "esbuild": "0.25.12"
+  }
+}

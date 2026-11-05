@@ -8,3 +8,9 @@ __pycache__/
 secrets/
 image-studio-cache/
 .cache/
+
+# Local design-tool run metadata
+.hallmark/
+
+# Local planning and execution records
+.planning/

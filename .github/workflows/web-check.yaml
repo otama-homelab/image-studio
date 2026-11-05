@@ -205,3 +205,41 @@ jobs:
           DEPLOY_SHA: ${{ steps.target.outputs.sha }}
         run: |
           printf 'Pages branch: `%s`\n\nCommit: `%s`\n\nDeployment: %s\n\nAlias: %s\n' "$DEPLOY_BRANCH" "$DEPLOY_SHA" "$DEPLOY_URL" "$DEPLOY_ALIAS" >> "$GITHUB_STEP_SUMMARY"
+
+
+  release:
+    name: Publish checked browser release
+    needs: [web, deploy]
+    if: startsWith(github.ref, 'refs/tags/v') || inputs.release_tag
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ inputs.release_tag || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: web/.node-version
+          package-manager-cache: false
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: image-studio-static-review
+          path: ${{ runner.temp }}/image-studio-release
+      - name: Verify and publish the deployed artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
+        run: |
+          node web/scripts/release-inventory.mjs verify "$RUNNER_TEMP/image-studio-release/dist" "$RUNNER_TEMP/image-studio-release/inventory.json"
+          VERSION=$(cat VERSION)
+          test "$RELEASE_TAG" = "v$VERSION"
+          cd "$RUNNER_TEMP/image-studio-release"
+          python -m zipfile -c "$RUNNER_TEMP/image-studio-web-$VERSION.zip" dist inventory.json
+          cd "$RUNNER_TEMP"
+          sha256sum "image-studio-web-$VERSION.zip" > "image-studio-web-$VERSION.sha256"
+          printf '%s\n' 'Browser application: https://image-studio.otama-playground.com/' '' 'The ZIP contains the exact checked static distribution and inventory. No server or container runtime is required. Dependency/model notices are included in dist; source is available at this tag.' > release-notes.md
+          gh release create "$RELEASE_TAG" --verify-tag --title "Image Studio $RELEASE_TAG" --notes-file release-notes.md "image-studio-web-$VERSION.zip" "image-studio-web-$VERSION.sha256"

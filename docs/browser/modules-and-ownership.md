@@ -17,7 +17,7 @@
 | 固定入力の検査・Worker生成・公開配布の検査 | `web/scripts/build.mjs`、`background-release.mjs`、`check-dist.mjs`と `tools/build_browser_release.mjs`、`verify_browser_release_bindings.mjs`。標準 `web/background-release/` は作業repoで未採用。設定なしは手動版、不正設定は失敗 |
 | Workerの固定依存・資産/NOTICE結合 | `tools/browser-build/`、`browser-build-dependencies.mjs`、各Worker builder。生成物・node_modulesを実装ソースとして編集しない |
 | 非公開の計測・native比較 | `web/src/localValidation.tsx`、`localValidationTrace.mjs`、`tools/browser-webgpu-poc/`と観測/比較tool。通常入口へ観測globalを混入させない |
-| 既存ROCmサーバー版 | `app/`、`Dockerfile`、[サーバー版開発手順](../development.md)。ブラウザ公開物のPython実行依存ではなく、既存利用と比較のため維持 |
+| 開発用変換・検証 | `tools/`。ブラウザ用ONNX/WASMと参照生成のみ。旧Pythonサーバー・Docker/ExecuTorch実行系は廃止 |
 
 公開配布は `web/dist/` を検査した静的成果物だけ。`tools/`というdirectory名だけで
 実行コードを判別しない。adapterはブラウザ実行、builder/比較toolは開発時、固定npm
@@ -595,3 +595,8 @@ BackgroundのonCrop callback単体の検査と、Root/受取側/下流origin鎖�
 fixtureのbyte列はnativePNGではなく、モデル/encoder/decoderは制御した代替を使う。
 handoff10件・全UI300件成功。製品source9084ca7c…は不変。
 根拠: validation/2026-11-04-root-background-handoff-contracts.json。
+
+
+## サーバー版廃止後の所有関係
+
+公開アプリのInterfaceはwebの画面とWorker契約、ビルド/配布のInterfaceは固定入力・inventory・Pagesのworkflowです。toolsは変換/検証の実装であり、画像処理サーバーではありません。旧app、Docker、Gradio、ROCm/ExecuTorch専用probeとpatchは削除し、代替のserver wrapperや抽象層は追加しません。この文書の過去のapp循環解析・source番号は当時の検証記録です。現行の呼出関係や保守対象として扱いません。

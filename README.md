@@ -1,56 +1,51 @@
 # Image Studio
 
-写真の背景・サイズ・印刷を整えるアプリです。実行環境が異なる2つの実装があります。
+**[アプリを開く](https://image-studio.otama-playground.com/)**
 
-| 実装 | 処理場所と状態 | 開発・起動の入口 |
-|---|---|---|
-| ブラウザ版 `web/` | 利用者の端末内で処理する静的アプリ。開発中・本番未公開 | [Web版の現状と開発手順](web/README.md) |
-| ROCmサーバー版 `app/` | AMD GPUサーバー内で処理する既存コンテナ版 | [サーバー版の起動手順](docs/running.md) |
+写真の背景除去・サイズ調整・印刷配置を、ブラウザ内で行う静的Webアプリです。写真はアップロードせず、利用者の端末で処理します。英語が初期表示で、日本語にも切り替えられます。
 
-ブラウザ版はMODNetと高画質BiRefNet HR＋ViTMatteをCPU/GPUで明示選択する構成です。非公開候補で背景処理・サイズ調整・PNG/PDF保存、GPU最大2000×2000と取消復帰を確認しています。高画質CPUは非常に遅く、多くのRAMを使います。TS8130でのA4実寸印刷と評価画像1枚の目視確認も記録済みですが、一般画質・Windows/NVIDIA・iOSの受入は継続中です。現在は[公開前レビュー](docs/browser/publication-review.md)の修正後、HF配布とPages Previewを準備しています。
+- 背景編集：MODNet、PC向けBiRefNet HRと任意のViTMatte補正。CPU/GPUは明示選択します。
+- サイズ調整：用途別・カスタム寸法、ズーム・パン、位置調整、300dpi PNG保存。
+- 印刷配置：A4・L判・2L判・はがきへ配置し、PNG/PDF保存。
 
-ブラウザ版の配信方針は `main` → preview、`VERSION`と一致する安定版タグ → productionです。[リリース手順](docs/releases.md#ブラウザ版trunkはpreviewタグは本番)を参照してください。
+PCの高画質CPU処理は非常に遅く、多くのRAMを使います。スマホではHRモデルを表示しません。写真・設定はメモリ内に保持し、再読み込みやページを離れると失われます。完全オフライン起動は保証しません。
 
-## ROCmサーバー版
+## 構成
 
-日本語で使える、AMD GPU向けの写真編集アプリです。「証明写真」の中に背景変更・トリミング・印刷の3つのタブがあります。
-
-| やりたいこと | 操作 |
+| 場所 | 責務 |
 |---|---|
-| 背景を白や好きな色にする | 写真を選び、背景色を指定して「背景を変更」 |
-| 証明写真の大きさに合わせる | 用途別のサイズを選び、顔の位置を調整して保存 |
-| 写真用紙に複数枚を並べる | A4・L判・2L判・はがきを選び、PNG/PDFを保存 |
+| `web/` | Vite / React / TypeScriptのアプリとWorker。Pagesで静的配信 |
+| `tools/browser-library-adapter/` | 画像・モデル処理、状態・所有権を扱う共有モジュール |
+| `tools/` | モデル変換、WASMビルド、参照生成、ローカル検証。公開アプリの実行サーバーではありません |
+| `tests/`、`web/tests/` | 共有処理・Worker・画面・配布契約の検証 |
+| `docs/browser/` | 設計、責務、状態機械、権利表示、検証記録 |
 
-大きなプレビューで変更前後を比較できます。美顔・肌色補正・ウォーターマークはありません。画像処理はサーバー内で行い、外部推論APIには写真を送信しません。
+旧Python/Gradioサーバー版、Docker起動、GHCR公開は廃止しました。モデル変換等で使うPythonは開発用です。旧実装の履歴は既存タグに保持し、ブラウザ版から読み込みません。
+
+## 開発
+
+```sh
+cd web
+npm ci --ignore-scripts
+npm run dev
+```
+
+Nodeの版は[web/.node-version](web/.node-version)を使用します。モデル付き配布ビルドには固定HF入力と別のビルド依存が必要です。[開発手順](docs/development.md)を参照してください。
 
 ## ドキュメント
 
-ブラウザ版は[Web開発手順](web/README.md)と[責務・変更先](docs/browser/modules-and-ownership.md)、両版のリリースは[公開手順](docs/releases.md)を参照してください。以下の利用・起動・処理構成の説明はサーバー版向けです。
+- [写真の編集と印刷](docs/usage.md)
+- [ローカル起動](docs/running.md)
+- [開発・検証](docs/development.md)
+- [リリースと復帰](docs/releases.md)
+- [トラブルシューティング](docs/troubleshooting.md)
+- [モジュールの責務](docs/browser/modules-and-ownership.md)
+- [状態機械](docs/browser/state-machine.md)
 
-- **使う:** [写真の編集と印刷](docs/usage.md)
-- **起動する:** [コンテナの実行・保存先・GPU設定](docs/running.md)
-- **開発する:** [処理の構成・UIの拡張・確認方法](docs/development.md)
-- **公開する:** [バージョン更新・ビルド・リリース](docs/releases.md)
-- **困ったとき:** [起動・処理・印刷のトラブルシューティング](docs/troubleshooting.md)
-
-## サーバー版の実行環境
-
-現在のイメージは **linux/amd64・ROCm 7.2対応AMD GPU** 向けです。AMD Radeon 8060Sで動作確認しています。CPUのみ・NVIDIA GPU向けのイメージは提供していません。
-
-```text
-ghcr.io/otama-homelab/image-studio:1.1.2
-```
-
-アプリはポート7860、UID/GID 1000で動作します。GPUアクセスと書き込み可能なモデルキャッシュが必要です。Python依存はイメージにインストール済みで、venv・起動時のpipインストールは不要です。[起動手順](docs/running.md)を参照してください。
-
-## サーバー版のモデルと利用条件
-
-BiRefNet_HR-mattingで人物のマスクを作り、任意のViTMatte補正とrembgの前景色推定・背景合成を行います。顔の自動配置はInsightFaceの顔検出・ランドマークと人物マスクを使います。
-
-モデルは初回起動時に公式配布元から取得し、リビジョンとSHA256を[prepare_models.py](app/prepare_models.py)で固定しています。InsightFaceの学習済みモデルには非商用研究用途の条件があります。各モデルの利用条件を確認してください。
-
-提出用写真の加工可否は提出先の要件を確認してください。背景変更を認めない提出先では、適切な背景で撮影した元写真を「トリミング」に直接アップロードします。
+`main`はPreview、安定SemVerタグは本番へ配信します。GitHub Releaseには検査済み静的成果物とチェックサムを公開します。コンテナは生成しません。
 
 ## ライセンス
 
-アプリ本体のコードは[MIT License](LICENSE)です。依存ライブラリ・学習済みモデルは、それぞれの利用条件と権利表示に従います。アプリのMITはモデルの条件を置き換えません。
+アプリ本体は[MIT](LICENSE)。依存・モデル・変換物・素材は、それぞれのLICENSE/NOTICEと条件に従います。アプリ内に権利表示と固定ソースへのリンクがあります。背景処理用モデルは固定リビジョンの[otama3/image-studio-models](https://huggingface.co/otama3/image-studio-models)から取得します。
+
+提出用写真の寸法や加工条件は、提出先の要件も確認してください。

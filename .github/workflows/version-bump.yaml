@@ -10,7 +10,6 @@ on:
         options: [patch, minor, major]
 permissions:
   contents: write
-  packages: write
 concurrency:
   group: image-studio-release
   cancel-in-progress: false
@@ -68,13 +67,6 @@ jobs:
           git commit -m "Release $RELEASE_TAG"
           git tag "$RELEASE_TAG"
           git push --atomic origin main "$RELEASE_TAG"
-  publish:
-    needs: bump
-    uses: ./.github/workflows/release.yaml
-    with:
-      tag: ${{ needs.bump.outputs.tag }}
-    secrets: inherit
-
   publish-web:
     needs: bump
     uses: ./.github/workflows/web-check.yaml

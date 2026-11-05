@@ -13,3 +13,11 @@ image-studio-cache/
 .hallmark/
 
 .taste-skill/
+
+# Browser dependencies, generated distribution and private validation state
+node_modules/
+web/dist/
+web/background-release/
+build/
+image-studio-browser-evaluation/
+.planning/

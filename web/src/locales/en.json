@@ -471,5 +471,10 @@
   "A4・写真用紙に並べて、印刷用のPNGやPDFを作成。": "Arrange photos on A4 or photo paper. Save a print-ready PNG or PDF.",
   "細部まで確認する": "Take a closer look",
   "JPEG/PNG、20MiBまで。サイズ調整・印刷はGPU不要。高画質HRはPC向けで、CPU処理は非常に遅く、多くのRAMを使います。": "JPEG or PNG, up to 20 MiB. Resizing and print layout need no GPU. High-quality HR models are desktop-only; CPU processing is very slow and memory intensive.",
-  "再読み込みで写真と設定は失われます。先にファイルを保存してください。印刷は100%を指定し、提出先の寸法・加工条件も確認してください。": "Reloading clears your photos and settings, so save your files first. Print at 100% and check the receiving authority’s size and editing requirements."
+  "再読み込みで写真と設定は失われます。先にファイルを保存してください。印刷は100%を指定し、提出先の寸法・加工条件も確認してください。": "Reloading clears your photos and settings, so save your files first. Print at 100% and check the receiving authority’s size and editing requirements.",
+  "透過背景の作例": "Transparent background example",
+  "白背景の作例": "White background example",
+  "背景を消す・色を変える": "Remove or change the background",
+  "背景を自動で除去。透過PNG、白や好きな色の背景で保存。": "Remove the background automatically. Save a transparent PNG or choose white or another background color.",
+  "背景編集へ進む": "Open Background"
 }

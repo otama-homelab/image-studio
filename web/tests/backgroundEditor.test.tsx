@@ -381,6 +381,7 @@ test('configured index leads to model preparation without contradictory not-avai
  render(<Root backgroundRuntime={{createSession,decodePhoto,inspectCache,refineAvailable:false,downloadDescription:'比較用モデル構成。'}}/>);
  expect(screen.getByRole('link',{name:'背景を消す'}).getAttribute('href')).toBe('#/background');
  expect(screen.getByAltText('背景を除いたサンプル写真')).toBeTruthy();
+ expect(screen.getByRole('heading',{name:'背景を消す・色を変える'})).toBeTruthy();expect(screen.getByRole('link',{name:'背景編集へ進む'}).getAttribute('href')).toBe('#/background');
  expect(screen.queryByText(/現在のWeb版ではモデルを取得しません/)).toBeNull();expect(screen.queryByRole('heading',{name:'背景編集は準備中'})).toBeNull();
  fireEvent.click(screen.getByRole('link',{name:'背景を消す'}));await screen.findByText('モデルと保存データ');
  expect(screen.getByLabelText('背景編集の写真を選ぶ')).toBeTruthy();expect(inspectCache).not.toHaveBeenCalled();expect(createSession).not.toHaveBeenCalled();expect(decodePhoto).not.toHaveBeenCalled();expect(worker).not.toHaveBeenCalled();expect(fetch).not.toHaveBeenCalled();

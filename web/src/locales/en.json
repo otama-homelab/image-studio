@@ -210,7 +210,7 @@
   "作成済みの切り抜きPNGを印刷へ渡します。印刷で編集中の写真・作成済みファイルを置き換え、用紙と形式は保持します。取消すると両方の工程をそのまま保持します。": "Transfer the cropped PNG to Print, replacing its current photo and prepared files. Paper and format are preserved. Cancelling keeps both workflows unchanged.",
   "編集へ戻る": "Back to editor",
   "：写真をサーバーへ送信せず、ブラウザ内で処理します。": ": Your photos are processed in your browser without being uploaded to a server.",
-  "端末情報と診断": "Device information and diagnostics",
+  "端末情報と診断": "Device info",
   "アプリ本体：MIT License": "App: MIT License",
   "依存ライブラリのライセンス": "Dependency licenses",
   "ソースコード": "Source code",

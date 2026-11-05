@@ -80,6 +80,7 @@
  .primary,.download { @apply w-full; }
  .primary:disabled { color:var(--color-disabled-text); background:var(--color-disabled-surface); border-color:var(--color-border); }
  .secondary-link,.github-star { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-line bg-paper px-4 py-2 text-sm text-ink no-underline; }
+ .github-star { @apply shrink-0 whitespace-nowrap; }
  .output-panel { @apply flex min-w-0 flex-col gap-3 rounded-xl border border-line bg-paper p-5; }
  .output-panel>h2 { @apply text-base; }
  .section-link { @apply inline-flex min-h-11 items-center text-sm; }

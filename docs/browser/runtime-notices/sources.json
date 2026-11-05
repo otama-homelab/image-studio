@@ -1,0 +1,33 @@
+{
+  "runtime": "onnxruntime1.31.1",
+  "sources": [
+    {
+      "file": "LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/microsoft/onnxruntime/v1.31.1/LICENSE",
+      "bytes": 1073,
+      "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c"
+    },
+    {
+      "file": "ThirdPartyNotices.txt",
+      "url": "https://raw.githubusercontent.com/microsoft/onnxruntime/v1.31.1/ThirdPartyNotices.txt",
+      "bytes": 338088,
+      "sha256": "143764b952fdb1a7c69ce653bfba74a7744d6a8a573bfb73e235fba356c83de3"
+    }
+  ],
+  "scope": "Full upstream version-tag texts; binary-specific third-party applicability audit remains",
+  "resizeCandidateSources": [
+    {
+      "file": "Pillow-12.3.0-LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/python-pillow/Pillow/12.3.0/LICENSE",
+      "bytes": 1457,
+      "sha256": "15181e7363dca9aed78b79bebebc7fde7f1814b8bd311ea3b87ae8ccadfc185b"
+    },
+    {
+      "file": "xcc-LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/tyfkda/xcc/631e318432aeaaf72d6d2dfc93085766934314a2/LICENSE",
+      "bytes": 1063,
+      "sha256": "2456a1ec205b4b13084576d2e1ce66da52b60ffdac45b512da328a09e0b99617"
+    }
+  ],
+  "resizeCandidateScope": "Fixed license texts/local review source package, not published release approval"
+}

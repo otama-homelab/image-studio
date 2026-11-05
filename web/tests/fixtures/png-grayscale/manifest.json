@@ -1,0 +1,141 @@
+{
+  "generator": "Pillow PNG writer; optipng/libpng for Adam7, preserving color type/depth",
+  "pillowVersion": "12.3.0",
+  "optipngVersion": "OptiPNG version 0.7.8",
+  "generatorSource": "tools/generate_indexed_png_fixtures.py --kind grayscale",
+  "source": "Synthetic exact gray/alpha samples; no personal photos",
+  "fixtures": [
+    {
+      "file": "l8-1x5.png",
+      "width": 1,
+      "height": 5,
+      "mode": "L",
+      "depth": 8,
+      "interlace": 0,
+      "sha256": "5bf18d7a43123212fca0d894d8f061754e74f93f6cde12bbdbd6f1b01bc41361",
+      "rgbaBase64": "CwsL/0hISP+FhYX/wsLC//////8=",
+      "rgbSha256": "04793f94b43aa2cd5b41b1d320ca4ed565b455106a27a0b61bb835328a2b33f0"
+    },
+    {
+      "file": "l8-3x5.png",
+      "width": 3,
+      "height": 5,
+      "mode": "L",
+      "depth": 8,
+      "interlace": 0,
+      "sha256": "e761840fb8319dc467aa931f62760ca7f164cbb815aff0751b59eec3fe4ca182",
+      "rgbaBase64": "CwsL/zAwMP9VVVX/SEhI/21tbf+SkpL/hYWF/6qqqv/Pz8//wsLC/+fn5/8MDAz//////yQkJP9JSUn/",
+      "rgbSha256": "bfdb7eb5ef3341e86c7ef48fcd00568fcce76f0253e65c2eff481ee38c79c977"
+    },
+    {
+      "file": "l8-9x5.png",
+      "width": 9,
+      "height": 5,
+      "mode": "L",
+      "depth": 8,
+      "interlace": 0,
+      "sha256": "6b833c44d119e1846d5bfab245598567a26f7470e1a2777d7306811d080a15e0",
+      "rgbaBase64": "CwsL/zAwMP9VVVX/enp6/5+fn//ExMT/6enp/w4ODv8zMzP/SEhI/21tbf+SkpL/t7e3/9zc3P8BAQH/JiYm/0tLS/9wcHD/hYWF/6qqqv/Pz8//9PT0/xkZGf8+Pj7/Y2Nj/4iIiP+tra3/wsLC/+fn5/8MDAz/MTEx/1ZWVv97e3v/oKCg/8XFxf/q6ur//////yQkJP9JSUn/bm5u/5OTk/+4uLj/3d3d/wICAv8nJyf/",
+      "rgbSha256": "f80f64c9a2bd4567fd654f9e7f3e0c0955a4af9770270aad368e531aa7ec2008"
+    },
+    {
+      "file": "l8-9x11-adam7.png",
+      "width": 9,
+      "height": 11,
+      "mode": "L",
+      "depth": 8,
+      "interlace": 1,
+      "sha256": "430610a35d3a94e08525560c650873dd3baa3e83ed02dfa5b45ab7e8c1b6ddb4",
+      "rgbaBase64": "CwsL/zAwMP9VVVX/enp6/5+fn//ExMT/6enp/w4ODv8zMzP/SEhI/21tbf+SkpL/t7e3/9zc3P8BAQH/JiYm/0tLS/9wcHD/hYWF/6qqqv/Pz8//9PT0/xkZGf8+Pj7/Y2Nj/4iIiP+tra3/wsLC/+fn5/8MDAz/MTEx/1ZWVv97e3v/oKCg/8XFxf/q6ur//////yQkJP9JSUn/bm5u/5OTk/+4uLj/3d3d/wICAv8nJyf/PDw8/2FhYf+Ghob/q6ur/9DQ0P/19fX/Ghoa/z8/P/9kZGT/eXl5/56env/Dw8P/6Ojo/w0NDf8yMjL/V1dX/3x8fP+hoaH/tra2/9vb2/8AAAD/JSUl/0pKSv9vb2//lJSU/7m5uf/e3t7/8/Pz/xgYGP89PT3/YmJi/4eHh/+srKz/0dHR//b29v8bGxv/MDAw/1VVVf96enr/n5+f/8TExP/p6en/Dg4O/zMzM/9YWFj/bW1t/5KSkv+3t7f/3Nzc/wEBAf8mJib/S0tL/3BwcP+VlZX/",
+      "rgbSha256": "b378a91c2ada18ba18a627102b26b09e3cd86702f823339e53db3d4fc2fcccbb"
+    },
+    {
+      "file": "la8-1x5.png",
+      "width": 1,
+      "height": 5,
+      "mode": "LA",
+      "depth": 8,
+      "interlace": 0,
+      "sha256": "52af47f2fb192f9e9f1181062c4c4722ef38ccf125b4d3bb49b559b4d3aa0141",
+      "rgbaBase64": "CwsLAEhISECFhYWAwsLC/////wA=",
+      "rgbSha256": "04793f94b43aa2cd5b41b1d320ca4ed565b455106a27a0b61bb835328a2b33f0"
+    },
+    {
+      "file": "la8-3x5.png",
+      "width": 3,
+      "height": 5,
+      "mode": "LA",
+      "depth": 8,
+      "interlace": 0,
+      "sha256": "ee87da4d533aef49644df5f32866a3869fafce3cd43f23fd424187c3b94a98eb",
+      "rgbaBase64": "CwsLADAwMEBVVVWASEhI/21tbQCSkpJAhYWFgKqqqv/Pz88AwsLCQOfn54AMDAz/////ACQkJEBJSUmA",
+      "rgbSha256": "bfdb7eb5ef3341e86c7ef48fcd00568fcce76f0253e65c2eff481ee38c79c977"
+    },
+    {
+      "file": "la8-9x5.png",
+      "width": 9,
+      "height": 5,
+      "mode": "LA",
+      "depth": 8,
+      "interlace": 0,
+      "sha256": "ed94bfca638dc6c8df067d5f58c399c677b28e7a33bc06f06eb368db03b09e3d",
+      "rgbaBase64": "CwsLADAwMEBVVVWAenp6/5+fnwDExMRA6enpgA4ODv8zMzMASEhIQG1tbYCSkpL/t7e3ANzc3EABAQGAJiYm/0tLSwBwcHBAhYWFgKqqqv/Pz88A9PT0QBkZGYA+Pj7/Y2NjAIiIiECtra2AwsLC/+fn5wAMDAxAMTExgFZWVv97e3sAoKCgQMXFxYDq6ur/////ACQkJEBJSUmAbm5u/5OTkwC4uLhA3d3dgAICAv8nJycA",
+      "rgbSha256": "f80f64c9a2bd4567fd654f9e7f3e0c0955a4af9770270aad368e531aa7ec2008"
+    },
+    {
+      "file": "la8-9x11-adam7.png",
+      "width": 9,
+      "height": 11,
+      "mode": "LA",
+      "depth": 8,
+      "interlace": 1,
+      "sha256": "ffaa093a55ce7cf3cbc0e908dceb08649a345b8ebda52da02b8974442e3db5b6",
+      "rgbaBase64": "CwsLADAwMEBVVVWAenp6/5+fnwDExMRA6enpgA4ODv8zMzMASEhIQG1tbYCSkpL/t7e3ANzc3EABAQGAJiYm/0tLSwBwcHBAhYWFgKqqqv/Pz88A9PT0QBkZGYA+Pj7/Y2NjAIiIiECtra2AwsLC/+fn5wAMDAxAMTExgFZWVv97e3sAoKCgQMXFxYDq6ur/////ACQkJEBJSUmAbm5u/5OTkwC4uLhA3d3dgAICAv8nJycAPDw8QGFhYYCGhob/q6urANDQ0ED19fWAGhoa/z8/PwBkZGRAeXl5gJ6env/Dw8MA6OjoQA0NDYAyMjL/V1dXAHx8fEChoaGAtra2/9vb2wAAAABAJSUlgEpKSv9vb28AlJSUQLm5uYDe3t7/8/PzABgYGEA9PT2AYmJi/4eHhwCsrKxA0dHRgPb29v8bGxsAMDAwQFVVVYB6enr/n5+fAMTExEDp6emADg4O/zMzMwBYWFhAbW1tgJKSkv+3t7cA3NzcQAEBAYAmJib/S0tLAHBwcECVlZWA",
+      "rgbSha256": "b378a91c2ada18ba18a627102b26b09e3cd86702f823339e53db3d4fc2fcccbb"
+    },
+    {
+      "file": "l-trns8-1x5.png",
+      "width": 1,
+      "height": 5,
+      "mode": "L-tRNS",
+      "depth": 8,
+      "interlace": 0,
+      "sha256": "5b6ef919f882e136228d865135b5d768abc85279f56577e6f68c177a27933dc2",
+      "rgbaBase64": "CwsLAEhISP+FhYX/wsLC//////8=",
+      "rgbSha256": "04793f94b43aa2cd5b41b1d320ca4ed565b455106a27a0b61bb835328a2b33f0"
+    },
+    {
+      "file": "l-trns8-3x5.png",
+      "width": 3,
+      "height": 5,
+      "mode": "L-tRNS",
+      "depth": 8,
+      "interlace": 0,
+      "sha256": "66000fc97dfe2a6a3757c1df7e4b57715c02d791d3921a4606d61cf364afe4bb",
+      "rgbaBase64": "CwsLADAwMP9VVVX/SEhI/21tbf+SkpL/hYWF/6qqqv/Pz8//wsLC/+fn5/8MDAz//////yQkJP9JSUn/",
+      "rgbSha256": "bfdb7eb5ef3341e86c7ef48fcd00568fcce76f0253e65c2eff481ee38c79c977"
+    },
+    {
+      "file": "l-trns8-9x5.png",
+      "width": 9,
+      "height": 5,
+      "mode": "L-tRNS",
+      "depth": 8,
+      "interlace": 0,
+      "sha256": "36521a8c708b7cc7ef10cef131170844e8961270f460067bf32274e4b425a214",
+      "rgbaBase64": "CwsLADAwMP9VVVX/enp6/5+fn//ExMT/6enp/w4ODv8zMzP/SEhI/21tbf+SkpL/t7e3/9zc3P8BAQH/JiYm/0tLS/9wcHD/hYWF/6qqqv/Pz8//9PT0/xkZGf8+Pj7/Y2Nj/4iIiP+tra3/wsLC/+fn5/8MDAz/MTEx/1ZWVv97e3v/oKCg/8XFxf/q6ur//////yQkJP9JSUn/bm5u/5OTk/+4uLj/3d3d/wICAv8nJyf/",
+      "rgbSha256": "f80f64c9a2bd4567fd654f9e7f3e0c0955a4af9770270aad368e531aa7ec2008"
+    },
+    {
+      "file": "l-trns8-9x11-adam7.png",
+      "width": 9,
+      "height": 11,
+      "mode": "L-tRNS",
+      "depth": 8,
+      "interlace": 1,
+      "sha256": "8507fa50f46253388558ae83bd08ee6fe5f81fb47559be7dcfd2dd96e694f6b4",
+      "rgbaBase64": "CwsLADAwMP9VVVX/enp6/5+fn//ExMT/6enp/w4ODv8zMzP/SEhI/21tbf+SkpL/t7e3/9zc3P8BAQH/JiYm/0tLS/9wcHD/hYWF/6qqqv/Pz8//9PT0/xkZGf8+Pj7/Y2Nj/4iIiP+tra3/wsLC/+fn5/8MDAz/MTEx/1ZWVv97e3v/oKCg/8XFxf/q6ur//////yQkJP9JSUn/bm5u/5OTk/+4uLj/3d3d/wICAv8nJyf/PDw8/2FhYf+Ghob/q6ur/9DQ0P/19fX/Ghoa/z8/P/9kZGT/eXl5/56env/Dw8P/6Ojo/w0NDf8yMjL/V1dX/3x8fP+hoaH/tra2/9vb2/8AAAD/JSUl/0pKSv9vb2//lJSU/7m5uf/e3t7/8/Pz/xgYGP89PT3/YmJi/4eHh/+srKz/0dHR//b29v8bGxv/MDAw/1VVVf96enr/n5+f/8TExP/p6en/Dg4O/zMzM/9YWFj/bW1t/5KSkv+3t7f/3Nzc/wEBAf8mJib/S0tL/3BwcP+VlZX/",
+      "rgbSha256": "b378a91c2ada18ba18a627102b26b09e3cd86702f823339e53db3d4fc2fcccbb"
+    }
+  ]
+}

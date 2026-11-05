@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Image Studio model WebGPU PoC</title>
+<style>body{font:16px system-ui;max-width:65rem;margin:2rem auto;padding:0 1rem}label{display:block;margin:1rem 0}button,select{font:inherit;padding:.5rem}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f1f3f5;padding:1rem;max-height:60vh;overflow:auto}</style>
+<h1>Image Studio モデルWebGPU実行PoC</h1>
+<p>固定重みから変換したモデルと非公開の参照tensorを、この端末の専用Workerで検証します。512pxだけで合格にはしません。</p>
+<p>localhostの検証用配信のみを使用します。画像・tensorを送信するAPIはありません。モデル配信容量は下に実bytesで表示します。</p>
+<p id="model-info">manifest確認中</p>
+<label><input id="strict" type="checkbox" checked> CPU fallbackを禁止する（演算の配置確認用）</label>
+<button id="load" disabled>モデルを準備する</button>
+<label>比較する参照入力 <select id="case"></select></label>
+<button id="run" disabled>この入力で実行</button>
+<button id="cancel" disabled>中止してWorkerを終了</button>
+<button id="save-output" disabled>結果tensorを保存</button>
+<button id="save-report" disabled>記録JSONを保存</button>
+<pre id="result" aria-live="polite">未実行</pre>
+<script type="module" src="./model-page.js"></script>
+</html>

@@ -1,0 +1,321 @@
+{
+  "status": "passed",
+  "pillow": "12.3.0",
+  "wasmBytes": 44142,
+  "wasmSha256": "f0c34e6ee867d4a3439a98c4296c5b3da92e71c4e8c1350029ecfa50fd020b3b",
+  "reduceSource": {
+    "url": "https://raw.githubusercontent.com/python-pillow/Pillow/12.3.0/src/libImaging/Reduce.c",
+    "sha256": "fad296682cd71c1c05bc9adb79c800192c41ed4ec4ebe988ed53e35e7cb95fe6"
+  },
+  "cases": [
+    {
+      "source": [
+        2049,
+        9
+      ],
+      "output": [
+        2000,
+        9
+      ],
+      "allBytesExact": true,
+      "sha256": "5a336100c8324d110a831b00373d370904ef56fe3a8e87ce7880579ee3bf45c9",
+      "sha256Exact": true,
+      "memoryBytes": 524288
+    },
+    {
+      "source": [
+        4001,
+        3
+      ],
+      "output": [
+        2000,
+        2
+      ],
+      "allBytesExact": true,
+      "sha256": "421f13fdcdbf5732df9d24a9e1b43ad132024400ef0ccf9a56c5d587e595e429",
+      "sha256Exact": true,
+      "memoryBytes": 458752
+    },
+    {
+      "source": [
+        8001,
+        5
+      ],
+      "output": [
+        2000,
+        1
+      ],
+      "allBytesExact": true,
+      "sha256": "d23365c7e5ffcd31d5f34d984aae09d7f20fe3568b69c7fa6862f283eb93b2e3",
+      "sha256Exact": true,
+      "memoryBytes": 655360
+    },
+    {
+      "source": [
+        7,
+        8001
+      ],
+      "output": [
+        2,
+        2000
+      ],
+      "allBytesExact": true,
+      "sha256": "bf68af4c87266d5081b00c7eae9b08f3605f5cd4b66bdf30ee36a78d3a3d37da",
+      "sha256Exact": true,
+      "memoryBytes": 917504
+    },
+    {
+      "source": [
+        1,
+        16384
+      ],
+      "output": [
+        1,
+        2000
+      ],
+      "allBytesExact": true,
+      "sha256": "031fad603a191357bdd931c9b9acaf76269a70d9950770c6b63d67fac25e3e2f",
+      "sha256Exact": true,
+      "memoryBytes": 589824
+    },
+    {
+      "source": [
+        16384,
+        1
+      ],
+      "output": [
+        2000,
+        1
+      ],
+      "allBytesExact": true,
+      "sha256": "031fad603a191357bdd931c9b9acaf76269a70d9950770c6b63d67fac25e3e2f",
+      "sha256Exact": true,
+      "memoryBytes": 524288
+    },
+    {
+      "source": [
+        2049,
+        2048
+      ],
+      "output": [
+        2000,
+        1999
+      ],
+      "allBytesExact": true,
+      "sha256": "721168d1657aca74e62b11d8105bea9c3a16b59a6fbd5010de6ff7cdb37d3bb6",
+      "sha256Exact": true,
+      "memoryBytes": 74186752
+    }
+  ],
+  "maxMemoryBytes": 134217728,
+  "limits": [
+    "Synthetic RGB/native and Node WASM only; not browser/decoded-photo quality acceptance",
+    "Largest tested original is 2049x2048, not the 24-million-pixel input bound",
+    "No model/GPU/browser started; publication, licenses and maximum-resource acceptance remain open"
+  ],
+  "hostSha256": "84a84b9561fb4946dbf7c40a1dbdd05c2954aa557511ed7ac0c70eedb6f5a219",
+  "imagePythonSha256": "04af3f2db7ffdd61e829fa7aa8f5481d394a0a4129a8fd8aa5b13908928fcd6d",
+  "nativeLibrarySha256": "470735f4c0d35d16cc94e22d32efa9b0c24a6801fd506d165342152f9f80fb4c",
+  "build": {
+    "commands": [
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-DPILLOW_THUMBNAIL",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01/Resample.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-0.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-DPILLOW_THUMBNAIL",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow_resize_host.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-1.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-DPILLOW_THUMBNAIL",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01/Reduce.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-2.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-DPILLOW_THUMBNAIL",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-foreground-fork-01/libsrc/stdlib/malloc.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-3.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-DPILLOW_THUMBNAIL",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-foreground-fork-01/libsrc/stdlib/calloc.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-4.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-DPILLOW_THUMBNAIL",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-foreground-fork-01/libsrc/string/memcpy.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-5.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-DPILLOW_THUMBNAIL",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-foreground-fork-01/libsrc/string/memset.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-6.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-DPILLOW_THUMBNAIL",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-foreground-fork-01/libsrc/_wasm/unistd/brk.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-7.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-DPILLOW_THUMBNAIL",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-foreground-fork-01/libsrc/math/finite.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-8.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-DPILLOW_THUMBNAIL",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-foreground-fork-01/libsrc/math/ceil.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-9.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-nostdlib",
+        "--entry-point=",
+        "--stack-size=65536",
+        "-e",
+        "pillow_resize_rgb,malloc,free,pillow_thumbnail_rgb",
+        "-Wl,--allow-undefined",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-0.o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-1.o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-2.o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-3.o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-4.o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-5.o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-6.o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-7.o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-8.o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/thumbnail-input-01/pillow-objects-i1qv35iq/part-9.o",
+        "-o",
+        "pillow-resize.wasm"
+      ]
+    ],
+    "boundedGrowth": true,
+    "growthImport": "foreground_memory_grow",
+    "bilinearExport": false,
+    "thumbnailExport": true,
+    "wasmSha256": "f0c34e6ee867d4a3439a98c4296c5b3da92e71c4e8c1350029ecfa50fd020b3b",
+    "bytes": 44142,
+    "hostSha256": "84a84b9561fb4946dbf7c40a1dbdd05c2954aa557511ed7ac0c70eedb6f5a219",
+    "runtimeFork": {
+      "baseCommit": "631e318432aeaaf72d6d2dfc93085766934314a2",
+      "diffSha256": "99665577c6b20a64224876ec5bc6ee052cb6060e9a3bf18e62f4aa118c7e07c7"
+    }
+  },
+  "browserWorkerCandidate": {
+    "kind": "thumbnail",
+    "noticeBytes": 2603,
+    "noticeSha256": "9c8bf065e8b8b90422b2d41cb7587b64006355c56801ad73c1be876e596e77e8",
+    "status": "built",
+    "esbuild": "0.25.12",
+    "bundleBytes": 65236,
+    "bundleSha256": "671910e50a8d71227330303c8f329aaf518daac256344029b08174659844daf7",
+    "wasmBytes": 44142,
+    "wasmSha256": "f0c34e6ee867d4a3439a98c4296c5b3da92e71c4e8c1350029ecfa50fd020b3b",
+    "maxMemoryBytes": 134217728,
+    "externalImports": [],
+    "limits": [
+      "Diagnostic artifact only; no deployment or browser/CSP acceptance",
+      "Budget applies to allocator growth, not total process memory or module maximum",
+      "Upstream Pillow and runtime license/NOTICE distribution audit still required"
+    ]
+  },
+  "browserBundleNodeThread": {
+    "status": "passed",
+    "source": [
+      2049,
+      9
+    ],
+    "output": [
+      2000,
+      9
+    ],
+    "sha256Exact": true,
+    "threadTerminated": true,
+    "gateReleased": true,
+    "proof": [
+      {
+        "type": "sandbox-proof",
+        "nodeGlobalsAbsent": true,
+        "wasmAbsent": false,
+        "dynamicCodeDisabled": true,
+        "networkAttempts": 0,
+        "wasmCompiles": 1,
+        "gpuPresenceProbes": 0,
+        "linearMemoryBytes": [
+          524288
+        ]
+      }
+    ]
+  }
+}

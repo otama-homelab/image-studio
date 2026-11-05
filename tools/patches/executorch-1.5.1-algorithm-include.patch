@@ -1,0 +1,26 @@
+diff --git a/backends/vulkan/runtime/graph/containers/SharedObject.cpp b/backends/vulkan/runtime/graph/containers/SharedObject.cpp
+index 10ddd6f..0953f9e 100644
+--- a/backends/vulkan/runtime/graph/containers/SharedObject.cpp
++++ b/backends/vulkan/runtime/graph/containers/SharedObject.cpp
+@@ -6,6 +6,8 @@
+  * LICENSE file in the root directory of this source tree.
+  */
+ 
++#include <algorithm>
++
+ #include <executorch/backends/vulkan/runtime/graph/containers/SharedObject.h>
+ 
+ #include <executorch/backends/vulkan/runtime/graph/ComputeGraph.h>
+diff --git a/backends/vulkan/runtime/graph/ops/impl/Squeeze.cpp b/backends/vulkan/runtime/graph/ops/impl/Squeeze.cpp
+index fce7600..99bffa5 100644
+--- a/backends/vulkan/runtime/graph/ops/impl/Squeeze.cpp
++++ b/backends/vulkan/runtime/graph/ops/impl/Squeeze.cpp
+@@ -6,6 +6,8 @@
+  * LICENSE file in the root directory of this source tree.
+  */
+ 
++#include <algorithm>
++
+ #include <executorch/backends/vulkan/runtime/graph/ops/OperatorRegistry.h>
+ 
+ #include <executorch/backends/vulkan/runtime/graph/ops/impl/Clone.h>

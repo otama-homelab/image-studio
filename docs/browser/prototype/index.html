@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Image Studio — 操作プロトタイプ C08</title>
+<link rel="stylesheet" href="../design-tokens.css"><link rel="stylesheet" href="prototype.css">
+<a class="skip" href="#main" data-focus="main">編集内容へ</a>
+<aside class="banner">操作確認用のプロトタイプです。ダミー画像・疑似取得・疑似処理を使います。写真読込・モデル推論・PNG/PDF生成は行いません。</aside>
+<div class="shell"><header><strong>Image Studio</strong><nav aria-label="工程">
+<a href="#/">開始</a><a href="#/background">背景編集</a><a href="#/crop">サイズ・配置</a><a href="#/print">印刷配置</a>
+</nav><button id="support">準備・端末</button></header>
+<details class="review"><summary>レビュー用の条件設定（製品には表示しません）</summary>
+<label>次の処理で起こす失敗<select id="fault"><option value="">なし</option><option value="download">取得失敗</option><option value="quota">保存容量不足</option><option value="corrupt">データ破損</option><option value="memory">GPU割当失敗</option><option value="shape">結果のshape不正</option><option value="gpu">GPU喪失</option><option value="save">ファイル生成失敗</option></select></label>
+<label><input type="checkbox" id="gpu" checked>GPU利用可（疑似）</label>
+<label><input type="checkbox" id="online" checked>ネットワーク接続あり（疑似・実通信なし）</label>
+<button id="clear-cache">疑似保存データを未取得にする</button><button id="late">最後のジョブの遅延完了を届ける</button>
+<p>処理時間は3秒、ダミー取得量は10MiB固定です。実測値・実モデル容量ではありません。</p>
+</details>
+<p id="announcement" role="status" aria-atomic="true"></p>
+<div id="job-region"></div><div id="recovery-region"></div><main id="main" tabindex="-1"></main>
+<footer>写真と加工結果は再読込で消えます。このプロトタイプでは疑似モデルの保存状態も再読込で消えます。実製品のモデルcacheとは異なります。</footer>
+</div>
+<dialog id="dialog" aria-labelledby="dialog-title"><h2 id="dialog-title"></h2><div id="dialog-body"></div><div class="actions"><button id="dialog-cancel">取消</button><button id="dialog-ok" class="primary">続ける</button></div></dialog>
+<script src="session.js"></script><script src="crop-controls.js"></script><script src="prototype.js"></script>
+</html>

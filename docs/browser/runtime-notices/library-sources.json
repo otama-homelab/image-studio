@@ -1,0 +1,90 @@
+{
+  "status": "candidate-library-documents-not-full-bundle-audit",
+  "libraries": {
+    "transformers": {
+      "version": "4.3.2",
+      "revision": "028721487d55aac3c7f6bad8d87d1b3511a1027c",
+      "bundleSha256": "cd7d3236182f456b0b7833015f956df0c71ad63c0ef8bb4d9857d2a787c076e7"
+    },
+    "hashWasm": {
+      "version": "4.12.0",
+      "revision": "373b796205ab55fb4a657374dad6ea589bf75815",
+      "bundleSha256": "ed7f5896b41aba98909ab143264c5b2ae5c81abf2e47f08dd2d1c0d02ce623de"
+    }
+  },
+  "documents": [
+    {
+      "file": "Transformers-js-4.3.2-LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/huggingface/transformers.js/028721487d55aac3c7f6bad8d87d1b3511a1027c/LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "scope": "Transformers.js upstream Apache-2.0 text; bundled dependency audit remains"
+    },
+    {
+      "file": "hash-wasm-4.12.0-LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/Daninet/hash-wasm/373b796205ab55fb4a657374dad6ea589bf75815/LICENSE",
+      "bytes": 1630,
+      "sha256": "c14dea172f72f2714284a0ac2ab1b00b5352a01409d58255a46227ffc541debd",
+      "scope": "hash-wasm package MIT text"
+    },
+    {
+      "file": "hash-wasm-4.12.0-SHA256-LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/Daninet/hash-wasm/373b796205ab55fb4a657374dad6ea589bf75815/src/sha256.c",
+      "bytes": 893,
+      "sha256": "a26eb88ba874fcfd93eaaeb7cf0ff7a2284f336f795de2fc57aa2880355e053a",
+      "scope": "Complete initial license/comment header extracted through first closing comment; full source hash recorded separately"
+    },
+    {
+      "file": "HuggingFace-tokenizers-0.2.0-LICENSE.txt",
+      "url": "https://registry.npmjs.org/@huggingface/tokenizers/-/tokenizers-0.2.0.tgz",
+      "archivePath": "package/LICENSE",
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "scope": "Fixed package full license text; bundled source comment identifies this version; complete binary correspondence audit remains"
+    },
+    {
+      "file": "HuggingFace-jinja-0.5.10-LICENSE.txt",
+      "url": "https://registry.npmjs.org/@huggingface/jinja/-/jinja-0.5.10.tgz",
+      "archivePath": "package/LICENSE",
+      "bytes": 1069,
+      "sha256": "d6e7b19451c1b3d1d66353bb4b1274138953b3bfd9ae60c56e77b1f548796982",
+      "scope": "Fixed package full license text; bundled source comment identifies this version; complete binary correspondence audit remains"
+    },
+    {
+      "file": "NOTICE.txt",
+      "bytes": 2483,
+      "sha256": "a0eb2f8c677cf5c6536a963e067ec81a45956e427564aae7b5fc6969961a9294",
+      "scope": "Application-authored integration/change record; records ORT substitution and generated bundling, not license approval"
+    }
+  ],
+  "sha256Source": {
+    "file": "hash-wasm-4.12.0-sha256-source.txt",
+    "url": "https://raw.githubusercontent.com/Daninet/hash-wasm/373b796205ab55fb4a657374dad6ea589bf75815/src/sha256.c",
+    "bytes": 9721,
+    "sha256": "50e43ac5681fc2d95d54194e8f42859c5877d9919ae38d723d535eb462b2c855",
+    "scope": "Fixed source for embedded SHA256 license header review"
+  },
+  "remaining": [
+    "Audit actual tree-shaken bundled dependency terms, not just top-level package declarations",
+    "Bind adopted processor/resize WASM and generated runtime to complete notices",
+    "No publication approval"
+  ],
+  "embeddedDependencies": [
+    {
+      "name": "@huggingface/tokenizers",
+      "version": "0.2.0",
+      "license": "Apache-2.0",
+      "tarball": "https://registry.npmjs.org/@huggingface/tokenizers/-/tokenizers-0.2.0.tgz",
+      "integrity": "sha512-LidMHe1FpcSYH4vcSjXooda34pC0M8m1gmDOv7SQi6Iv+ib1zX7J3sHBCC9/3FPCkn2k1b55FneVqMRxrr99pg==",
+      "integrityVerified": true
+    },
+    {
+      "name": "@huggingface/jinja",
+      "version": "0.5.10",
+      "license": "MIT",
+      "tarball": "https://registry.npmjs.org/@huggingface/jinja/-/jinja-0.5.10.tgz",
+      "integrity": "sha512-SgS1D1bglQ94ceD4ZCL6eayUDy9uV1xuyk61OjgSxU5GJh7upqZCKII0JoTYMc6wWsg3JUgaPRX0ElQzXPk3Cw==",
+      "integrityVerified": true
+    }
+  ]
+}

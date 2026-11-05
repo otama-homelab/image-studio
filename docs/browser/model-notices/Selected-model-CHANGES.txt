@@ -1,0 +1,1230 @@
+{
+  "date": "2026-11-02",
+  "status": "private-candidate-change-record-not-release-approval",
+  "distributionApproved": false,
+  "scope": "Modification record for selected HR and ViTMatte derivatives. Original upstream texts remain separately included. Hashes identify captured evidence; they do not prove reproducible builds or complete license compliance.",
+  "models": [
+    {
+      "candidateId": "onnx-birefnet-grid-03-fp32-means-01",
+      "source": {
+        "repository": "ZhengPeng7/BiRefNet_HR-matting",
+        "revision": "5d6b6f8adcb5b417c871b1d84ceaae9871355b7f",
+        "weights_sha256": "a5a4de698739ea5e0e8bbab28e1b293dde95092b87a442d566cbc585c53cef55"
+      },
+      "precision": "float16",
+      "opset": 19,
+      "files": [
+        {
+          "name": "model-fp32-means-01.onnx",
+          "url": null,
+          "bytes": 9757686,
+          "sha256": "584924efc01f490d3393eeff623fcfb0d807120e878d32a4b130a61f80aa1e41"
+        },
+        {
+          "name": "model.onnx.data",
+          "url": null,
+          "bytes": 447632368,
+          "sha256": "364eab4994414fb107c1ec7680dd98202ec4ddb3b8d3dcc87f5a5f887890bb7c"
+        }
+      ]
+    },
+    {
+      "candidateId": "onnx-vitmatte-03",
+      "source": {
+        "repository": "hustvl/vitmatte-base-distinctions-646",
+        "revision": "b58373f8dbbfbeb58157456e2e4949f9f872aa18",
+        "weights_sha256": "0d1e43962bfc6daecec29a76b90194b51902ad0286dfaaf91e1b8a4f17d15348"
+      },
+      "precision": "float32",
+      "opset": 18,
+      "files": [
+        {
+          "name": "model.onnx",
+          "url": null,
+          "sha256": "cf0d2103d49cc7e3938ce219d1bebfc623c2661c5e1309f9b97751df444c5592",
+          "bytes": 6933207
+        },
+        {
+          "name": "model.onnx.data",
+          "url": null,
+          "sha256": "a7307d78560ead989cb4eb432982ca19bb0cf54834070afe377ad7a0d1b9fcf6",
+          "bytes": 390401920
+        }
+      ]
+    }
+  ],
+  "hrTransformations": [
+    {
+      "operation": "Pinned FP16 2048x2048 export with sigmoid alpha output",
+      "outputGraphSha256": "6b7dcdd58e257ffebad013d3cf58b6f727457148d4eb1741f1399f87ec17f6e4"
+    },
+    {
+      "operation": "All 20 DeformConv nodes decomposed into kernel-wise FP32 GridSample/mask/Conv/accumulation then original output dtype",
+      "inputGraphSha256": "6b7dcdd58e257ffebad013d3cf58b6f727457148d4eb1741f1399f87ec17f6e4",
+      "outputGraphSha256": "7338711120d416e90d47f73b7f117b96521882412f0f70eee536f0d09c4288b4"
+    },
+    {
+      "operation": "Final output channel tiling preserves all 240 channels; FP16 resize and FP32 partial Conv/sums/bias then one FP16 cast",
+      "inputGraphSha256": "7338711120d416e90d47f73b7f117b96521882412f0f70eee536f0d09c4288b4",
+      "outputGraphSha256": "3fbcfed0079e8a3b95bcba7c6bd2a8776a73c1e6681ab0aec51198bd24349006"
+    },
+    {
+      "operation": "Five original spatial FP16 means compute sum/division in FP32 and restore original FP16 outputs; axes, weights, resolution unchanged",
+      "inputGraphSha256": "3fbcfed0079e8a3b95bcba7c6bd2a8776a73c1e6681ab0aec51198bd24349006",
+      "outputGraphSha256": "584924efc01f490d3393eeff623fcfb0d807120e878d32a4b130a61f80aa1e41"
+    },
+    {
+      "operation": "Official ONNX Extractor partitions into 46 contiguous stages; runtime node records exactly once, initializer and boundary metadata preserved per captured verification",
+      "inputGraphSha256": "584924efc01f490d3393eeff623fcfb0d807120e878d32a4b130a61f80aa1e41",
+      "partitionReportSha256": "e1ce0a6264bbc691f448a490480609c0e9030bd32a886a9235c69fba0eeee691",
+      "logicalOutputWorkTargetBytes": 4294967296
+    }
+  ],
+  "vitmatteTransformations": [
+    "Pinned Base FP32 ONNX opset18 export; symbolic height/width in multiples of32",
+    "Exportable absolute/relative-position and window-partition helpers",
+    "Global attention computed head by head, retaining all heads and learned parameters; synthetic parity is not bitwise or general quality proof"
+  ],
+  "selectedStageResources": [
+    {
+      "index": 0,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 56737,
+          "sha256": "4dc502c18e3f33e04c649e040a5f839dbec15be780dcba538e2e86ca2ac5ec9f"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 240768,
+          "sha256": "56152ab6321cd75a4dfb854af50bf83211e8248a4f6b4cb506c91d7067fe7cfa"
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 57442,
+          "sha256": "16ce8ac6e9b4031a4cf4adf294614034818d28fab5bcfd766b7d4045b812366c"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 245964,
+          "sha256": "fe0bc2951f014f2ac3449d3524d8801994fa2cdf7fa022c031c86557c557e4c6"
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 38467,
+          "sha256": "74e59d0f4fa122e8bb25208ecc49f6e40d02d7e4f5714f652ec5b39f644184e6"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 591360,
+          "sha256": "95275a12fa7320290758ba00b9513a6f354268802308b595a156a25b6dd0e97d"
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 56311,
+          "sha256": "0681187ec4b0b72e6ca722ef293f1dccb5123bffd706783bbd5cd5afdace705e"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 222336,
+          "sha256": "ec83101e17f15f04df7ce5ae9b8e24918642ebac5205f4a095db414eb70cf095"
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 215214,
+          "sha256": "ce36309d592bfecd9c3247eb9c742332880f883a57c4f6a6436b51432274a9a8"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 1314444,
+          "sha256": "3ef5bb117e708cfe600957aea1953b13d632b3f03f2f21ebab7966dfdc8cbc99"
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 40573,
+          "sha256": "ab4de5d93f75d4fe15e365cf4b55603c6e8532ce53a4455d26d9be86710e562f"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 591360,
+          "sha256": "796a76070760feb7c6012da366f3775b018626d830e4dfd2ed05e9aca04c4175"
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 135207,
+          "sha256": "1a5bf65d949be7a6022945a69305508fe8dd8cbefef2ce57cb7789cddfc1638c"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 1953432,
+          "sha256": "d3b49ead708d35696e2776ed7d51ce735f71462354e5a5ffcf69cfbd180ef79e"
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 96841,
+          "sha256": "a2d29dac193e02cb2400256ba61c33a3285f13fec4c692eafd155e54dd897814"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 3249408,
+          "sha256": "c93e936a8c677082b8abef531a7bcb897e27cc9d71f70e0cbce97cd8579b9fab"
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 256467,
+          "sha256": "fadc6afdc8fed6163b6e291fefb792f36e56935ae492b370e209aec3ce1845d8"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 3394872,
+          "sha256": "b7d637a8ee3a43beabea340122c7fb37c96acc329953c0717d988fd0d577d862"
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 171803,
+          "sha256": "4f26243efbaf34529bfeed579f8e66ded5c098636458f8b1855244dc2676f257"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 16732464,
+          "sha256": "7b1ad2a09766e84c3800f83f38791e69a5539a0e95ea743be94419d38a300159"
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 406996,
+          "sha256": "a9f3d85594e84d1f0ab3044e8951f2086b50282076d3021fad4719706bbae735"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 19424928,
+          "sha256": "fa792b83aa3fab210168741a22912b1107c99c27dc7b6df9d7b71dc85e59f7ac"
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 347120,
+          "sha256": "b24090f368dd19aae78f550833d918d667fe344f4b1cd65ada00c5b5f8a17f09"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 23953776,
+          "sha256": "3b1aa0f6b8775b5070a1c5daba8629aed8802a11c4129f8632a6a883d04ce62d"
+        }
+      ]
+    },
+    {
+      "index": 12,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 407136,
+          "sha256": "7f83afc35f73b07b9c8bbf3b28a5a0e7fd200d7dcfa063c1344fa55cb5c7c16a"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 19424928,
+          "sha256": "352e2e1ebf26866dfbf06dc2c707de35ae9a7eb3804c6eb09710563c0cde1e29"
+        }
+      ]
+    },
+    {
+      "index": 13,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 174597,
+          "sha256": "b26c4559536f57f14ad32369a8e2695150a2321e70a87201136635a0a46a86ce"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 23814960,
+          "sha256": "1340f601ec3b24eec07bc7a19e6cbd8a6df6f8f2d50b179eabc304aa0ebf7eb0"
+        }
+      ]
+    },
+    {
+      "index": 14,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 407271,
+          "sha256": "c0f1eef8a757ff99d4d92b090bd633fd1dba1dec56b8f018e1ea17d654799b2e"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 19424928,
+          "sha256": "eaf2c4001d2fb06f1edec474bf4851bb291cbf6174d27b14a4674598f33d330b"
+        }
+      ]
+    },
+    {
+      "index": 15,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 347242,
+          "sha256": "92f78d2abdaa2dbc8bfa764ef7fae401945dead1a7561d1a18785cf2256c718b"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 23953776,
+          "sha256": "a7294f77c063799d3d787de168e03d00df897baae3ad899523ae0028a257c0c1"
+        }
+      ]
+    },
+    {
+      "index": 16,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 407805,
+          "sha256": "3d9d50fec67954c2170f28567d7022f641507d12aedfaf52f2c665d349882f8e"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 19424928,
+          "sha256": "c77191d04e15583dca6755370abdaa007323f214658eeae32026924e75708153"
+        }
+      ]
+    },
+    {
+      "index": 17,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 175030,
+          "sha256": "41b4fa7bef9d003f724c56b1440c1dc276067830c8e4704a2155ffa8afdbceca"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 23814960,
+          "sha256": "8b85ca1ad32cccfe1878fc642f6b5f24f860a0f3494ae22cd2e37abf6e7eee1b"
+        }
+      ]
+    },
+    {
+      "index": 18,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 407805,
+          "sha256": "c83e2ada4ec87dbb916a4c036547c5eba5433ff031881c77f9cae67f875b774d"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 19424928,
+          "sha256": "9cb54193f540c7d4e79d3e77f0ccd4f5da8b0a6c2e28b71707a04b386ea0fc40"
+        }
+      ]
+    },
+    {
+      "index": 19,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 347692,
+          "sha256": "beb3445f9f8b7982d7991c6fa1a59118334b4ebef8f750b46bca17d3a158b691"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 23953776,
+          "sha256": "3d5e1717db933c771d8cb30c51d04e53dbce18f5c2b4ae5404ca94b4082694d7"
+        }
+      ]
+    },
+    {
+      "index": 20,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 407805,
+          "sha256": "1cf7e55c16e2cf0422b10950b5d099cb7952e5910a8e89c0f1da3a5f9639fdad"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 19424928,
+          "sha256": "7e3deabeee0dedd4b7a841d259aec9deef195cbcd8646c232872cf00fc3d88f0"
+        }
+      ]
+    },
+    {
+      "index": 21,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 411150,
+          "sha256": "2e4a0ec5ec7c8e268e94d5be2fe4d6dc705fb70b4d99a258383f60057bc95566"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 132707520,
+          "sha256": "fab9800981710c9621d3f594f5889a673ae8b12fd4907c13edc3904ee8e1f332"
+        }
+      ]
+    },
+    {
+      "index": 22,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 424076,
+          "sha256": "9880101a7fda41b8d401f2c3850f091d23ac418f64f8146f3f6c0508ed9d567f"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 2105400,
+          "sha256": "5faf9b995d7b6ac0724885a7db447e673d5cbbc3826b3936fa2aa443bd313b1b"
+        }
+      ]
+    },
+    {
+      "index": 23,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 525094,
+          "sha256": "e62dec8ceff91841a66db841af553f5f2ab0f580861b3eb73ffb2cbb8830d4d9"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 8768880,
+          "sha256": "4258f6fa32fc3a3c4a9755698fa7dc2d01c7a51ed54517dc0bb8d734e13449ad"
+        }
+      ]
+    },
+    {
+      "index": 24,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 974957,
+          "sha256": "a6be4bfceea0d84340bd1d8d07e5e56c79f212d3f6f1a2b51fd6604328e51e67"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 88609056,
+          "sha256": "a8b831536494fb3dcd4d303ff38f04dd2c050aa1de373803f570eef23c8d4fc2"
+        }
+      ]
+    },
+    {
+      "index": 25,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 941086,
+          "sha256": "3aa7fe656aa6fdcd7b8f694cbafea0ff31deea41acfe8cb5a762b84d59ad7be6"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 86243616,
+          "sha256": "3f99e8108459608d7ebe1160ba5b70f238ee74beae12ea021fddbb728e570202"
+        }
+      ]
+    },
+    {
+      "index": 26,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 942663,
+          "sha256": "e0973390a3423274c9221d0043141f00e2ea9beb33cbeda722a8c1b8b2f4abb4"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 86243616,
+          "sha256": "fa749506e1bfaccdc5d3f6326b47fb2d79a28e98ef08384ff69c6116b96aadc8"
+        }
+      ]
+    },
+    {
+      "index": 27,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 1224011,
+          "sha256": "caef20db7501f745bd93cf55f63c7e5879720e9f59b955e608e58389244ce8ef"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 158814912,
+          "sha256": "d5f622c8b244d4e7cc0c3bfd388f07537a27995cf86a83f7579989c7977dc1c8"
+        }
+      ]
+    },
+    {
+      "index": 28,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 423584,
+          "sha256": "26b58900e5fcb9b887bad9c834708b3f8caacfa4fb6b2f577f1f91bdd5b460a9"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 3115776,
+          "sha256": "9ca3d76dfda40d8c42275981f4e02d52bd6b66d6ffd8a0c628e950359db84e48"
+        }
+      ]
+    },
+    {
+      "index": 29,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 165689,
+          "sha256": "2fe18568d3348f7ca77f16db0052c98aa2487381738a3c8b169d50d045782858"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 4251008,
+          "sha256": "f761efe1206cdd097930e413e6132e199bb51910fe007e7611d75d82b8be749f"
+        }
+      ]
+    },
+    {
+      "index": 30,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 112360,
+          "sha256": "a5b21a8d43b17f8a6cce18e50d1f383c554611ca12127d3f8b7c81484d5c1d27"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 2576768,
+          "sha256": "b557148f44634c51432b0bb2fc213d797757053bb54f884fe9df2e21faadb4dd"
+        }
+      ]
+    },
+    {
+      "index": 31,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 101095,
+          "sha256": "434d77a64404c156d55ea9a13496051549b8daed3c86c3f4340947c55c99388c"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 1656832,
+          "sha256": "08d649f7101a3c9094e2b8dc1f1b0cbade4b52256868ce29915997493448151c"
+        }
+      ]
+    },
+    {
+      "index": 32,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 104657,
+          "sha256": "d8e7b29bb957b1c6ba78bb0e0439077eb31d43a728d5e10592a4abc79571dd65"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 1800192,
+          "sha256": "0d1d768ed77e76937d973e015ed22d5beede0978eabde62fc9192f5df2fe29a7"
+        }
+      ]
+    },
+    {
+      "index": 33,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 65237,
+          "sha256": "d03f918d39ab9dc846def0027109c45a95e979ef12343d9c906d54c60b1b1641"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 379264,
+          "sha256": "e5b4e043a82a4e0ac97481cebc2b15c79e422166d9d535a989b4f7203d7d19e2"
+        }
+      ]
+    },
+    {
+      "index": 34,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 32370,
+          "sha256": "adc65a1a9b6cf98413dcbf186a1e6796e3ed86c60373872f11d99e532d0df522"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 315392,
+          "sha256": "8e0efdd6ee797091abafbcb475e68b75a764961af34e812218802e93a60486e7"
+        }
+      ]
+    },
+    {
+      "index": 35,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 40920,
+          "sha256": "9406ec68990f846483dd801aca36a3bf0dab25fd950664ab51f3e7ef384dc225"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 2552192,
+          "sha256": "4f246be77805f04f1b0b397168d979a765a53000b24852c5d482645c5a893eac"
+        }
+      ]
+    },
+    {
+      "index": 36,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 24980,
+          "sha256": "007b9eb44959a06c5c2c2ec41e5924ac3b14b075e3e09124c6311f4b5dd5af6e"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 1630208,
+          "sha256": "2c04e514b3eaf973d6ccdb3deeec2061f6f6008a192faf95929b616cc2c02675"
+        }
+      ]
+    },
+    {
+      "index": 37,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 25323,
+          "sha256": "b73e4acd4d9ec3f1694b71c120cc4396e365fc2e350e8dbf911411d4d171169d"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 1630208,
+          "sha256": "4ee491d286df2b9563eedaf5f93c97b6b6a5ee121f33d4b7eabef520fa404d70"
+        }
+      ]
+    },
+    {
+      "index": 38,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 25323,
+          "sha256": "68e4ae97bce1f7a3a9d0912149b6ee37e8a05f164d1d997c84e9de10df25f6b0"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 1630208,
+          "sha256": "6ccf2586fab247393ca42dc52bd31e394cd4d4175b0f7a6ad5cd7d8d3f48a0b6"
+        }
+      ]
+    },
+    {
+      "index": 39,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 25323,
+          "sha256": "b4e54eebe7e5a0f4dd0f6749583c353716c6b240cacb288b84b2475e2b965a2b"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 1630208,
+          "sha256": "ad8875239763dbd8a9ddf95b465ef731a0b945a17edb6f6f4422c2574714b98b"
+        }
+      ]
+    },
+    {
+      "index": 40,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 25323,
+          "sha256": "68618b54ff08068dcbb9e926761d9089dc99240fe03432da2450b3847841828c"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 1630208,
+          "sha256": "ffc9e24f353b81c42d4334b206c38a66a1ac56c30fc69ded8674502b61b49055"
+        }
+      ]
+    },
+    {
+      "index": 41,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 25323,
+          "sha256": "af0ffa29cbaf1c39b8da29373a32fa7ca38b009ea99d12a0cf0a6d36be3b6f51"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 1630208,
+          "sha256": "1be6e32e87b5e3677e353c35b783872d122e3b6eac61604c7624a3f5c9d48ea8"
+        }
+      ]
+    },
+    {
+      "index": 42,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 25323,
+          "sha256": "1f7b3f49563b5a40a2b88e5aed6a48ff29db7621b16a44f66b4d2dd434b43f07"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 1630208,
+          "sha256": "c4c4d50a2f5da9829b790036a16c0ebac8848d67b64a41e9c93dc68f0d236c77"
+        }
+      ]
+    },
+    {
+      "index": 43,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 38243,
+          "sha256": "c221593a2c6ac8a01d4dcb9539fb592313f0ccbea135e0c1233fe7441fa4d51d"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 1806336,
+          "sha256": "176cf9bde5c76c7ccb76f8861c10617b182a8e94021d3f29f051bd1d543572f1"
+        }
+      ]
+    },
+    {
+      "index": 44,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 27785,
+          "sha256": "0138cc95db6711b4c261b1491fc5f5cdad659f48ea1caa0f804bb18e7a9189ae"
+        },
+        {
+          "name": "onnx/model.onnx.data",
+          "bytes": 279936,
+          "sha256": "ed01fce430d7a4cb643ac4c4fc989c5c08ab0c64273afd00e2624f179e0d4082"
+        }
+      ]
+    },
+    {
+      "index": 45,
+      "resources": [
+        {
+          "name": "config.json",
+          "bytes": 82,
+          "sha256": "ae1939de78499ceb745c39c4efa63dd7263a8bc533da7f879456eb5ce224fded"
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "bytes": 17300,
+          "sha256": "a87c4c2ad8800db67567ff2d2d6e3a9d6d297c5304b1573445f8a107bdc4aeb8"
+        }
+      ]
+    }
+  ],
+  "currentToolSnapshots": [
+    {
+      "file": "tools/export_browser_birefnet.py",
+      "bytes": 7192,
+      "sha256": "cb60ea02192691f72945fa7e795d7abb534eb2de8198e88d0e95f9e3f2a80224"
+    },
+    {
+      "file": "tools/rewrite_browser_birefnet_deformconv.py",
+      "bytes": 9913,
+      "sha256": "701d9b2db66eda673e857dbe0142ad9a334590fa2a364c0dc3aea6fc2319e0cb"
+    },
+    {
+      "file": "tools/browser_deformconv_graph.py",
+      "bytes": 4814,
+      "sha256": "8f6c0aacec1319816f9074767a24b259146b104a4dcf11c344932a50afbf0154"
+    },
+    {
+      "file": "tools/tile_browser_birefnet_output.py",
+      "bytes": 9985,
+      "sha256": "eab20434fbaf38da6006e370028e09c9bcb85a535c597c9c9c2f4607062b66aa"
+    },
+    {
+      "file": "tools/promote_browser_hr_means.py",
+      "bytes": 5461,
+      "sha256": "02fa354d5ae87e3f1917156c9a24ed64132a7d32eceb5d4ac59cbe7e642f4e13"
+    },
+    {
+      "file": "tools/partition_browser_onnx.py",
+      "bytes": 17028,
+      "sha256": "53d4c078bef198f02e921e5390daae173c9c55a9102f5c1e38c0b93ffeb66f17"
+    },
+    {
+      "file": "tools/export_browser_vitmatte.py",
+      "bytes": 6066,
+      "sha256": "a6f14c38ac8271eb5ba012a62ccb5cbd11d394b829897d067f63a433ca3b74c5"
+    },
+    {
+      "file": "tools/vitmatte_export_helpers.py",
+      "bytes": 5419,
+      "sha256": "2298dcaa9a7127cbc54d1f4c26664e8b304e6a07eb5236d07640d4ef6ede5b23"
+    }
+  ],
+  "toolSnapshotCaveat": "Current source digests are review snapshots, not assertions that every original export ran these exact current bytes. Historical tool digests remain in the bound evidence where available.",
+  "capturedEvidence": [
+    {
+      "file": "docs/browser/validation/2026-10-31-onnx-birefnet-02-export.json",
+      "bytes": 1885,
+      "sha256": "a29fcc85c4ae5bde12e2b3e8e1035bc782d9683948138a3dbee20b344f27aa5e"
+    },
+    {
+      "file": "docs/browser/validation/2026-10-31-birefnet-grid-rewrite.json",
+      "bytes": 8659,
+      "sha256": "2f61cba2e6705bb497f4094ed96b7805027b305939df03eeeb13be33cdd29f59"
+    },
+    {
+      "file": "docs/browser/validation/2026-10-31-birefnet-output-tiles.json",
+      "bytes": 2338,
+      "sha256": "742c51c512e271b786d2d6aff4d701f2159e5645f53453821556ce0815871725"
+    },
+    {
+      "file": "docs/browser/validation/2026-11-01-hr-stage-artifacts.json",
+      "bytes": 3451,
+      "sha256": "2eda96f6fdbb07832cffd2e0f7eacd341dcd3c76954410a2ab9b775a5b5c46aa"
+    },
+    {
+      "file": "docs/browser/validation/2026-10-31-onnx-vitmatte-03-export.json",
+      "bytes": 2398,
+      "sha256": "99f07b63da98e051cf78a96d6b073f1578729969abfcec707ae682158f84a192"
+    },
+    {
+      "file": "docs/browser/validation/2026-11-03-hr-cpu-stage-artifacts.json",
+      "bytes": 532,
+      "sha256": "d10cd15eef57f5adc7fd5527bae09b5322e4960b2ae534e602b73d107a276925"
+    },
+    {
+      "file": "docs/browser/validation/2026-11-03-cpu-retained-worker-8gib-success.json",
+      "bytes": 3395,
+      "sha256": "db10badc23a5f70f92b29d9844bf0b9273989ad2bc42a18d6d54d91cd1f69f9e"
+    }
+  ],
+  "remaining": [
+    "Fork/source release with exact build commands, environment and transformation source corresponding to distributed binaries",
+    "Immutable public release binding model, stages, config, processor, runtime, source-change record and notices",
+    "Binary/transitive license applicability review and ordinary HTTP/Pages/R2 acceptance",
+    "Original quality, device, single-run/cancel/retry/resource-release, human UX and physical-print acceptance; long-duration endurance is outside the required scope per user instruction"
+  ],
+  "updated": "2026-11-03",
+  "cpuHrPartition": {
+    "candidateId": "hr-cpu-stages-packed-01",
+    "sourceModelCandidateId": "onnx-birefnet-grid-03-fp32-means-01",
+    "sourceGraphSha256": "584924efc01f490d3393eeff623fcfb0d807120e878d32a4b130a61f80aa1e41",
+    "sourceExternalSha256": "364eab4994414fb107c1ec7680dd98202ec4ddb3b8d3dcc87f5a5f887890bb7c",
+    "partitionTool": {
+      "file": "tools/partition_browser_onnx.py",
+      "bytes": 17028,
+      "sha256": "53d4c078bef198f02e921e5390daae173c9c55a9102f5c1e38c0b93ffeb66f17"
+    },
+    "stageCount": 406,
+    "logicalOutputWorkTargetBytes": 536870912,
+    "reportSha256": "52bdaa8087a2c8cdc1af4a91ea1042291f0ec34426dcd3a3843db60484450ebb",
+    "resourceCatalog": {
+      "files": 1096,
+      "canonicalization": "UTF-8 JSON array of {name,bytes,sha256} in descriptor order, sorted object keys, compact separators, LF",
+      "bytes": 140066,
+      "sha256": "229a18dc3d43ea246a6b08fcff8dfd707f6104b4bd5566ef88a961d4f5bb7b26",
+      "publicUrl": null
+    },
+    "changes": [
+      "Same transformed HR source graph and learned weights as GPU candidate; CPU-specific406 partitions using official ONNX extraction/packing.",
+      "Runtime nodes preserved exactly once; per-initializer dtype/shape/bytes checked. Constant-only ancestors may be duplicated.",
+      "Explicit WASM execution with bounded one/two threads and one retained stage Worker; each stage releases its session/tensors.",
+      "ViTMatte remains the same Base FP32 artifact recorded above."
+    ],
+    "acceptance": "One CPU landscape2000x1000 full PNG success. Not all shapes, hardware, numerical/quality or release approval.",
+    "evidence": "docs/browser/validation/2026-11-03-cpu-retained-worker-8gib-success.json",
+    "remaining": [
+      "Publish corresponding transformation/runtime source and immutable full resource catalog with the reviewed release.",
+      "Carry original HR MIT and ViTMatte Apache2.0 terms/notices separately; this change record grants no additional rights."
+    ]
+  },
+  "cpuMatteQueryAndPhasePartition": {
+    "candidateId": "cpu-matte-phases-01",
+    "modelVersion": "cpu-threephase-editor-7797a2b0d40aa4d0098c73e2",
+    "source": {
+      "repository": "hustvl/vitmatte-base-distinctions-646",
+      "revision": "b58373f8dbbfbeb58157456e2e4949f9f872aa18",
+      "weights_sha256": "0d1e43962bfc6daecec29a76b90194b51902ad0286dfaaf91e1b8a4f17d15348"
+    },
+    "precision": "float32",
+    "opset": 18,
+    "originalGraphSha256": "cf0d2103d49cc7e3938ce219d1bebfc623c2661c5e1309f9b97751df444c5592",
+    "originalExternalSha256": "a7307d78560ead989cb4eb432982ca19bb0cf54834070afe377ad7a0d1b9fcf6",
+    "queryChunkGraphSha256": "fddb32c6769fdd08f07b7ef6d5097734ca00809319578b98d4cae4b0e8216dec",
+    "queryChunkRows": 8,
+    "transformTools": [
+      {
+        "file": "image-studio/tools/chunk_browser_vitmatte_queries.py",
+        "bytes": 10070,
+        "sha256": "06dfb9cc8bf2eaa9a70216937a457a78aca165da0fd88015a73764592346ace5"
+      },
+      {
+        "file": "image-studio/tools/partition_browser_vitmatte.py",
+        "bytes": 5858,
+        "sha256": "5a9c02cb993692ff3413eb6e30c8569f6d2f1ba8344e96b33701eac119cb0303"
+      }
+    ],
+    "runtimeAdapter": {
+      "file": "image-studio/tools/browser-library-adapter/phased-matte-prepare.mjs",
+      "bytes": 6163,
+      "sha256": "7e9a6cf521b667f5525bc296e36a4f0700c8c90004418253fa3dba45aa9252cf"
+    },
+    "resourceCatalog": {
+      "files": 4,
+      "canonicalization": "UTF-8 JSON array of {name,bytes,sha256} in descriptor order, sorted object keys, compact separators, LF",
+      "bytes": 471,
+      "sha256": "9f24635d16ab9662e414ab57a3fa0bbf6639293fdc7a5b5c5c262f91c526c7fa",
+      "localCandidate": "image-studio-browser-evaluation/cpu-matte-change-record-review-01/cpu-matte-resource-catalog.json",
+      "publicUrl": null
+    },
+    "resources": [
+      {
+        "name": "phase-0.onnx",
+        "bytes": 6330867,
+        "sha256": "8c59c8b84ce5c0961bd7b2882d74e9adfddb5f7731055f394154e8ae205ffee2"
+      },
+      {
+        "name": "model.onnx.data",
+        "bytes": 390401920,
+        "sha256": "a7307d78560ead989cb4eb432982ca19bb0cf54834070afe377ad7a0d1b9fcf6"
+      },
+      {
+        "name": "phase-1.onnx",
+        "bytes": 11765593,
+        "sha256": "482df8d86d912573384f38a51abacd9c7a82cf24aa90d1cbd1d22bce35cb7157"
+      },
+      {
+        "name": "phase-2.onnx",
+        "bytes": 119768,
+        "sha256": "34186fc9c3b297e3fdfb4fd3d9fdbcf074b018cf1a4e2a6f57862120ca33e8d2"
+      }
+    ],
+    "phaseGraphReport": {
+      "file": "image-studio-browser-evaluation/cpu-matte-phases-01/report.json",
+      "bytes": 1681,
+      "sha256": "58329792ac8e441d93f26f2c66d2ee0b0f401b1d04b1f9c79dfc7485a6ade8fd"
+    },
+    "changes": [
+      "Replace48 global head attention chains with ONNX Loop over query-height chunks of8rows; preserve full keys, relative-position terms, softmax normalization and learned initializer records.",
+      "Split query-chunked backbone and two decoder portions at add_13650 and relu_5. Runtime node records preserved exactly once; source node serialization unchanged.",
+      "Phase0 keeps original external weights. Phase1/2 inline original referenced tensors without requantization.",
+      "Explicit CPU/WASM only, up to2threads. Official ORT sessions run sequentially in one Worker with intermediate tensor/session release. Original image dimensions and existing ViTMatte processor/postprocessor retained."
+    ],
+    "sourceSubsetArchive": {
+      "file": "image-studio-browser-evaluation/cpu-matte-change-record-review-02/cpu-matte-source-subset.tar.gz",
+      "bytes": 13858,
+      "sha256": "aa2078b2ae4f87e6d5e9a0853d78a26d95534fb548e306bdb05840ba0321c54d"
+    },
+    "sourceSubsetManifest": {
+      "file": "image-studio-browser-evaluation/cpu-matte-change-record-review-02/source-manifest.json",
+      "bytes": 2052,
+      "sha256": "1a2ddcf6154db0a090f3c29021a089e62894bdadcce529a9757e4c638c81260e"
+    },
+    "acceptance": [
+      "Small128x160 full-query versus three-phase float32 alpha exact.",
+      "Current four-choice CPU square2000 cancel/retry/download success, PNG byte-identical to separately frozen successful browser candidate.",
+      "Native ROCm max alpha delta95 remains unexplained; not broad parity/quality acceptance."
+    ],
+    "evidence": [
+      "docs/browser/validation/2026-11-03-cpu-matte-three-phase-success.json",
+      "docs/browser/validation/2026-11-03-cpu-threephase-main-square-success.json",
+      "docs/browser/validation/2026-11-03-cpu-threephase-current-cancel-retry.json"
+    ],
+    "remaining": [
+      "Publish corresponding source with complete build commands/environment and immutable model/runtime/processor/resource catalog in reviewed release.",
+      "Carry original ViTMatte Apache-2.0 license and upstream attribution; change record grants no new rights.",
+      "Historical and frozen app NOTICE captures are unchanged; new record is not retroactive distribution approval."
+    ],
+    "originalPrivatePhaseExtractionTool": {
+      "file": "image-studio-browser-evaluation/cpu-matte-phases-01/prepare.py",
+      "bytes": 3971,
+      "sha256": "380a9018b7861d9c4bd4069432a595b6c9f42fb5c1aabb8a0ab84e73100c1b96"
+    },
+    "phaseSourceRebuildEvidence": "docs/browser/validation/2026-11-03-cpu-matte-phases-source-rebuild.json",
+    "originalOnnxThroughBothTransformsRebuildEvidence": "docs/browser/validation/2026-11-03-cpu-matte-full-transform-source-rebuild.json"
+  }
+}

@@ -1,0 +1,42 @@
+/* C02 design source. Not an application stylesheet or a compatibility gate. */
+:root {
+  color-scheme: light;
+  --color-page: #f6f6f4;
+  --color-surface: #ffffff;
+  --color-text: #222222;
+  --color-muted: #4a5155;
+  --color-border: #737b80;
+  --color-primary: #303b43;
+  --color-on-primary: #ffffff;
+  --color-focus: #175c91;
+  --color-info: #e3e8eb;
+  --color-success: #315d48;
+  --color-success-surface: #f0f7f2;
+  --color-error: #8c3628;
+  --color-error-surface: #fff6f2;
+  --color-disabled-text: #626865;
+  --color-disabled-surface: #eceeed;
+  --color-checker-light: #ffffff;
+  --color-checker-dark: #d0d4d6;
+  --font-ui: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", sans-serif;
+  --text-small: .875rem;
+  --text-body: 1rem;
+  --text-section: 1.125rem;
+  --text-heading: 1.75rem;
+  --line-body: 1.6;
+  --space-1: .25rem;
+  --space-2: .5rem;
+  --space-3: .75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --radius-control: .25rem;
+  --radius-panel: .5rem;
+  --control-min: 2.75rem;
+  --focus-width: 3px;
+  --focus-offset: 3px;
+  --content-max: 90rem;
+  --panel-width: 20rem;
+  --layer-header: 10;
+  --layer-dialog: 100;
+}

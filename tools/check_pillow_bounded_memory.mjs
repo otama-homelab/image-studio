@@ -1,0 +1,22 @@
+/** Actual allocator denial in a 128KiB linear-memory budget, without allocating large memory. */
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {createPillowResizeRuntime} from './browser-library-adapter/pillow-resize-runtime.mjs';
+import {checkPillowResizeCases} from './fixtures/pillow_resize_cases.mjs';
+const [file,output]=process.argv.slice(2);if(!file||!output||fs.existsSync(output))throw Error('Need bounded WASM and new report');
+const bytes=fs.readFileSync(file),runtime=await createPillowResizeRuntime(bytes,{maxMemoryBytes:131072});
+const {results,matrixCases,input}=checkPillowResizeCases(runtime);
+const before=runtime.getState();
+assert.throws(()=>runtime.resize(input,{width:128,height:128}),e=>e.code==='resize-failed');
+const after=runtime.getState();assert.ok(after.rejectedGrowths>before.rejectedGrowths);assert.equal(after.memoryBytes,131072);assert.equal(after.closed,false);
+const recovered=runtime.resize(input,{width:4,height:3});assert.equal(createHash('sha256').update(new Uint8Array(recovered.data)).digest('hex'),results[0].sha256);
+assert.throws(()=>runtime.resize(input,{width:256,height:256}),e=>e.code==='resize-memory-failed');assert.equal(runtime.getState().closed,true);
+assert.throws(()=>runtime.resize(input,{width:4,height:3}),e=>e.code==='resize-module-unavailable');runtime.close();
+const growthReference=JSON.parse(fs.readFileSync(new URL('../docs/browser/validation/2026-11-01-pillow-growth-reference.json',import.meta.url),'utf8'));
+const growing=await createPillowResizeRuntime(bytes,{maxMemoryBytes:262144});
+const grown=growing.resize(input,{width:128,height:128});
+assert.equal(createHash('sha256').update(new Uint8Array(grown.data)).digest('hex'),growthReference.rgbSha256);
+const growthState=growing.getState();assert.ok(growthState.memoryBytes>131072&&growthState.memoryBytes<=262144);assert.equal(growthState.rejectedGrowths,0);growing.close();
+const report={successfulGrowth:{...growthState,pillowPixelsExact:true},status:'passed',wasmBytes:bytes.length,wasmSha256:createHash('sha256').update(bytes).digest('hex'),oracleCases:results.length,matrixCases,allComponentsExact:true,internalAllocationFailure:{normalCError:true,memoryBytes:after.memoryBytes,growthRejected:after.rejectedGrowths,retrySucceeded:true},externalAllocationFailure:{moduleInvalidated:true,reuseRejected:true},limits:['Allocator growth budget only, not total process/RSS cap or declared WebAssembly.Memory maximum','Trusted pinned kernel required; initial memory checked after instantiation','Tiny images only; 2048 axis limit and real original-photo budget unresolved','No actual browser, GPU or model initialized']};
+fs.writeFileSync(output,JSON.stringify(report,null,2)+'\n',{flag:'wx',mode:0o600});console.log(JSON.stringify(report));

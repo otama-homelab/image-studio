@@ -1,0 +1,129 @@
+{
+  "generator": "Pillow PNG writer; optipng/libpng for Adam7, preserving bit depth and palette",
+  "pillowVersion": "12.3.0",
+  "optipngVersion": "OptiPNG version 0.7.8",
+  "generatorSource": "tools/generate_indexed_png_fixtures.py",
+  "source": "Synthetic exact small indices; no personal photos",
+  "fixtures": [
+    {
+      "file": "p1-1x5.png",
+      "width": 1,
+      "height": 5,
+      "depth": 1,
+      "interlace": 0,
+      "sha256": "817c3717d9f9c7ad99edf4636c2485f93cdbcc7c0855ff9241a1daefe69ef068",
+      "rgbaBase64": "Cxcp/zBaigALFyn/MFqKAAsXKf8=",
+      "rgbSha256": "caa041148b08ca875b7ac7062de86cc18004a19c45450f5db16b802889878a95"
+    },
+    {
+      "file": "p1-3x5.png",
+      "width": 3,
+      "height": 5,
+      "depth": 1,
+      "interlace": 0,
+      "sha256": "67e3c5605abbe416cbd1500e2638bfbe685883a47625d030e8012a7196490578",
+      "rgbaBase64": "Cxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/",
+      "rgbSha256": "d77fa04cc0ceca3d82b324f7c228408e5e9807d553f27f8a7aac7b887173d12a"
+    },
+    {
+      "file": "p1-9x5.png",
+      "width": 9,
+      "height": 5,
+      "depth": 1,
+      "interlace": 0,
+      "sha256": "4913bba4f3d86cb21e70071c7c366d1f1daf68fd403cff3dda88eb0ae614b006",
+      "rgbaBase64": "Cxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/",
+      "rgbSha256": "f2eaf7529aa542a83ede1bfe75264061444ec905238bbfe2c6d076018df5f7df"
+    },
+    {
+      "file": "p1-9x11-adam7.png",
+      "width": 9,
+      "height": 11,
+      "depth": 1,
+      "interlace": 1,
+      "sha256": "836406b5d2d7ba78017e8e62ec45cc174241744f2979f823a3f7df4d9989f892",
+      "rgbaBase64": "Cxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/MFqKAAsXKf8wWooACxcp/zBaigALFyn/",
+      "rgbSha256": "f55ac920e29185f34351e2f3fb8e2b2365a340237e1e7cb6f414978d8b8dd5e1"
+    },
+    {
+      "file": "p2-1x5.png",
+      "width": 1,
+      "height": 5,
+      "depth": 2,
+      "interlace": 0,
+      "sha256": "c0445707779b4097baa70c7409499d1e07ce03059a2d78a4eb0829161fab7dba",
+      "rgbaBase64": "Cxcp/3rgTIBVnev/MFqKAAsXKf8=",
+      "rgbSha256": "4d3d491c4291458eb03d55f06c9e1d1a5cea2120d25e3dfdafa666423ba5e9bf"
+    },
+    {
+      "file": "p2-3x5.png",
+      "width": 3,
+      "height": 5,
+      "depth": 2,
+      "interlace": 0,
+      "sha256": "c62e99851871d0800a1a49d8ed7d32ea027737f1034115eb2245e27ceaae042f",
+      "rgbaBase64": "Cxcp/zBaigBVnev/euBMgAsXKf8wWooAVZ3r/3rgTIALFyn/MFqKAFWd6/964EyACxcp/zBaigBVnev/",
+      "rgbSha256": "e71fd8ab9758ed50070ce0447c067c39dc61b0fe4b337df4a70fa3674c21262b"
+    },
+    {
+      "file": "p2-9x5.png",
+      "width": 9,
+      "height": 5,
+      "depth": 2,
+      "interlace": 0,
+      "sha256": "89bdd02c71ce4a14260223dbdc6a19916f836f9eb137ec857379cf43dfbf88f7",
+      "rgbaBase64": "Cxcp/zBaigBVnev/euBMgAsXKf8wWooAVZ3r/3rgTIALFyn/euBMgAsXKf8wWooAVZ3r/3rgTIALFyn/MFqKAFWd6/964EyAVZ3r/3rgTIALFyn/MFqKAFWd6/964EyACxcp/zBaigBVnev/MFqKAFWd6/964EyACxcp/zBaigBVnev/euBMgAsXKf8wWooACxcp/zBaigBVnev/euBMgAsXKf8wWooAVZ3r/3rgTIALFyn/",
+      "rgbSha256": "c2cb33f4b0cb084be75bd9af8b1926e1d746cb17a071705829a482637fc0925c"
+    },
+    {
+      "file": "p2-9x11-adam7.png",
+      "width": 9,
+      "height": 11,
+      "depth": 2,
+      "interlace": 1,
+      "sha256": "7d936f8b217ab2527169ac9d2901af753bbd6fd3cd595d28f36406a6f4534f70",
+      "rgbaBase64": "Cxcp/zBaigBVnev/euBMgAsXKf8wWooAVZ3r/3rgTIALFyn/euBMgAsXKf8wWooAVZ3r/3rgTIALFyn/MFqKAFWd6/964EyAVZ3r/3rgTIALFyn/MFqKAFWd6/964EyACxcp/zBaigBVnev/MFqKAFWd6/964EyACxcp/zBaigBVnev/euBMgAsXKf8wWooACxcp/zBaigBVnev/euBMgAsXKf8wWooAVZ3r/3rgTIALFyn/euBMgAsXKf8wWooAVZ3r/3rgTIALFyn/MFqKAFWd6/964EyAVZ3r/3rgTIALFyn/MFqKAFWd6/964EyACxcp/zBaigBVnev/MFqKAFWd6/964EyACxcp/zBaigBVnev/euBMgAsXKf8wWooACxcp/zBaigBVnev/euBMgAsXKf8wWooAVZ3r/3rgTIALFyn/euBMgAsXKf8wWooAVZ3r/3rgTIALFyn/MFqKAFWd6/964EyAVZ3r/3rgTIALFyn/MFqKAFWd6/964EyACxcp/zBaigBVnev/",
+      "rgbSha256": "f13e8566399c0f57a55b86539741191dc5a1db426ed3aa694444ad31fb1c9e36"
+    },
+    {
+      "file": "p4-1x5.png",
+      "width": 1,
+      "height": 5,
+      "depth": 4,
+      "interlace": 0,
+      "sha256": "a47d1cc49b034253aa77ee633ad5669fc0f61cfab35c20a200856049e504d0d1",
+      "rgbaBase64": "Cxcp/3rgTP/pqW//WHKS/8c7tf8=",
+      "rgbSha256": "e949128a021af863bf9fdf73d55c4dfaa58ecc6b0ceb340b5736aed30d520e04"
+    },
+    {
+      "file": "p4-3x5.png",
+      "width": 3,
+      "height": 5,
+      "depth": 4,
+      "interlace": 0,
+      "sha256": "21e50ac224f8dc3e570ed5ab930e45d7670ad23a7ab8da7a1718596dadcaf341",
+      "rgbaBase64": "Cxcp/zBaigBVnev/euBM/58jrf/EZg7/6alv/w7s0P8zLzH/WHKS/3218/+i+FT/xzu1/+x+Fv8RwXf/",
+      "rgbSha256": "4f8d68e86d8e279bb1845ead1fc0dac617ce6c332dcdbc6790e0fc1816919f95"
+    },
+    {
+      "file": "p4-9x5.png",
+      "width": 9,
+      "height": 5,
+      "depth": 4,
+      "interlace": 0,
+      "sha256": "2fd2bf9302b908345612c8b00250190d1dabae65145b7529c7241391e66e2d3a",
+      "rgbaBase64": "Cxcp/zBaigBVnev/euBM/58jrf/EZg7/6alv/w7s0P8zLzH/euBM/58jrf/EZg7/6alv/w7s0P8zLzH/WHKS/3218/+i+FT/6alv/w7s0P8zLzH/WHKS/3218/+i+FT/xzu1/+x+Fv8RwXf/WHKS/3218/+i+FT/xzu1/+x+Fv8RwXf/NgTYgAsXKf8wWooAxzu1/+x+Fv8RwXf/NgTYgAsXKf8wWooAVZ3r/3rgTP+fI63/",
+      "rgbSha256": "41dcfe347e8a7cd3227d72228d1ab4620880f9582a9dc687bee8fea59e03537f"
+    },
+    {
+      "file": "p4-9x11-adam7.png",
+      "width": 9,
+      "height": 11,
+      "depth": 4,
+      "interlace": 1,
+      "sha256": "5f3171f7c7b9cff33009a693d6e0dbbd382c58572f9260dbf0945239b1620ff2",
+      "rgbaBase64": "Cxcp/zBaigBVnev/euBM/58jrf/EZg7/6alv/w7s0P8zLzH/euBM/58jrf/EZg7/6alv/w7s0P8zLzH/WHKS/3218/+i+FT/6alv/w7s0P8zLzH/WHKS/3218/+i+FT/xzu1/+x+Fv8RwXf/WHKS/3218/+i+FT/xzu1/+x+Fv8RwXf/NgTYgAsXKf8wWooAxzu1/+x+Fv8RwXf/NgTYgAsXKf8wWooAVZ3r/3rgTP+fI63/NgTYgAsXKf8wWooAVZ3r/3rgTP+fI63/xGYO/+mpb/8O7ND/VZ3r/3rgTP+fI63/xGYO/+mpb/8O7ND/My8x/1hykv99tfP/xGYO/+mpb/8O7ND/My8x/1hykv99tfP/ovhU/8c7tf/sfhb/My8x/1hykv99tfP/ovhU/8c7tf/sfhb/EcF3/zYE2IALFyn/ovhU/8c7tf/sfhb/EcF3/zYE2IALFyn/MFqKAFWd6/964Ez/EcF3/zYE2IALFyn/MFqKAFWd6/964Ez/nyOt/8RmDv/pqW//",
+      "rgbSha256": "cb8683952f5b784abade85b415b755571c9ee00943e490e11cae6c768c06d42a"
+    }
+  ]
+}

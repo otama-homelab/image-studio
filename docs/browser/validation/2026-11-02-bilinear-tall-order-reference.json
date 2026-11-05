@@ -1,0 +1,58 @@
+{
+  "date": "2026-11-02",
+  "status": "numerical-checked-private-bilinear-candidate",
+  "wasmSha256": "ff144be761344ef17c602252e5863a06b475f2cc060736c6d7ecd7c0d94093dd",
+  "wasmBytes": 14563,
+  "hostSha256": "2b6daf1f2dae856c9e7db7a2f23564090e7af6d816b9a90e5dc44107301d5422",
+  "buildFlag": "--bilinear --model-tall-order",
+  "fix": "Enable existing Pillow vertical-first order for very tall bilinear downscales, explicitly; default crop binary stays fixed",
+  "independentReference": {
+    "pillow": "12.2.0",
+    "cases": 16,
+    "allByteExact": true
+  },
+  "capturedReference": {
+    "pillow": "12.3.0",
+    "cases": 8,
+    "allByteExact": true
+  },
+  "normalModelSizeCases": [
+    {
+      "name": "portrait",
+      "source": "image-studio/web/public/examples/fictional-portrait-v1.png",
+      "sourceSha256": "ffd8a813329f8c4a2d1dd17a2d3b24a36c97c73059fc921d8cb1ad05cdbfb258",
+      "width": 1086,
+      "height": 1448,
+      "rgbFile": "portrait.rgb",
+      "output": {
+        "width": 2048,
+        "height": 2048
+      },
+      "outputBytes": 12582912,
+      "outputSha256": "144f04ea4f9eef5414d2240790882bece86963cec0d8a1a1f7b480b589d6a54f",
+      "oldNewAllBytesEqual": true
+    },
+    {
+      "name": "landscape",
+      "source": "image-studio-browser-evaluation/hr-matte-landscape-native-01/input.png",
+      "sourceSha256": "22b69a2c12db524a622c4f27c8907d16d5fb26fe0c8fec0926e907418bcaaaa6",
+      "width": 2000,
+      "height": 1000,
+      "rgbFile": "landscape.rgb",
+      "output": {
+        "width": 2048,
+        "height": 2048
+      },
+      "outputBytes": 12582912,
+      "outputSha256": "6d3305ac9869bae0a8c521dc9df7a30213b0f0150cd8fe12c4295287f6efe239",
+      "oldNewAllBytesEqual": true
+    }
+  ],
+  "cropWasmStillByteIdentical": true,
+  "sourceSnapshot": "image-studio-browser-evaluation/bilinear-current-source-matrix-01/pillow_resize_host.c",
+  "upstreamApiReference": "https://raw.githubusercontent.com/python-pillow/Pillow/12.2.0/src/PIL/Image.py",
+  "remaining": [
+    "Private Worker/browser/model acceptance; no public release approval",
+    "Independent extreme aspect reference is Pillow12.2; captured Pillow12.3 cases are a separate8-case set"
+  ]
+}

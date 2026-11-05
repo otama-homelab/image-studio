@@ -1,0 +1,43 @@
+Image Studio model/stage Worker integration record (2026-11-02)
+
+This record describes the private browser integration. It is not a new license,
+a complete binary applicability audit, or approval to distribute any model.
+Keep the separately supplied upstream license and third-party notice texts.
+
+Captured inputs:
+- Transformers.js 4.3.2, upstream revision
+  028721487d55aac3c7f6bad8d87d1b3511a1027c.
+  Captured transformers.web.js SHA256:
+  cd7d3236182f456b0b7833015f956df0c71ad63c0ef8bb4d9857d2a787c076e7.
+  Its package metadata declares onnxruntime-web
+  1.31.0-dev.20260914-8d85527a0 and onnxruntime-node 1.30.0.
+- This browser integration aliases the ORT browser/common imports to the
+  separately captured official onnxruntime-web 1.31.1 browser bundle instead.
+  ort.webgpu.bundle.min.mjs SHA256:
+  c90275ffcd0e74e8929f527840ce9339399bfd45f11a74887e4b81a893907b70.
+  The selected runtime MJS/WASM and ORT LICENSE/ThirdPartyNotices are separate
+  mounted resources, identified by their own hashes in the runtime manifest.
+- hash-wasm 4.12.0 sha256.umd.min.js SHA256:
+  ed7f5896b41aba98909ab143264c5b2ae5c81abf2e47f08dd2d1c0d02ce623de.
+
+Integration changes:
+The captured upstream input files above are not edited in place. esbuild
+bundles and minifies selected code with Image Studio adapters, trusted resource
+policy and Worker lifecycle code into classic Workers. Application adapters
+implement resource verification, model input/output conversion, ownership and
+cancellation; HR stages additionally use explicit bounded Worker reuse.
+Relevant source is under tools/browser-library-adapter/ and the corresponding
+build_browser_model_prepare.mjs / build_browser_hr_stages.mjs build tools.
+These application sources are covered by the application MIT license; upstream
+code and model terms remain separate.
+
+The browser distribution does not include the declared native Node backend.
+The browser model package and ORT substitution must not be described as the
+unmodified default Transformers.js package environment. This record does not
+claim numerical equivalence between runtime versions.
+
+The selected parent and max4 stage Worker source attribution confirms retained
+Transformers.js, tokenizers 0.2.0, jinja 0.5.10, hash-wasm and ORT source positions.
+Their separate captured full texts are retained. Private review source maps
+are not deployment assets. Model graph transformation/export records and
+processor/compiler source-release conditions are separate review items.

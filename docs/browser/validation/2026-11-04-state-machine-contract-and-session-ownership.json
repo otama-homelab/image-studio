@@ -1,0 +1,102 @@
+{
+  "status": "state-machine-contract-defined-retired-session-violation-reproduced-and-fixed",
+  "contract": "docs/browser/state-machine.md",
+  "scope": [
+    "Hierarchical product of route/input/background/export/transfer/gate state machines",
+    "I01-I12 invariants, B01-B12 and E01-E08 transitions, guards and save validity",
+    "Existing module ownership retained; no state-machine library or new production module"
+  ],
+  "finding": {
+    "invariant": "I05: retired owner cannot publish current UI state",
+    "before": "A retired createSession callback directly called setState; a late closed/blocked/busy state disabled the new session",
+    "red": "Runtime replacement -> new photo/session -> retired stopping snapshot reproduces disabled new run button",
+    "fix": "Only the session currently owned by BackgroundEditor may publish callback state",
+    "regressionEvents": [
+      "runtime replacement",
+      "pagehide then fresh session"
+    ],
+    "newPublicInterface": false
+  },
+  "validation": {
+    "domain": {
+      "files": 5,
+      "passed": 48
+    },
+    "initialFocusedUi": {
+      "files": 5,
+      "passed": 141,
+      "scope": "Before regression was added"
+    },
+    "red": {
+      "failed": 1,
+      "reason": "New session run button became disabled after retired notification"
+    },
+    "green": {
+      "passed": 1,
+      "scope": "Original single runtime replacement repro"
+    },
+    "finalUi": {
+      "files": 27,
+      "passed": 308,
+      "includesBothRegressionCases": true
+    },
+    "typecheckAndProductionBuild": true,
+    "distFiles": 14,
+    "deploymentPerformed": false
+  },
+  "sourceFiles": [
+    {
+      "path": "web/src/background/BackgroundEditor.tsx",
+      "bytes": 34381,
+      "sha256": "6c300757033bee2a6daaa1e936f31b8541e08c10f6c81fcb04365784256e9bda"
+    },
+    {
+      "path": "web/tests/backgroundEditor.test.tsx",
+      "bytes": 61352,
+      "sha256": "a6d84589c1fe18a83fb9e0cf3b869adc59c32309efccc919e4fc9c32a642b4de"
+    },
+    {
+      "path": "docs/browser/state-machine.md",
+      "bytes": 14927,
+      "sha256": "e51e02745d2a1b56441d6342a79022753a1309f4c80e1d212cc26a7697942bbb"
+    }
+  ],
+  "logs": [
+    {
+      "path": "image-studio-browser-evaluation/state-machine-contract-01/all-ui.log",
+      "bytes": 559,
+      "sha256": "b0f951f83808b13009578fc3a5c458dba46fde34b6f3baa0a37f14937777818c"
+    },
+    {
+      "path": "image-studio-browser-evaluation/state-machine-contract-01/build.log",
+      "bytes": 856,
+      "sha256": "1ab52597a3cfea4465aa0d02818b057a0ac7d48ec5feb03bed13bc50383977e8"
+    },
+    {
+      "path": "image-studio-browser-evaluation/state-machine-contract-01/domain.log",
+      "bytes": 4752,
+      "sha256": "fac7f59da5f2f4d1f22555efd770df374c5544f25f3ab0f3f9c3729c550a28db"
+    },
+    {
+      "path": "image-studio-browser-evaluation/state-machine-contract-01/retired-session-green.log",
+      "bytes": 334,
+      "sha256": "ddebb7d3910f5c69e50c216fc147fff486f608c981081f4dd98e1913387936ad"
+    },
+    {
+      "path": "image-studio-browser-evaluation/state-machine-contract-01/retired-session-red.log",
+      "bytes": 1320,
+      "sha256": "21d2af8e2df432b00ee33618f57c0fedb44b7465f35cfa5c38864e9205da4c60"
+    },
+    {
+      "path": "image-studio-browser-evaluation/state-machine-contract-01/ui.log",
+      "bytes": 600,
+      "sha256": "1ad64fb7987190a45659258b3f39e2557bb08ac34d3dbb56b1f1d17715e5b4da"
+    }
+  ],
+  "limits": [
+    "No exhaustive reachable product-state or all await-interleaving proof",
+    "Need contract-based review of remaining transition/event coverage, real BFCache and Worker termination failures",
+    "Existing source13/713d/620c native evidence belongs to pre-fix source; new source/input capture and targeted native acceptance remain",
+    "No public delivery, physical-device/print/human quality acceptance or final rights closure"
+  ]
+}

@@ -1,0 +1,332 @@
+{
+  "schema": "poc-candidate-1",
+  "purpose": "Measured PoC metadata, not the final D05 application manifest",
+  "models": [
+    {
+      "id": "onnx-birefnet-02",
+      "role": "hr",
+      "state": "candidate_not_approved_for_distribution",
+      "source": {
+        "repository": "ZhengPeng7/BiRefNet_HR-matting",
+        "revision": "5d6b6f8adcb5b417c871b1d84ceaae9871355b7f",
+        "weights_sha256": "a5a4de698739ea5e0e8bbab28e1b293dde95092b87a442d566cbc585c53cef55"
+      },
+      "precision": "float16",
+      "opset": 19,
+      "input": {
+        "name": "pixels",
+        "dtype": "float16",
+        "layout": "NCHW",
+        "shape": [
+          1,
+          3,
+          2048,
+          2048
+        ]
+      },
+      "output": {
+        "name": "alpha",
+        "dtype": "float32",
+        "layout": "NCHW",
+        "meaning": "sigmoid alpha"
+      },
+      "runtime": {
+        "native_ort": "1.31.1",
+        "browser_ort_web": "1.31.1"
+      },
+      "license": {
+        "identifier": "MIT",
+        "artifact_notices_audited": false
+      },
+      "files": [
+        {
+          "name": "model.onnx",
+          "url": null,
+          "bytes": 8452257,
+          "sha256": "6b7dcdd58e257ffebad013d3cf58b6f727457148d4eb1741f1399f87ec17f6e4"
+        },
+        {
+          "name": "model.onnx.data",
+          "url": null,
+          "bytes": 447632368,
+          "sha256": "364eab4994414fb107c1ec7680dd98202ec4ddb3b8d3dcc87f5a5f887890bb7c"
+        }
+      ],
+      "publication_blockers": [
+        "native comparison and PoC decision",
+        "final LICENSE/NOTICE audit",
+        "immutable distribution URLs and headers"
+      ],
+      "native_full_reference_measured": false,
+      "browser_full_reference_measured": false,
+      "acceptance": "pending"
+    },
+    {
+      "id": "onnx-vitmatte-03",
+      "role": "matte",
+      "state": "candidate_not_approved_for_distribution",
+      "source": {
+        "repository": "hustvl/vitmatte-base-distinctions-646",
+        "revision": "b58373f8dbbfbeb58157456e2e4949f9f872aa18",
+        "weights_sha256": "0d1e43962bfc6daecec29a76b90194b51902ad0286dfaaf91e1b8a4f17d15348"
+      },
+      "precision": "float32",
+      "opset": 18,
+      "input": {
+        "name": "pixel_values",
+        "dtype": "float32",
+        "layout": "NCHW",
+        "shape": [
+          1,
+          4,
+          "padded_height",
+          "padded_width"
+        ]
+      },
+      "output": {
+        "name": "alphas",
+        "dtype": "float32",
+        "layout": "NCHW",
+        "meaning": "sigmoid alpha"
+      },
+      "runtime": {
+        "native_ort": "1.31.1",
+        "browser_ort_web": "1.31.1"
+      },
+      "license": {
+        "identifier": "Apache-2.0",
+        "artifact_notices_audited": false
+      },
+      "files": [
+        {
+          "name": "model.onnx",
+          "url": null,
+          "sha256": "cf0d2103d49cc7e3938ce219d1bebfc623c2661c5e1309f9b97751df444c5592",
+          "bytes": 6933207
+        },
+        {
+          "name": "model.onnx.data",
+          "url": null,
+          "sha256": "a7307d78560ead989cb4eb432982ca19bb0cf54834070afe377ad7a0d1b9fcf6",
+          "bytes": 390401920
+        }
+      ],
+      "publication_blockers": [
+        "PoC quality decision",
+        "final LICENSE/NOTICE audit",
+        "immutable distribution URLs and headers"
+      ],
+      "headwise_attention": true,
+      "declared_input_padding_multiple": 32,
+      "declared_padded_edge_range": [
+        32,
+        2048
+      ],
+      "browser_test_target": {
+        "os": "Windows",
+        "browser": "Chrome 156.0.8078.74",
+        "adapter_vendor": "nvidia",
+        "architecture": "ampere",
+        "is_fallback_adapter": false
+      },
+      "browser_test_shapes": [
+        [
+          1,
+          4,
+          1408,
+          1152
+        ],
+        [
+          1,
+          4,
+          2016,
+          1632
+        ],
+        [
+          1,
+          4,
+          1344,
+          2016
+        ],
+        [
+          1,
+          4,
+          2016,
+          2016
+        ],
+        [
+          1,
+          4,
+          1600,
+          2016
+        ]
+      ],
+      "cpu_placement": {
+        "nodes": 67,
+        "scope": "shape/coordinate arithmetic; actual names in placement evidence"
+      },
+      "browser_evidence": "validation/2026-10-31-vitmatte-headwise-webgpu-comparison.json",
+      "native_full_reference_measured": true,
+      "browser_full_reference_measured": true,
+      "acceptance": "pending",
+      "native_measurement_modes": {
+        "whole_session_completed_cases": 3,
+        "diagnostic_staged_completed_cases": 2,
+        "complete_whole_session_run": false
+      },
+      "native_evidence": "validation/2026-10-31-vitmatte-native-full-coverage.json"
+    },
+    {
+      "id": "onnx-birefnet-grid-03-output-tiles-01",
+      "role": "hr",
+      "state": "candidate_not_approved_for_distribution",
+      "source": {
+        "repository": "ZhengPeng7/BiRefNet_HR-matting",
+        "revision": "5d6b6f8adcb5b417c871b1d84ceaae9871355b7f",
+        "weights_sha256": "a5a4de698739ea5e0e8bbab28e1b293dde95092b87a442d566cbc585c53cef55"
+      },
+      "precision": "float16",
+      "opset": 19,
+      "input": {
+        "name": "pixels",
+        "dtype": "float16",
+        "layout": "NCHW",
+        "shape": [
+          1,
+          3,
+          2048,
+          2048
+        ]
+      },
+      "output": {
+        "name": "alpha",
+        "dtype": "float32",
+        "layout": "NCHW",
+        "meaning": "sigmoid alpha"
+      },
+      "runtime": {
+        "native_ort": "1.31.1",
+        "browser_ort_web": "1.31.1"
+      },
+      "license": {
+        "identifier": "MIT",
+        "artifact_notices_audited": false
+      },
+      "files": [
+        {
+          "name": "model-output-tiles-01.onnx",
+          "url": null,
+          "bytes": 9756195,
+          "sha256": "3fbcfed0079e8a3b95bcba7c6bd2a8776a73c1e6681ab0aec51198bd24349006"
+        },
+        {
+          "name": "model.onnx.data",
+          "url": null,
+          "bytes": 447632368,
+          "sha256": "364eab4994414fb107c1ec7680dd98202ec4ddb3b8d3dcc87f5a5f887890bb7c"
+        }
+      ],
+      "publication_blockers": [
+        "full browser execution and PoC quality decision",
+        "final LICENSE/NOTICE audit",
+        "immutable distribution URLs and headers"
+      ],
+      "native_full_reference_measured": true,
+      "browser_full_reference_measured": false,
+      "acceptance": "pending",
+      "parent_artifact_id": "onnx-birefnet-02",
+      "native_evidence": "validation/2026-10-31-birefnet-native-staged-set.json",
+      "metadata_evidence": "validation/2026-10-31-birefnet-final-candidate-metadata.json",
+      "native_measurement_modes": {
+        "diagnostic_staged_completed_cases": 5,
+        "complete_whole_session_run": false
+      },
+      "arithmetic_changes": [
+        "All 20 DeformConv nodes decomposed into kernel-wise FP32 GridSample/mask/Conv/accumulation then original output dtype",
+        "Final output channel tiling preserves all 240 channels; FP16 resize and FP32 partial Conv/sums/bias then one FP16 cast"
+      ],
+      "browser_attempt_evidence": "validation/2026-10-31-birefnet-webgpu-nonfinite.json",
+      "browser_attempt_status": "strict_gpu_session_created_full_run_nonfinite_output"
+    },
+    {
+      "id": "onnx-birefnet-grid-03-fp32-means-01",
+      "role": "hr",
+      "state": "candidate_not_approved_for_distribution",
+      "source": {
+        "repository": "ZhengPeng7/BiRefNet_HR-matting",
+        "revision": "5d6b6f8adcb5b417c871b1d84ceaae9871355b7f",
+        "weights_sha256": "a5a4de698739ea5e0e8bbab28e1b293dde95092b87a442d566cbc585c53cef55"
+      },
+      "precision": "float16",
+      "opset": 19,
+      "input": {
+        "name": "pixels",
+        "dtype": "float16",
+        "layout": "NCHW",
+        "shape": [
+          1,
+          3,
+          2048,
+          2048
+        ]
+      },
+      "output": {
+        "name": "alpha",
+        "dtype": "float32",
+        "layout": "NCHW",
+        "meaning": "sigmoid alpha"
+      },
+      "runtime": {
+        "native_ort": "1.31.1",
+        "browser_ort_web": "1.31.1"
+      },
+      "license": {
+        "identifier": "MIT",
+        "artifact_notices_audited": false
+      },
+      "files": [
+        {
+          "name": "model-fp32-means-01.onnx",
+          "url": null,
+          "bytes": 9757686,
+          "sha256": "584924efc01f490d3393eeff623fcfb0d807120e878d32a4b130a61f80aa1e41"
+        },
+        {
+          "name": "model.onnx.data",
+          "url": null,
+          "bytes": 447632368,
+          "sha256": "364eab4994414fb107c1ec7680dd98202ec4ddb3b8d3dcc87f5a5f887890bb7c"
+        }
+      ],
+      "publication_blockers": [
+        "PoC quality decision and A10 performance/cache/environment measurements",
+        "final LICENSE/NOTICE audit",
+        "immutable distribution URLs and headers"
+      ],
+      "native_full_reference_measured": true,
+      "browser_full_reference_measured": true,
+      "acceptance": "pending",
+      "parent_artifact_id": "onnx-birefnet-grid-03-output-tiles-01",
+      "native_measurement_modes": {
+        "diagnostic_staged_completed_cases": 5,
+        "complete_whole_session_run": false,
+        "raw_identical_to_previous_cpu_candidate_cases": 5
+      },
+      "arithmetic_changes": [
+        "All 20 DeformConv nodes decomposed into kernel-wise FP32 GridSample/mask/Conv/accumulation then original output dtype",
+        "Final output channel tiling preserves all 240 channels; FP16 resize and FP32 partial Conv/sums/bias then one FP16 cast",
+        "Five original spatial FP16 means compute sum/division in FP32 and restore original FP16 outputs; axes, weights, resolution unchanged"
+      ],
+      "browser_attempt_evidence": "validation/2026-10-31-birefnet-fp32-means-webgpu-all-cases.json",
+      "browser_attempt_status": "five_full2048_cases_finite_output_sha_verified",
+      "browser_completed_reference_cases": 5,
+      "original_size_comparison_evidence": "validation/2026-10-31-birefnet-fp32-means-rocm-all-cases.json",
+      "browser_full_reference_executed": true,
+      "native_evidence": "validation/2026-10-31-birefnet-fp32-means-native-all-cases.json",
+      "same_session_repeat_measured": true,
+      "repeat_evidence": "validation/2026-10-31-birefnet-repeat-same-session.json",
+      "native_composite_reference_cases_measured": 5,
+      "composite_evidence": "validation/2026-10-31-birefnet-composite-all-cases.json"
+    }
+  ]
+}

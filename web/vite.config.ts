@@ -1,0 +1,16 @@
+import {defineConfig} from 'vite';
+import react from '@vitejs/plugin-react';
+import {createRequire} from 'node:module';
+import {dirname,join} from 'node:path';
+import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+import {createBuildInfo} from './scripts/build-info.mjs';
+import {createPagesHeaders} from './scripts/pages-headers.mjs';
+import {parseBackgroundRelease} from './scripts/background-release.mjs';
+const require=createRequire(import.meta.url),png=dirname(require.resolve('fast-png')),pako=dirname(require.resolve('pako'));
+const pinned=[['fast-png-decoder',join(png,'png_decoder.js'),'14453916f2b5cdfaae36bdd511e77a13930ae7eb0d542f21cc59c1c9e69c2166'],['fast-png-keyword',join(png,'helpers/text.js'),'3af1b5d0fb66ff7d5ea81683c70f7e5a0a76959f1e44a99a699fd5b9f730a589'],['pako-adler32',join(pako,'lib/zlib/adler32.js'),'99618eb68a96858148e2dd56f478aa7e4321c434f5f2ee6c57f59c0c568f0596']];
+for(const [,file,hash] of pinned)if(createHash('sha256').update(readFileSync(file)).digest('hex')!==hash)throw Error('Pinned codec source changed');
+let backgroundReleaseMetadata:{schemaVersion:1;configSha256:string}|null=null;
+const buildInfo=createBuildInfo(fileURLToPath(new URL('.',import.meta.url)));
+export default defineConfig({define:{...(process.env.VITEST?{}:{__CROP_RESIZE__:null,__BACKGROUND_RELEASE__:null}),__APP_BUILD__:JSON.stringify(buildInfo)},plugins:[react(),{name:'image-studio-build-info',apply:'build',configResolved(config){const release=parseBackgroundRelease(config.define.__BACKGROUND_RELEASE__);backgroundReleaseMetadata=release===null?null:{schemaVersion:1,configSha256:createHash('sha256').update(JSON.stringify(release)).digest('hex')};},generateBundle(){if(createBuildInfo(fileURLToPath(new URL('.',import.meta.url))).sourceId!==buildInfo.sourceId)this.error('Build inputs changed during build; retry');this.emitFile({type:'asset',fileName:'_headers',source:createPagesHeaders(backgroundReleaseMetadata!==null)});if(backgroundReleaseMetadata)this.emitFile({type:'asset',fileName:'background-release.json',source:JSON.stringify(backgroundReleaseMetadata,null,2)+'\n'});this.emitFile({type:'asset',fileName:'build-info.json',source:JSON.stringify(buildInfo,null,2)+'\n'});}}],resolve:{alias:Object.fromEntries(pinned.map(([name,file])=>[name,file]))},worker:{format:'es'},server:{fs:{allow:['..']}},build:{target:'es2022'}});

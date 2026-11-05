@@ -1,0 +1,93 @@
+---
+license: mit
+base_model:
+- ZhengPeng7/BiRefNet_lite
+library_name: onnx
+pipeline_tag: image-segmentation
+tags:
+- background-removal
+- mask-generation
+- onnx
+- onnxruntime
+- cpu
+- birefnet
+---
+
+# BiRefNet_lite, ONNX, native DeformConv, dynamic input size
+
+This is [ZhengPeng7/BiRefNet_lite](https://huggingface.co/ZhengPeng7/BiRefNet_lite), re-exported to
+ONNX for fast CPU inference with onnxruntime. The weights are unchanged, so all credit for the model
+goes to its authors (see the citation below). Only the export is different:
+
+- **Native `DeformConv`** (ONNX opset 19). The common export writes BiRefNet's deformable convolutions
+  as a lattice of `GatherND` / `Transpose` / `Mul` / `Sum` nodes. When we profiled it on a CPU,
+  Transpose took 31% of kernel time and Mul 18%, almost all of it in one 7×7 deformable convolution.
+  onnxruntime (1.20 or later) runs `DeformConv` natively on the CPU.
+- **Dynamic input size.** Height and width can be any multiple of 64, where the common export is
+  fixed at 1024×1024.
+
+## Speed and quality
+
+The speeds below were measured on an Intel Core Ultra 9 185H, CPU only, onnxruntime 1.30. They are
+medians over five photographs (portrait, dog on grass, person on a street, product, still life) on a
+machine that was also running other work.
+
+| input | this export | stock export (`onnx-community/BiRefNet_lite-ONNX`) | mask IoU vs stock at 1024 |
+|---|---|---|---|
+| 1024 | 2.4 s | 6.5 s, 10.5 GB peak memory | 0.999 (identical to PyTorch) |
+| 768 | 1.4 s | not possible (fixed 1024) | 0.993 |
+| 640 | 1.2 s | not possible | 0.990 |
+| 512 | 0.6 s, ~1.3 GB peak memory | not possible | 0.987 (worst image 0.975) |
+
+IoU is measured on the binary mask (alpha ≥ 0.5) against the stock export's 1024 output. At 1024 this
+export's output matches the PyTorch model exactly. Resizing to a square scores better than keeping the
+aspect ratio. Sides that are not multiples of 64 fail with an error in a `Concat` node, so they cannot
+silently produce a wrong mask.
+
+What we measured and found *not* worth it: dynamic int8 quantisation (no speedup, larger file),
+OpenVINO (cannot load `DeformConv`; a GridSample rewrite only ties onnxruntime at 512), and thread-count
+tuning (within noise).
+
+## Usage
+
+```python
+import numpy as np, onnxruntime as ort
+from PIL import Image
+
+sess = ort.InferenceSession("onnx/model.onnx", providers=["CPUExecutionProvider"])
+side = 768  # any multiple of 64
+img = Image.open("photo.jpg").convert("RGB")
+x = np.asarray(img.resize((side, side), Image.BILINEAR), np.float32) / 255.0
+x = ((x - [0.485, 0.456, 0.406]) / [0.229, 0.224, 0.225]).astype(np.float32).transpose(2, 0, 1)[None]
+logits = sess.run(None, {"input_image": x})[0][0, 0]
+alpha = Image.fromarray((255 / (1 + np.exp(-logits))).astype(np.uint8)).resize(img.size, Image.BILINEAR)
+```
+
+Input `input_image` has shape `[1, 3, H, W]` (ImageNet normalisation). Output `output_image` has shape
+`[1, 1, H, W]` and holds logits, so apply a sigmoid to get alpha.
+
+## Reproducing the export
+
+`export_birefnet.py` in this repo does it. It needs torch, torchvision, timm, kornia, einops,
+safetensors, huggingface_hub and onnx, CPU wheels are enough. It maps `torchvision::deform_conv2d` to
+ONNX `DeformConv` and exports with dynamic axes. Exports are not byte-identical from run to run, but
+two independent exports gave bit-identical outputs.
+
+sha256 of `onnx/model.onnx`: `1e0da42f0fde010e32e938bad388457ecefe35806fde9d923421997861ae9391`
+
+This export is used by [painter](https://github.com/Rusya13/painter) (`painter.matting`).
+
+## License and citation
+
+MIT, the same as the original model. Please cite the BiRefNet paper:
+
+```bibtex
+@article{zheng2024birefnet,
+  title={Bilateral Reference for High-Resolution Dichotomous Image Segmentation},
+  author={Zheng, Peng and Gao, Dehong and Fan, Deng-Ping and Liu, Li and Laaksonen, Jorma and Ouyang, Wanli and Sebe, Nicu},
+  journal={CAAI Artificial Intelligence Research},
+  volume={3},
+  pages={9150038},
+  year={2024}
+}
+```

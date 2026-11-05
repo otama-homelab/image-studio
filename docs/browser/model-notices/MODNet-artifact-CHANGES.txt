@@ -1,0 +1,23 @@
+{
+  "status": "artifact-identity-only-not-distribution-approval",
+  "repository": "Xenova/modnet",
+  "revision": "fa2fa546052fba4c08921230a26cc69a333fca12",
+  "path": "onnx/model.onnx",
+  "bytes": 25888640,
+  "sha256": "07c308cf0fc7e6e8b2065a12ed7fc07e1de8febb7dc7839d7b7f15dd66584df9",
+  "evidence": "https://huggingface.co/api/models/Xenova/modnet/tree/fa2fa546052fba4c08921230a26cc69a333fca12/onnx",
+  "checkedAtUtc": "2026-11-03T17:57:01.970559+00:00",
+  "modifications": [
+    "The adopted ONNX bytes are unchanged from the fixed Hub artifact.",
+    "Image Studio supplies a separate local model configuration and explicit CPU/GPU runtime profiles.",
+    "ZIP transport preserves original ONNX bytes and does not establish equality with a training checkpoint."
+  ],
+  "licenseEvidence": [
+    "MODNet-ONNX-model-card.txt: Apache-2.0 declaration at the same fixed Hub revision.",
+    "MODNet-code-LICENSE.txt and MODNet-upstream-ONNX-README.txt: captured upstream license and community-export attribution."
+  ],
+  "remaining": [
+    "Original training checkpoint correspondence and clean conversion reproduction are not established by this metadata check.",
+    "Keep Apache-2.0 text and upstream attribution in the reviewed release; this record grants no additional rights."
+  ]
+}

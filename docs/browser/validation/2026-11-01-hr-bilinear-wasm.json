@@ -1,0 +1,210 @@
+{
+  "status": "passed",
+  "wasmBytes": 14826,
+  "wasmSha256": "5c529458593b5268758abd178ca3064d354bf92e3b97066dd8855c46aa6eae19",
+  "cases": [
+    {
+      "filter": "bilinear",
+      "width": 4,
+      "height": 3,
+      "allBytesExact": true
+    },
+    {
+      "filter": "bilinear",
+      "width": 11,
+      "height": 9,
+      "allBytesExact": true
+    },
+    {
+      "filter": "bilinear",
+      "width": 7,
+      "height": 5,
+      "allBytesExact": true
+    },
+    {
+      "filter": "bilinear",
+      "width": 9,
+      "height": 2,
+      "allBytesExact": true
+    },
+    {
+      "filter": "lanczos",
+      "width": 4,
+      "height": 3,
+      "allBytesExact": true
+    },
+    {
+      "filter": "lanczos",
+      "width": 11,
+      "height": 9,
+      "allBytesExact": true
+    },
+    {
+      "filter": "lanczos",
+      "width": 4,
+      "height": 3,
+      "allBytesExact": true
+    },
+    {
+      "filter": "lanczos",
+      "width": 6,
+      "height": 4,
+      "allBytesExact": true
+    }
+  ],
+  "filters": [
+    "bilinear",
+    "lanczos"
+  ],
+  "growthImport": "foreground_memory_grow",
+  "maxMemoryBytes": 262144,
+  "limits": [
+    "Tiny RGB only, no2048 memory/performance acceptance",
+    "Node WebAssembly, not native browser/Worker/CSP acceptance",
+    "Managed runtime fork and unmodified upstream Pillow, not a published release"
+  ],
+  "date": "2026-11-01",
+  "memoryAdapterTestsPassed": 7,
+  "build": {
+    "commands": [
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01/Resample.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/hr-bilinear-wasm-01/pillow-objects-tcjksdha/part-0.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow_resize_host.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/hr-bilinear-wasm-01/pillow-objects-tcjksdha/part-1.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-foreground-fork-01/libsrc/stdlib/malloc.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/hr-bilinear-wasm-01/pillow-objects-tcjksdha/part-2.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-foreground-fork-01/libsrc/stdlib/calloc.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/hr-bilinear-wasm-01/pillow-objects-tcjksdha/part-3.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-foreground-fork-01/libsrc/string/memcpy.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/hr-bilinear-wasm-01/pillow-objects-tcjksdha/part-4.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-foreground-fork-01/libsrc/string/memset.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/hr-bilinear-wasm-01/pillow-objects-tcjksdha/part-5.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-foreground-fork-01/libsrc/_wasm/unistd/brk.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/hr-bilinear-wasm-01/pillow-objects-tcjksdha/part-6.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-foreground-fork-01/libsrc/math/finite.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/hr-bilinear-wasm-01/pillow-objects-tcjksdha/part-7.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-c",
+        "-D__BYTE_ORDER__=1234",
+        "-D__ORDER_LITTLE_ENDIAN__=1234",
+        "-I/home/yamato/otama-homelab/image-studio-browser-evaluation/pillow-c-resize-01",
+        "-I/home/yamato/otama-homelab/image-studio/tools/fixtures/pillow-standalone",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-foreground-fork-01/libsrc/math/ceil.c",
+        "-o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/hr-bilinear-wasm-01/pillow-objects-tcjksdha/part-8.o"
+      ],
+      [
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/xcc-wasm-01/xcc-631e318432aeaaf72d6d2dfc93085766934314a2/wcc",
+        "-nostdlib",
+        "--entry-point=",
+        "--stack-size=65536",
+        "-e",
+        "pillow_resize_rgb,malloc,free,pillow_resize_bilinear_rgb",
+        "-Wl,--allow-undefined",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/hr-bilinear-wasm-01/pillow-objects-tcjksdha/part-0.o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/hr-bilinear-wasm-01/pillow-objects-tcjksdha/part-1.o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/hr-bilinear-wasm-01/pillow-objects-tcjksdha/part-2.o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/hr-bilinear-wasm-01/pillow-objects-tcjksdha/part-3.o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/hr-bilinear-wasm-01/pillow-objects-tcjksdha/part-4.o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/hr-bilinear-wasm-01/pillow-objects-tcjksdha/part-5.o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/hr-bilinear-wasm-01/pillow-objects-tcjksdha/part-6.o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/hr-bilinear-wasm-01/pillow-objects-tcjksdha/part-7.o",
+        "/home/yamato/otama-homelab/image-studio-browser-evaluation/hr-bilinear-wasm-01/pillow-objects-tcjksdha/part-8.o",
+        "-o",
+        "pillow-resize.wasm"
+      ]
+    ],
+    "boundedGrowth": true,
+    "growthImport": "foreground_memory_grow",
+    "bilinearExport": true,
+    "wasmSha256": "5c529458593b5268758abd178ca3064d354bf92e3b97066dd8855c46aa6eae19",
+    "bytes": 14826,
+    "hostSha256": "9e4659e90da962fd23dcb611485e8397eb5a38eec83a3c91e593d81c9f21a248",
+    "runtimeFork": {
+      "baseCommit": "631e318432aeaaf72d6d2dfc93085766934314a2",
+      "diffSha256": "99665577c6b20a64224876ec5bc6ee052cb6060e9a3bf18e62f4aa118c7e07c7"
+    }
+  },
+  "sourceSha256": {
+    "tools/build_pillow_wcc.py": "7d4274c3aa1720e88905da7e89a42e342c523790fbba78ef3220fad0d75bbc50",
+    "tools/fixtures/pillow_resize_host.c": "9e4659e90da962fd23dcb611485e8397eb5a38eec83a3c91e593d81c9f21a248",
+    "tools/browser-library-adapter/pillow-resize-runtime.mjs": "05f7baec12d806048be30b3170a5c5c4fa032483be572c238bd814a84b24816a",
+    "tools/browser-library-adapter/pillow-resize-memory.mjs": "dba13f5173c6919a0b86ed2f7cf0c773dd457bc2582609bf213915546266fea6",
+    "tools/check_pillow_bilinear_wasm.mjs": "9ffa26676cf564d8a1fb757339bd9e7b2c1c10e5107e3e89b6f06e064fdd356c",
+    "tests/test_pillow_resize_memory.mjs": "f3c222d344326d15088ca69c83fb6e76f8a69dff8dd7653c41045bd45daa0eaa"
+  },
+  "resources": "nice19/core0/Node96MiB, tiny native/WASM CPU only; no model/GPU/browser"
+}

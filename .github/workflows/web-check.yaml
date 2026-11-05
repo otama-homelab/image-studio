@@ -1,0 +1,207 @@
+name: Check browser app
+
+on:
+  pull_request:
+    paths:
+      - 'web/**'
+      - 'tools/browser-library-adapter/**'
+      - 'tools/browser-webgpu-poc/**'
+      - 'docs/browser/prototype/**'
+      - 'docs/browser/design-tokens.css'
+      - 'docs/browser/models.candidate.json'
+      - 'docs/browser/validation/2026-10-31-geometry-reference.json'
+      - 'tools/stage_browser_runtime.mjs'
+      - 'docs/browser/runtime-assets.candidate.json'
+      - 'docs/browser/runtime-notices/**'
+      - 'docs/browser/model-notices/**'
+      - 'tools/browser-build/**'
+      - 'tools/browser-build-dependencies.mjs'
+      - 'tools/build_browser_release.mjs'
+      - 'tools/build_browser_model_prepare.mjs'
+      - 'tools/build_browser_hr_stages.mjs'
+      - 'tools/build_browser_public_stage_worker.mjs'
+      - 'tools/build_browser_staged_policy.mjs'
+      - 'tools/build_browser_local_app.mjs'
+      - 'tools/check_browser_model_notices.mjs'
+      - 'tests/*.mjs'
+      - 'tests/*.cjs'
+      - 'tests/test_local_app_headers.py'
+      - 'tools/browser_process_resources.cjs'
+      - 'tools/browser_resource_stream.cjs'
+      - 'tools/prepare_browser_r2_cors.mjs'
+      - 'tools/build_browser_model_archives.py'
+      - 'tests/test_browser_model_archives.py'
+      - 'tools/check_browser_http_resources.mjs'
+      - 'tools/review_browser_private_artifact.mjs'
+      - 'tools/verify_browser_release_bindings.mjs'
+      - 'tools/prepare_browser_build_input.py'
+      - 'tests/test_browser_build_input.py'
+      - 'tests/test_release_version_sync.py'
+      - 'tools/browser_download_transport.cjs'
+      - 'tools/observe_browser_local_app.cjs'
+      - 'tools/observe_browser_warm_session.cjs'
+      - 'tests/fixtures/*.mjs'
+      - 'LICENSE'
+      - 'VERSION'
+      - '.github/workflows/version-bump.yaml'
+      - '.github/workflows/web-check.yaml'
+  push:
+    branches: [main]
+    tags: ['v*.*.*']
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      release_tag:
+        description: Existing stable tag, called by version-bump after its atomic push
+        required: false
+        default: ''
+        type: string
+    secrets:
+      CLOUDFLARE_API_TOKEN:
+        required: false
+      CLOUDFLARE_ACCOUNT_ID:
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: browser-check-${{ inputs.release_tag || github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') && !inputs.release_tag }}
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: web
+    env:
+      NODE_OPTIONS: --max-old-space-size=192
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+          ref: ${{ inputs.release_tag || github.sha }}
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: web/.node-version
+          package-manager-cache: false
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts
+      - name: Install pinned browser Worker build dependencies
+        run: npm ci --prefix ../tools/browser-build --ignore-scripts
+      - name: Check installed Worker build dependencies
+        run: node --input-type=module -e "import {resolveBrowserBuildDependencies} from '../tools/browser-build-dependencies.mjs'; resolveBrowserBuildDependencies('../tools/browser-build');"
+      - name: Audit Worker build dependencies
+        run: npm audit --prefix ../tools/browser-build --audit-level=high
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+      - name: Check build scripts and distribution guards
+        run: npm run test:scripts
+      - name: Check captured model documents and private builder syntax
+        run: |
+          node ../tools/check_browser_model_notices.mjs
+          node --check ../tools/browser-build-dependencies.mjs
+          node --check ../tools/build_browser_release.mjs
+          node --check ../tools/build_browser_model_prepare.mjs
+          node --check ../tools/build_browser_hr_stages.mjs
+          node --check ../tools/build_browser_public_stage_worker.mjs
+          node --check ../tools/verify_browser_release_bindings.mjs
+          node --check ../tools/build_browser_staged_policy.mjs
+          node --check ../tools/build_browser_local_app.mjs
+      - name: Check local validation response policies
+        run: |
+          python3 -m unittest discover -s ../tests -p test_local_app_headers.py
+          python3 -m unittest discover -s ../tests -p test_browser_model_archives.py
+          python3 -m unittest discover -s ../tests -p test_browser_build_input.py
+          python3 -m unittest discover -s ../tests -p test_release_version_sync.py
+      - name: Check CPU domain and worker contracts
+        run: npm run test:domain
+      - name: Check browser app contracts
+        run: npm test
+      - name: Prepare fixed anonymous background build input
+        env:
+          IMAGE_STUDIO_BUILD_INPUT: ${{ vars.IMAGE_STUDIO_BUILD_INPUT }}
+        run: python3 ../tools/prepare_browser_build_input.py
+      - name: Build static Pages artifact
+        run: |
+          npm run build
+          test -f dist/background-release.json
+      - name: Freeze and verify review artifact
+        run: |
+          mkdir "$RUNNER_TEMP/image-studio-release"
+          cp -R dist "$RUNNER_TEMP/image-studio-release/dist"
+          npm run release:inventory -- create "$RUNNER_TEMP/image-studio-release/dist" "$RUNNER_TEMP/image-studio-release/inventory.json"
+          npm run release:inventory -- verify dist "$RUNNER_TEMP/image-studio-release/inventory.json"
+          npm run release:inventory -- verify "$RUNNER_TEMP/image-studio-release/dist" "$RUNNER_TEMP/image-studio-release/inventory.json"
+      - name: Retain reviewed static artifact
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: image-studio-static-review
+          path: ${{ runner.temp }}/image-studio-release/
+          if-no-files-found: error
+          retention-days: 14
+
+  deploy:
+    name: Deploy checked Pages artifact
+    needs: web
+    if: github.event_name == 'push' || inputs.release_tag
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    environment:
+      name: ${{ (startsWith(github.ref, 'refs/tags/') || inputs.release_tag) && 'production' || 'preview' }}
+    concurrency:
+      group: image-studio-pages-${{ (startsWith(github.ref, 'refs/tags/') || inputs.release_tag) && 'production' || 'preview' }}
+      cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') && !inputs.release_tag }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ inputs.release_tag || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: web/.node-version
+          package-manager-cache: false
+      - name: Validate deployment target
+        id: target
+        env:
+          DEPLOY_REF: ${{ inputs.release_tag && format('refs/tags/{0}', inputs.release_tag) || github.ref }}
+        run: |
+          BRANCH=$(node web/scripts/deployment-target.mjs branch "$DEPLOY_REF" VERSION)
+          if [ "$BRANCH" = production ]; then
+            git merge-base --is-ancestor HEAD refs/remotes/origin/main
+          fi
+          printf 'branch=%s\nsha=%s\n' "$BRANCH" "$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Download the artifact checked in this run
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: image-studio-static-review
+          path: ${{ runner.temp }}/image-studio-release
+      - name: Verify exact bytes before upload
+        run: node web/scripts/release-inventory.mjs verify "$RUNNER_TEMP/image-studio-release/dist" "$RUNNER_TEMP/image-studio-release/inventory.json"
+      - name: Check Pages production branch
+        run: node web/scripts/deployment-target.mjs verify-project
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Deploy to Cloudflare Pages
+        id: pages
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          packageManager: npm
+          wranglerVersion: '4.157.0'
+          command: pages deploy ${{ runner.temp }}/image-studio-release/dist --project-name=image-studio --branch=${{ steps.target.outputs.branch }} --commit-hash=${{ steps.target.outputs.sha }}
+      - name: Record deployment receipt
+        env:
+          DEPLOY_URL: ${{ steps.pages.outputs.deployment-url }}
+          DEPLOY_ALIAS: ${{ steps.pages.outputs.pages-deployment-alias-url }}
+          DEPLOY_BRANCH: ${{ steps.target.outputs.branch }}
+          DEPLOY_SHA: ${{ steps.target.outputs.sha }}
+        run: |
+          printf 'Pages branch: `%s`\n\nCommit: `%s`\n\nDeployment: %s\n\nAlias: %s\n' "$DEPLOY_BRANCH" "$DEPLOY_SHA" "$DEPLOY_URL" "$DEPLOY_ALIAS" >> "$GITHUB_STEP_SUMMARY"

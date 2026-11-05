@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-01",
+  "status": "candidate_not_deployed",
+  "runtime": "onnxruntime-web",
+  "version": "1.31.1",
+  "mode": "webgpu,asyncify,numThreads1,proxyfalse",
+  "pagesAssetLimitBytes": 26214400,
+  "files": [
+    {
+      "name": "ort-wasm-simd-threaded.asyncify.mjs",
+      "bytes": 53457,
+      "sha256": "59cf781530e1a16df2a291d78798e3ec1152467edaec402d6f9599d85047c302",
+      "hosting": "pages",
+      "contentType": "text/javascript",
+      "url": null
+    },
+    {
+      "name": "ort-wasm-simd-threaded.asyncify.wasm",
+      "bytes": 28747738,
+      "sha256": "ca319e9539cd0f1e291cf56074760121eaf39650f5dbf84b6e52c07f4b2944ec",
+      "hosting": "r2",
+      "contentType": "application/wasm",
+      "url": null
+    }
+  ],
+  "networkPolicy": {
+    "mjs": "App same origin /runtime/ immutable version/hash path",
+    "wasm": "Explicit build-pinned R2 origin /runtime/ immutable version/hash path; no arbitrary origins",
+    "requirements": [
+      "R2 CORS GET allows exact app production/preview origins",
+      "CSP connect-src allows chosen WASM origin",
+      "No need for image upload or Python runtime",
+      "Keep numThreads1; no thread acceleration claimed, revisit isolation headers if threading changes"
+    ]
+  },
+  "limits": [
+    "No hosting origin configured or upload performed",
+    "Metadata records existing official package files; complete runtime/third-party notice audit remains",
+    "Actual cross-origin fetch/WASM compile/model execution and CSP not yet accepted"
+  ],
+  "wasmFamily": "asyncify",
+  "requiredModuleExport": "webgpuInit",
+  "entrypoint": {
+    "name": "ort.webgpu.bundle.min.mjs",
+    "bytes": 122491,
+    "sha256": "c90275ffcd0e74e8929f527840ce9339399bfd45f11a74887e4b81a893907b70"
+  },
+  "compatibilityEvidence": "validation/2026-11-01-runtime-family-abi.json"
+}

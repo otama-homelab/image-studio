@@ -291,7 +291,7 @@ test('cancelled header check cannot later invalidate a ready download or start a
 
 test('home shows the comparison and requirements without expanding details or starting processing',()=>{
  const worker=vi.fn(),fetch=vi.fn();vi.stubGlobal('Worker',worker);vi.stubGlobal('fetch',fetch);render(<Root/>);
- const image=screen.getByAltText('MODNetで自動処理した架空人物の透過作例');expect(image.getAttribute('src')).toBe('/examples/portrait-cutout-small.webp');expect(image.closest('details')).toBeNull();
+ const image=screen.getByAltText('背景を除いたサンプル写真');expect(image.getAttribute('src')).toBe('/examples/portrait-cutout-small.webp');expect(image.closest('details')).toBeNull();
  for(const name of ['必要な環境・入力','制約・確認してほしいこと'])expect(screen.getByRole('heading',{name}).closest('details')).toBeNull();
  expect(worker).not.toHaveBeenCalled();expect(fetch).not.toHaveBeenCalled();expect(mocks.decode).not.toHaveBeenCalled();expect(mocks.prepare).not.toHaveBeenCalled();expect(URL.createObjectURL).not.toHaveBeenCalled();
 });

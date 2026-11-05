@@ -23,7 +23,7 @@ export function Landing({backgroundAvailable=false}:{backgroundAvailable?:boolea
      <p className="text-sm text-muted">{t("インストール不要。写真はアップロードしません。")}</p>
     </div>
     <figure className="m-0 min-w-0">
-     <BackgroundComparison original={sample.url} result="/examples/portrait-cutout-small.webp" width={sample.width} height={sample.height} originalAlt={t("背景除去作例の処理前の架空人物")} resultAlt={t("MODNetで自動処理した架空人物の透過作例")}/>
+     <BackgroundComparison original={sample.url} result="/examples/portrait-cutout-small.webp" width={sample.width} height={sample.height} originalAlt={t("背景除去前のサンプル写真")} resultAlt={t("背景を除いたサンプル写真")}/>
      <figcaption className="mt-3 text-sm text-muted">{t("架空の人物写真をMODNetで処理した作例。仕上がりは写真によって異なります。")}</figcaption>
     </figure>
    </section>

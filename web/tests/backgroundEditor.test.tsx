@@ -246,7 +246,7 @@ test('photo selection precedes optional model details and inspection starts no s
  const f=setup({withCache:true,withModels:true});
  const panel=screen.getByText('モデルと保存データ').closest('details')!,photo=screen.getByLabelText('背景編集の写真を選ぶ');
  expect(photo.compareDocumentPosition(panel)&Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
- expect(panel.contains(screen.getByLabelText('背景除去モデル'))).toBe(true);
+ expect(panel.contains(screen.getByLabelText('背景除去モデル'))).toBe(false);
  expect(panel.contains(screen.getByRole('button',{name:'保存状況を確認'}))).toBe(true);
  expect(f.runtime.inspectCache).not.toHaveBeenCalled();
  fireEvent.click(screen.getByRole('button',{name:'保存状況を確認'}));
@@ -730,4 +730,13 @@ test.each([['runtime change','resolve'],['runtime change','reject'],['pagehide',
  expect((screen.getByLabelText('背景編集の写真を選ぶ') as HTMLInputElement).disabled).toBe(false);
  await upload();await startBackground();expect(await screen.findByRole('link',{name:'透過PNGを保存'})).toBeTruthy();
  expect(f.session.setPhoto).toHaveBeenCalledOnce();expect(f.session.run).toHaveBeenCalledOnce();
+});
+
+test('model selection including HR stays outside the collapsed storage disclosure',()=>{
+ const f=setup({withModels:true,withCache:true});
+ const select=screen.getByRole('combobox',{name:'背景除去モデル'});
+ expect(select.closest('details:not([open])')).toBeNull();
+ expect(screen.getByRole('option',{name:'高解像度'})).toBeTruthy();
+ expect(f.runtime.createSession).not.toHaveBeenCalled();
+ expect(f.runtime.inspectCache).not.toHaveBeenCalled();
 });

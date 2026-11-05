@@ -1,0 +1,9 @@
+/* Existing Image Studio brand, shared by Tailwind utilities and image overlays. */
+:root {
+ --color-muted-ink: #4a5155;
+ --color-soft-border: #d5d8d5;
+ --color-workspace: #e8eceb;
+ --color-guide: #ffffff99;
+ --color-overlay: #00000073;
+ --transparency-grid: repeating-conic-gradient(var(--color-checker-dark) 0% 25%,var(--color-checker-light) 0% 50%) 0/16px 16px;
+}

@@ -2,6 +2,8 @@ import {execFileSync} from 'node:child_process';
 import {readFileSync,readdirSync,writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 const directories=execFileSync('npm',['ls','--omit=dev','--parseable','--all'],{encoding:'utf8'}).trim().split('\n').slice(1);
+// Tailwind's generated base styles are also distributed in the compiled CSS.
+directories.push('node_modules/tailwindcss');
 const parts=directories.map(directory=>{
  const pkg=JSON.parse(readFileSync(join(directory,'package.json'),'utf8'));
  const filenames=readdirSync(directory).filter(name=>/^(?:licen[cs]e|(?:thirdparty)?notices?(?:text)?|copyright(?:notice)?)(?:\.(?:txt|md))?$/i.test(name)).sort();

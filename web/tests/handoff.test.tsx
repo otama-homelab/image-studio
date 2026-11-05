@@ -40,7 +40,7 @@ test('real save hook hands its current PNG to print, blocks stale source and ref
 });
 
 test('cancelled handoff leaves independent print photo and its file ready; source edits do not invalidate it',async()=>{
- render(<Root/>);await upload();await prepare();navigate('original');await screen.findByRole('heading',{name:'加工済み写真を、用紙に並べる'});fireEvent.change(settings().getByLabelText(/写真を選/),{target:{files:[new File(['print-only'],'print.png',{type:'image/png'})]}});const oldUrl=await loadPrint();await prepare();const oldDownload=screen.getByRole('link',{name:'PNGを保存'}).getAttribute('href');
+ render(<Root/>);await upload();await prepare();navigate('original');await screen.findByRole('heading',{name:'写真を印刷する'});fireEvent.change(settings().getByLabelText(/写真を選/),{target:{files:[new File(['print-only'],'print.png',{type:'image/png'})]}});const oldUrl=await loadPrint();await prepare();const oldDownload=screen.getByRole('link',{name:'PNGを保存'}).getAttribute('href');
  navigate('crop');await screen.findByAltText('crop fixture');fireEvent.click(screen.getByRole('button',{name:'このサイズで用紙に並べる'}));expect(screen.getByRole('dialog',{name:'印刷する写真を置き換えますか？'})).toBeTruthy();const decodes=io.decode.mock.calls.length;fireEvent.click(screen.getByRole('button',{name:'今の写真を続ける'}));expect(location.hash).toBe('#/crop');expect(io.decode).toHaveBeenCalledTimes(decodes);
  fireEvent.change(screen.getByRole('slider',{name:'横位置のスライダー'}),{target:{value:'30'}});navigate('original');await loadPrint();expect(screen.getByAltText('印刷する写真').getAttribute('src')).toBe(oldUrl);expect(screen.getByRole('link',{name:'PNGを保存'}).getAttribute('href')).toBe(oldDownload);expect(screen.queryByText(/このプレビューは以前の画像です/)).toBeNull();
 });
@@ -48,7 +48,7 @@ test('cancelled handoff leaves independent print photo and its file ready; sourc
 test('source edits while the recipient decodes prevent late handoff adoption',async()=>{
  render(<Root/>);await upload();await prepare();let release!:(value:{url:string;width:number;height:number})=>void;io.decode.mockImplementationOnce(()=>new Promise(resolve=>{release=resolve;}));fireEvent.click(screen.getByRole('button',{name:'このサイズで用紙に並べる'}));await waitFor(()=>expect(io.decode).toHaveBeenCalledTimes(2));
  fireEvent.change(screen.getByRole('slider',{name:'横位置のスライダー'}),{target:{value:'30'}});await act(async()=>{release({url:'blob:stale-handoff',width:354,height:472});});expect(location.hash).toBe('#/crop');expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:stale-handoff');expect(screen.getByRole('alert').textContent).toContain('画像を渡せませんでした');
- navigate('original');await screen.findByRole('heading',{name:'加工済み写真を、用紙に並べる'});expect(screen.queryByAltText('印刷する写真')).toBeNull();expect(io.generate).toHaveBeenCalledTimes(1);
+ navigate('original');await screen.findByRole('heading',{name:'写真を印刷する'});expect(screen.queryByAltText('印刷する写真')).toBeNull();expect(io.generate).toHaveBeenCalledTimes(1);
 });
 
 test('PNG and PDF remain separate, failure preserves the other format, and paper changes keep the crop',async()=>{
@@ -131,7 +131,7 @@ test('background source changes while crop decodes reject the late image and ret
 });
 
 test('source changes after transfer adoption but before first display restore the independent print photo',async()=>{
- render(<Root/>);await upload();await prepare();navigate('original');await screen.findByRole('heading',{name:'加工済み写真を、用紙に並べる'});
+ render(<Root/>);await upload();await prepare();navigate('original');await screen.findByRole('heading',{name:'写真を印刷する'});
  fireEvent.change(settings().getByLabelText(/写真を選/),{target:{files:[new File(['print-only'],'independent.png',{type:'image/png'})]}});
  const oldUrl=await loadPrint();navigate('crop');await screen.findByAltText('crop fixture');
  fireEvent.click(screen.getByRole('button',{name:'このサイズで用紙に並べる'}));

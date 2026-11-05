@@ -1,6 +1,6 @@
 import {useEffect,useRef,useState} from 'react';
 import type {EditorActivity} from '../editorActivity';
-import {Brand} from '../SiteChrome';
+import {Brand,EditorNavigation} from '../SiteChrome';
 import {BackgroundComparison} from './BackgroundComparison';
 import {PhotoReplaceDialog} from '../PhotoReplaceDialog';
 import {useNativeDialog} from '../useNativeDialog';
@@ -235,50 +235,53 @@ export function BackgroundEditor({active,runtime,onCrop,onRevision,onActivity}:P
   {activityBusy&&state.phase==='model-load' &&state.resourceProgress&&state.resourceProgress.totalBytes>0&&<p>保存・検証済み {(state.resourceProgress.storedBytes/1024/1024).toFixed(1)} / {(state.resourceProgress.totalBytes/1024/1024).toFixed(1)} MiB。完了したファイルごとに更新します。</p>}
   {notice&&<p role="status">{notice}</p>}
  </>;
- return <div className="app background-editor">
+ return <div className="app background-editor mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 md:px-8">
   <header><Brand/><a href="#/crop">背景を変えずにサイズ調整</a></header>
-  <main aria-busy={busy}><section className="journey" aria-labelledby="background-title"><h1 id="background-title" tabIndex={-1}>写真の背景を整える</h1>
+  <EditorNavigation current="background" backgroundAvailable={!!runtime}/>
+  <main className="flex min-w-0 flex-col gap-6" aria-busy={busy}><section className="journey" aria-labelledby="background-title"><h1 id="background-title" tabIndex={-1}>写真の背景を整える</h1>
    <ol aria-label="背景編集の手順"><li aria-current={!photo?'step':undefined}>1 写真を選ぶ</li><li aria-current={photo&&!output?'step':undefined}>2 背景を除去・色を選ぶ</li><li aria-current={output?'step':undefined}>3 PNG保存・サイズ調整へ</li></ol>
-   <p>Client-side processing — 写真は端末内で処理します。</p>
+   <p>Client-side processing：写真は端末内で処理します。</p>
   </section>
   {!runtime?<section className="output-panel background-notice" role="status"><h2>背景編集は準備中です</h2><p>モデルの配布と動作確認が完了していないため、まだ写真の読み込みや背景処理は開始できません。</p><p>背景を変えずにサイズ調整・PNG/PDFの作成は利用できます。</p><a className="primary-link" href="#/crop">サイズ調整へ進む</a><a className="secondary-link" href="#/print">加工済み写真を印刷する</a></section>:<>
-   <section className="panel" aria-labelledby="model-preparation-title"><h2 id="model-preparation-title">モデルの準備</h2>
-   <p>使うモデルを選び、取得量と保存状況を確認してから写真を選んでください。確認だけではモデルの取得や画像処理は始まりません。</p>
+   <div className="grid min-w-0 grid-cols-1 items-start gap-6 lg:grid-cols-[20rem_minmax(0,1fr)]"><section className="panel" aria-label="背景編集の設定"><h2>写真と背景</h2>
+
+
+    <p className="hint">JPEG・PNG / 20MiBまで。出力は長辺最大2000px。</p>
+    <label className={`file-button${state.hasPhoto?' secondary':''}`}>{state.hasPhoto?'写真を選び直す':'写真を選ぶ'}<input aria-label="背景編集の写真を選ぶ" type="file" accept="image/jpeg,image/png" disabled={busy||state.blocked||state.closed} onChange={event=>{const file=event.target.files?.[0];event.target.value='';if(file)requestPhoto(file);}}/></label>
+   <details className="model-settings"><summary>モデルと保存データ</summary><div className="disclosure-content">
+
     {runtime.models&&runtime.models.length>1?<><label>背景除去モデル<select value={selectedModel?.id} disabled={busy||state.blocked||state.closed} onChange={event=>{
      if(event.target.value===state.modelId)return;
      try{const owner=ensureSession();if(!owner.setModel)throw Error('model-switch-unavailable');owner.setModel(event.target.value);cacheEpoch.current++;setCacheInfo(null);setStorageInfo(null);setStorageChecked(false);setPreparationEstimate(null);setCacheNotice('');clearOutput();setState(owner.getState());setError('');setNotice('モデルを切り替えました。写真と背景色は保持しています。背景除去を実行してください。');}catch{setError('モデルを切り替えられませんでした。処理の終了を待って、もう一度お試しください。');}
     }}>{runtime.models.map(model=><option key={model.id} value={model.id}>{model.label}</option>)}</select></label><p className="model-description">{selectedModel?.description}</p></>:runtime.modelLabel&&<p>使用モデル：{runtime.modelLabel}</p>}
-   {processingNotice&&<p className="background-notice">{processingNotice}</p>}
+
    <p className="background-notice">{selectedModel?.downloadDescription??runtime.downloadDescription} 初回のモデル取得通信は発生します。写真は送信しません。</p>
    {runtime.inspectCache&&<><button disabled={busy} onClick={()=>{void manageCache(false);}}>保存状況を確認</button>{(cacheInfo||storageChecked)&&<div role="status">{cacheInfo&&<><p>キャッシュ内ファイル {cacheInfo.foundFiles} / {cacheInfo.expectedFiles}（実行時に内容を検証します）</p><p>{cacheInfo.downloadBytes===undefined?`未保存モデル資源の取得見積り：約${Math.ceil(cacheInfo.missingBytes/1024/1024)}MiB`:`モデルのダウンロード見積り：約${Math.ceil(cacheInfo.downloadBytes/1024/1024)}MiB`}</p>{cacheInfo.downloadBytes!==undefined&&<p className="hint">一部が未保存の場合も、まとめたファイル全体を再取得します。ダウンロード容量と追加の保存容量は異なります。</p>}<p className="hint">URLの保存状況による見積りです。内容は実行時に照合します。実行用プログラムの取得通信は別途発生します。</p></>}{storageChecked&&(storageInfo?<><p>ブラウザ保存領域の空き見積り：約{Math.floor(storageInfo.availableBytes/1024/1024)}MiB</p><p className="hint">このサイトの保存領域の見積りで、保存成功を保証しません。空きRAM・VRAMの値ではありません。</p>{cacheInfo&&storageInfo.availableBytes<cacheInfo.missingBytes&&<p>構成全体の未保存資源に対して、見積り上は保存領域が不足しています。保存データを整理するか、今回使う機能の取得量を開始前に確認してください。</p>}</>:<p>ブラウザ保存領域の空き容量を取得できませんでした。容量は不明です。</p>)}</div>}{!confirmRun&&cacheNotice&&<p role="status">{cacheNotice}</p>}{runtime.clearCache&&<details className="background-notice"><summary>モデルの保存データを整理する</summary><p>このモデル構成のキャッシュを削除します。写真と作成済みPNGは保持します。同じ資源を共有するモデル構成にも影響します。他のタブがモデルを使用中の場合は、再保存されることがあります。</p><button disabled={busy} onClick={()=>{void manageCache(true);}}>使用中モデルの保存データを削除</button></details>}</>}
    {!runtime.inspectCache&&<p>保存状況の事前確認には対応していません。必要なモデルは背景除去の実行時に取得・検証します。</p>}
-   <p className="hint">次に写真を選び、「背景を除去してPNGを作成」を押します。保存済み資源も内容を検証し、必要なモデルの取得・読み込み後に処理します。写真と作成結果はページを閉じると失われるため、完成したPNGは保存してください。</p>
-   </section>
-   <section className="panel" aria-label="背景編集の設定"><h2>写真と背景</h2>
-    <p className="hint">「背景を除去してPNGを作成」を押すと、モデルが写真から背景を自動判定します。点や枠による被写体の指定は不要です。</p>
 
-    <p className="hint">背景編集では、長辺が2000pxを超える写真を縦横比を保って縮小し、その寸法でPNGを保存します。元の写真ファイルは変更しません。</p>
-    <label className={`file-button${state.hasPhoto?' secondary':''}`}>{state.hasPhoto?'写真を選び直す':'写真を選ぶ'}<input aria-label="背景編集の写真を選ぶ" type="file" accept="image/jpeg,image/png" disabled={busy||state.blocked||state.closed} onChange={event=>{const file=event.target.files?.[0];event.target.value='';if(file)requestPhoto(file);}}/></label>
-    {state.hasPhoto&&<p className="hint">写真を読み込み済みです。下のプレビューで内容を確認できます。</p>}
-    {(state.refineAvailable??runtime.refineAvailable)?<label><input type="checkbox" checked={state.refine} disabled={busy||!state.hasPhoto||state.blocked||state.closed} onChange={event=>{session.current?.setRefine(event.target.checked);clearOutput();if(session.current)setState(session.current.getState());}}/>髪や服の輪郭を補正する</label>:<p className="hint">このモデルは輪郭補正に対応していません。背景除去のみ行います。</p>}
+   </div></details>
+
+    {(state.refineAvailable??runtime.refineAvailable)?<label><input type="checkbox" checked={state.refine} disabled={busy||!state.hasPhoto||state.blocked||state.closed} onChange={event=>{session.current?.setRefine(event.target.checked);clearOutput();if(session.current)setState(session.current.getState());}}/>髪や服の輪郭を補正する</label>:null}
     <label>背景色<select value={color} disabled={busy} onChange={event=>{setColor(event.target.value);changeColorOutput();}}><option value="transparent">透過</option><option value="white">白</option><option value="blue">青</option><option value="red">赤</option><option value="custom">色を指定</option></select></label>
     {color==='custom'&&<><label>指定する背景色<input type="color" value={customColor} disabled={busy} onChange={event=>{if(!/^#[0-9a-f]{6}$/i.test(event.target.value))return;setCustomColor(event.target.value);changeColorOutput();}}/></label><p className="hint">選択色：{customColor.toUpperCase()}</p></>}
+    {processingNotice&&<p className="background-notice">{processingNotice}</p>}
     <button className="primary" disabled={busy||!state.hasPhoto||state.blocked||state.closed} onClick={requestRun}>{state.hasBackgroundMask?(state.refine?'輪郭を補正してPNGを作成':'補正せずにPNGを作成'):'背景を除去してPNGを作成'}</button>
     {state.hasResult&&<button disabled={busy||state.blocked} onClick={()=>{void prepare(false);}}>選んだ背景でPNGを作成</button>}
     {state.hasResult&&color!=='transparent'&&<button disabled={busy||state.blocked} onClick={()=>{void prepare(false,{kind:'transparent'});}}>透過PNGを作成</button>}
     {!feedbackAtOutput&&operationFeedback}
     {error?.location==='settings'&&<p role="alert">{error.message}</p>}
    </section>
-   {photo&&<section className="preview-region" aria-label="背景編集のプレビュー"><h2>仕上がりを確認</h2>{output?<BackgroundComparison key={output.url} original={photo} result={output.url} width={output.file.width} height={output.file.height}/>:<><img className="background-image" src={photo} alt="背景編集前の写真"/><p>元の写真を表示しています。</p></>}</section>}
-   {output&&<section className="output-panel" aria-label="背景編集の保存"><p>保存するPNG：{output.kind==='transparent'?'透過':'背景付き'}・{output.file.width} × {output.file.height} px</p><a className="primary-link" href={output.url} download={output.file.filename} onClick={event=>{if(!beginDownload())event.preventDefault();}} onAuxClick={event=>{if(!beginDownload())event.preventDefault();}} onContextMenu={event=>{if(!beginDownload())event.preventDefault();}}>{output.kind==='transparent'?'透過PNGを保存':'背景付きPNGを保存'}</a><button disabled={busy||state.blocked||state.closed} onClick={()=>{void transferToCrop();}}>{output.kind==='transparent'?'白背景にしてサイズ調整へ':'このPNGをサイズ調整へ'}</button>{feedbackAtOutput&&operationFeedback}{error?.location==='output'&&<p role="alert">{error.message}</p>}<p>サイズ調整・印刷では透過部分を白背景にします。透過PNGはこの画面で保存できます。サイズ調整から用紙PNG/PDFへ進めます。</p></section>}
-  </>}
+   <div className="grid min-w-0 gap-6"><section className="preview-region grid min-w-0 gap-3" aria-label="背景編集のプレビュー"><h2>仕上がりを確認</h2>{photo?(output?<BackgroundComparison key={output.url} original={photo} result={output.url} width={output.file.width} height={output.file.height}/>:<><img className="background-image" src={photo} alt="背景編集前の写真"/><p className="hint">元の写真</p></>):<div className="workspace"><div className="empty"><h3>写真を選んではじめる</h3><p>写真は端末内で処理します。</p></div></div>}</section>
+   {output&&<section className="output-panel" aria-label="背景編集の保存"><p>保存するPNG：{output.kind==='transparent'?'透過':'背景付き'}・{output.file.width} × {output.file.height} px</p><a className="primary-link" href={output.url} download={output.file.filename} onClick={event=>{if(!beginDownload())event.preventDefault();}} onAuxClick={event=>{if(!beginDownload())event.preventDefault();}} onContextMenu={event=>{if(!beginDownload())event.preventDefault();}}>{output.kind==='transparent'?'透過PNGを保存':'背景付きPNGを保存'}</a><button disabled={busy||state.blocked||state.closed} onClick={()=>{void transferToCrop();}}>{output.kind==='transparent'?'白背景にしてサイズ調整へ':'このPNGをサイズ調整へ'}</button>{feedbackAtOutput&&operationFeedback}{error?.location==='output'&&<p role="alert">{error.message}</p>}<p className="hint">サイズ調整・印刷へ進むと、透過部分は白になります。</p></section>}
+  </div></div></>}
   {!runtime&&operationFeedback}
   {error?.location==='output'&&!output&&<p role="alert">{error.message}</p>}
   </main>
   <dialog ref={preparationDialog.ref} className="replace-dialog" aria-labelledby="background-preparation-confirm" onCancel={preparationDialog.onCancel} onKeyDown={preparationDialog.onKeyDown}>
    {confirmRun&&<><h2 ref={preparationTitle} tabIndex={-1} id="background-preparation-confirm">モデルを取得して処理しますか？</h2>
    <p>{selectedModel?.downloadDescription??runtime?.downloadDescription}</p>
-   <p>{environmentMode?`${environmentMode==='cpu'?'CPU':'GPU'}モードの必須APIを検出しました。実際の対応・メモリ確保・処理成功は保証しません。実行時にも対応を確認します。`:'端末条件の事前確認には対応していません。実行時の確認で処理できない場合があります。'}</p>
+   <details><summary>端末条件</summary><p>{environmentMode?`${environmentMode==='cpu'?'CPU':'GPU'}モードの必須APIを検出しました。実際の対応・メモリ確保・処理成功は保証しません。実行時にも対応を確認します。`:'端末条件の事前確認には対応していません。実行時の確認で処理できない場合があります。'}</p></details>
+   {processingNotice&&<p className="background-notice">{processingNotice}</p>}
    <p>今回の処理：{runIntent.current?.backgroundMaskAvailable?(runIntent.current.refine?'この写真の切り抜き情報を再利用して輪郭補正':'この写真の切り抜き情報を再利用（輪郭補正なし）'):(runIntent.current?.refine?'背景除去と輪郭補正':'背景除去のみ')}</p>
    {cacheBusy?<p role="status">保存状況と容量を確認しています…</p>:<>
     <p>{preparationCache?`今回の処理で未保存のモデル資源：約${Math.ceil(preparationCache.missingBytes/1024/1024)}MiB`:'保存状況を確認できませんでした。必要な取得量は不明です。'}</p>
@@ -287,9 +290,11 @@ export function BackgroundEditor({active,runtime,onCrop,onRevision,onActivity}:P
     {preparationCache&&preparationStorage&&preparationStorage.availableBytes<preparationCache.missingBytes&&<p>見積り上は保存領域が不足しています。戻って保存データを整理してください。</p>}
    </>}
    {cacheNotice&&<p role="status">{cacheNotice}</p>}
+   <details><summary>通信・メモリについて</summary>
    {preparationCache&&<p>保存データの削除・破損が見つかった場合、今回使うモデル資源の全量（約{Math.ceil(preparationCache.expectedBytes/1024/1024)}MiB）を再取得することがあります。</p>}
    <p>保存容量と、実行中に使うRAM（作業用メモリ）・GPUメモリ（VRAM）は別です。GPU推論でもRAMを使います。</p>
    <p>保存済みデータも内容を検証します。実行用プログラムの通信は別途発生します。保存容量の見積りはRAM・VRAMや処理成功の保証ではありません。写真は送信しません。</p>
+   </details>
    <div className="dialog-actions"><button onClick={preparationDialog.dismiss}>写真と設定に戻る</button><button className="primary" disabled={busy||!!(preparationCache&&preparationStorage&&preparationStorage.availableBytes<preparationCache.missingBytes)} onClick={acceptPreparation}>取得・検証して処理を始める</button></div></>}
   </dialog>
   <PhotoReplaceDialog open={replacing} onKeep={()=>{candidate.current=null;setReplacing(false);}} onReplace={()=>{const file=candidate.current;candidate.current=null;setReplacing(false);if(file)void choose(file);}} descriptionText="新しい写真に切り替えると、背景編集の結果と作成済みPNGを置き換えます。読み込みに失敗した場合は元の写真を保持します。"/>

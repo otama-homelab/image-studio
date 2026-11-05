@@ -12,5 +12,4 @@ image-studio-cache/
 # Local design-tool run metadata
 .hallmark/
 
-# Local planning and execution records
-.planning/
+.taste-skill/

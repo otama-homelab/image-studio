@@ -417,6 +417,27 @@ test('device loss offers retry without exposing worker exceptions or losing the 
  expect(screen.getByAltText('背景編集前の写真')).toBeTruthy();expect(f.session.save).not.toHaveBeenCalled();expect(screen.queryByText(/private gpu exception/)).toBeNull();
 });
 
+test('generic failure shows the retained refinement stage and fixed code while preserving recovery',async()=>{
+ const f=setup({withModels:true});await upload();const state=f.session.getState();
+ vi.spyOn(f.session,'getState').mockReturnValue({...state,phase:'idle',lastFailure:{phase:'inference',modelRole:'matte',code:'runtime-error'}} as any);
+ f.session.run.mockRejectedValueOnce(Error('private exception body'));
+ await startBackground();const alert=await screen.findByRole('alert');
+ expect(alert.textContent).toContain('失敗した段階：輪郭補正');expect(alert.textContent).toContain('コード：runtime-error');
+ expect(alert.textContent).not.toContain('private');expect(screen.getByAltText('背景編集前の写真')).toBeTruthy();
+ expect(screen.getByRole('link',{name:'背景を変えずにサイズ調整'}).getAttribute('href')).toBe('#/crop');
+ fireEvent.change(screen.getByLabelText('背景除去モデル'),{target:{value:'light'}});expect(screen.queryByRole('alert')).toBeNull();
+});
+
+test.each([
+ {phase:'inference',modelRole:'hr',code:'private-code',label:'背景除去'},
+ {phase:'private-phase',modelRole:'private-role',code:'private-code',label:'処理段階不明'},
+])('failure details redact unknown codes and stage fields: $phase',async details=>{
+ const f=setup();await upload();const state=f.session.getState();
+ vi.spyOn(f.session,'getState').mockReturnValue({...state,lastFailure:details} as any);f.session.run.mockRejectedValueOnce(Error('private exception body'));
+ await startBackground();const alert=await screen.findByRole('alert');
+ expect(alert.textContent).toContain(`失敗した段階：${details.label}`);expect(alert.textContent).toContain('コード：runtime-error');expect(document.body.textContent).not.toContain('private-');
+});
+
 test('cache eviction during consent requires agreement to the increased download before inference',async()=>{
  const f=setup({withCache:true});
  const info=(missingBytes:number)=>({foundFiles:missingBytes?0:6,expectedFiles:6,expectedBytes:8*1024**2,missingBytes});

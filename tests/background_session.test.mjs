@@ -4,17 +4,17 @@ import {createBackgroundSession} from '../web/src/background/session.mjs';
 import {createWorkerGate} from '../tools/browser-library-adapter/worker-gate.mjs';
 import {exportFilename} from '../tools/browser-library-adapter/export-job.mjs';
 
-function setup({defaultRefine=false,withVariants=false,backgroundModel='hr',waitForeground,waitTrimap=false,waitStop,failStop=false,resourceFailure=false,resourceFailureCode='cache-quota-exceeded',stageEvents=false,resourceAliases=false,inferenceFailureCode=null,onChange}={}){
- const gate=createWorkerGate(),events=[];let finishForeground,lastModelEvent,failInference=inferenceFailureCode;
+function setup({defaultRefine=false,withVariants=false,backgroundModel='hr',waitForeground,waitTrimap=false,waitStop,failStop=false,resourceFailure=false,resourceFailureCode='cache-quota-exceeded',stageEvents=false,resourceAliases=false,inferenceFailureCode=null,inferenceFailureRole=null,inferenceFailureEvent={},failForeground=false,failTrimap=false,failExport=false,onChange}={}){
+ const gate=createWorkerGate(),events=[],modelObservers=[];let finishForeground,lastModelEvent,failInference=inferenceFailureCode;
  const session=createBackgroundSession({gate,defaultRefine,modelVariants:withVariants?[{prepareBackground:{type:'prepare',model:'modnet',modelVersion:'light-1',source:{resources:[]}}}]:[],
   prepareBackground:{type:'prepare',model:backgroundModel,modelVersion:'set-1',source:{resources:resourceAliases?[{bytes:8,sha256:"a".repeat(64)},{bytes:8,sha256:"a".repeat(64)}]:[{bytes:8}]}},onChange,
   ...(backgroundModel==='hr'?{prepareMatte:{type:'prepare',model:'matte',modelVersion:'set-1'}}:{}),
-  makeTrimap:async alpha=>({...alpha,layout:'trimap-u8',data:Uint8Array.of(0,128,255).buffer}),
+  makeTrimap:async alpha=>{if(failTrimap)throw Error('private trimap exception');return {...alpha,layout:'trimap-u8',data:Uint8Array.of(0,128,255).buffer};},
   ...(waitTrimap?{createTrimapClient({gate:child}){
    let lease,finish;return {async make(alpha){lease=child.tryAcquire();assert.ok(lease);events.push('trimap');await new Promise(resolve=>{finish=resolve;});return {...alpha,layout:'trimap-u8',data:Uint8Array.of(0,128,255).buffer};},async close(){lease?.release();finish?.();}};
   }}:{}),
   createModelClient({gate:child,onEvent}){
-   lastModelEvent=onEvent;
+   lastModelEvent=onEvent;modelObservers.push(onEvent);
    let lease,role;
    return {async request(command){
     if(command.type==='prepare'){lease=child.tryAcquire();assert.ok(lease);role=command.model;events.push(role);
@@ -22,7 +22,7 @@ function setup({defaultRefine=false,withVariants=false,backgroundModel='hr',wait
      if(resourceFailure){onEvent({type:'resource-state',resources:[{bytes:8,stored:false,lastError:resourceFailureCode}]});throw Error('private resource detail');}return;}
     if(command.type==='dispose'){lease.release();lease=null;return;}
     assert.equal(command.type,'infer');
-    if(failInference){const code=failInference;failInference=null;onEvent({type:'error',code});throw Error('private exception details');}
+    if(failInference&&(!inferenceFailureRole||role===inferenceFailureRole)){const code=failInference;failInference=null;onEvent({...inferenceFailureEvent,type:'error',code});throw Error('private exception details');}
     if(stageEvents&&role==='hr')for(const completedStages of [0,12,11,typeof stageEvents==='number'?stageEvents:46])onEvent({type:'progress',phase:'hr',completedStages,totalStages:typeof stageEvents==='number'?stageEvents:46});
     return {key:command.key,alpha:{width:3,height:1,layout:'alpha-u8',data:Uint8Array.of(0,128,255).buffer}};
    },async cancel(){if(waitStop)await waitStop;lease?.release({failed:failStop});if(failStop)throw Error('stop');}};
@@ -31,6 +31,7 @@ function setup({defaultRefine=false,withVariants=false,backgroundModel='hr',wait
    assert.equal(rgba,true);let lease,finish;
    return {async estimate(input){
     lease=child.tryAcquire();assert.ok(lease);events.push('foreground');
+    if(failForeground)throw Error('private foreground exception');
     if(waitForeground)await new Promise(resolve=>{finish=resolve;finishForeground=resolve;});
     return {width:input.width,height:input.height,format:'rgba-u8',data:Uint8Array.of(0,0,0,0,40,50,60,128,70,80,90,255).buffer};
    },async close(){lease?.release();finish?.();}};
@@ -39,12 +40,12 @@ function setup({defaultRefine=false,withVariants=false,backgroundModel='hr',wait
    assert.equal(shared,gate);
    return {async encode(image,options){
     const lease=shared.tryAcquire();assert.ok(lease);events.push(options.kind);
-    try{return {bytes:Uint8Array.of(1),width:image.width,height:image.height,mime:'image/png',filename:exportFilename(options)};}finally{lease.release();}
+    try{if(failExport)throw Error('private export exception');return {bytes:Uint8Array.of(1),width:image.width,height:image.height,mime:'image/png',filename:exportFilename(options)};}finally{lease.release();}
    },async close(){}};
   },
  });
  const photo=()=>({width:3,height:1,format:'rgb-u8',data:Uint8Array.of(10,20,30,40,50,60,70,80,90).buffer});
- return {session,gate,events,photo,emitModelEvent:value=>lastModelEvent?.(value),finish:()=>finishForeground?.()};
+ return {session,gate,events,photo,emitModelEvent:(value,index)=>{(index===undefined?lastModelEvent:modelObservers[index])?.(value);},finish:()=>finishForeground?.()};
 }
 
 test('app session runs HR/refinement/recovery and both PNG modes under shared admission',async()=>{
@@ -174,8 +175,53 @@ test('fixed device-loss reason survives failure, clears on retry and ignores ret
   const f=setup({inferenceFailureCode:code});f.session.setPhoto(f.photo());await assert.rejects(f.session.run());
   assert.equal(f.session.getState().inferenceError,code==='device-lost'?'device-lost':null);assert.equal(f.session.getState().hasPhoto,true);assert.equal(f.gate.getState().busy,false);
   assert.ok(!JSON.stringify(f.session.getState()).includes('private-code-sentinel'));
-  assert.equal((await f.session.run()).status,'committed');assert.equal(f.session.getState().inferenceError,null);
+  assert.equal((await f.session.run()).status,'committed');assert.equal(f.session.getState().inferenceError,null);assert.equal(f.session.getState().lastFailure,null);
   f.emitModelEvent({type:'error',code:'device-lost'});assert.equal(f.session.getState().inferenceError,null);assert.equal(f.session.getState().hasResult,true);await f.session.close();
+ }
+});
+
+test('generic matte worker failure retains the owned stage after run returns to idle',async()=>{
+ const f=setup({defaultRefine:true,inferenceFailureCode:'runtime-error',inferenceFailureRole:'matte'});f.session.setPhoto(f.photo());
+ await assert.rejects(f.session.run());const state=f.session.getState();
+ assert.equal(state.phase,'idle');assert.deepEqual(state.lastFailure,{phase:'inference',modelRole:'matte',code:'runtime-error'});
+ assert.equal(Object.isFrozen(state.lastFailure),true);assert.equal(state.hasPhoto,true);assert.equal(f.gate.getState().busy,false);
+ await f.session.close();
+});
+
+test('failure details admit only fixed codes and owned phase/role, never worker exception fields',async()=>{
+ const f=setup({inferenceFailureCode:'private-code-sentinel',inferenceFailureEvent:{phase:'private-stage',modelRole:'private-role',message:'private-message',name:'private-name',stack:'private-stack',url:'private-url',filename:'private-photo'}});
+ f.session.setPhoto(f.photo());await assert.rejects(f.session.run());
+ assert.deepEqual(f.session.getState().lastFailure,{phase:'inference',modelRole:'hr',code:'runtime-error'});
+ assert.doesNotMatch(JSON.stringify(f.session.getState()),/private-/);assert.equal(f.session.getState().inferenceError,null);
+ f.session.setPhoto(f.photo());assert.equal(f.session.getState().lastFailure,null);await f.session.close();
+});
+
+test('owned failures without a worker event retain foreground and model-load stages',async()=>{
+ for(const options of [{failForeground:true},{resourceFailure:true}]){
+  const f=setup(options);f.session.setPhoto(f.photo());await assert.rejects(f.session.run());
+  assert.deepEqual(f.session.getState().lastFailure,{phase:options.failForeground?'foreground':'model-load',modelRole:'hr',code:'runtime-error'});
+  assert.equal(f.session.getState().hasPhoto,true);assert.equal(f.gate.getState().busy,false);await f.session.close();
+ }
+});
+
+test('retry/model changes clear failure and retired events cannot replace current cancellation state',async()=>{
+ const f=setup({withVariants:true,waitForeground:true,inferenceFailureCode:'allocation-failed'});f.session.setPhoto(f.photo());await assert.rejects(f.session.run());
+ assert.equal(f.session.getState().lastFailure.code,'allocation-failed');
+ f.session.setModel('light-1');assert.equal(f.session.getState().lastFailure,null);
+ const running=f.session.run();await new Promise(resolve=>setImmediate(resolve));
+ f.emitModelEvent({type:'error',code:'device-lost'},0);assert.equal(f.session.getState().lastFailure,null);
+ await f.session.cancel();assert.equal((await running).status,'cancelled');assert.equal(f.session.getState().lastFailure,null);
+ assert.equal(f.session.getState().hasPhoto,true);assert.equal(f.gate.getState().busy,false);await f.session.close();
+});
+
+test('non-worker trimap and PNG failures retain their own stage without exception details',async()=>{
+ for(const failTrimap of [true,false]){
+  const f=setup({defaultRefine:true,failTrimap,failExport:!failTrimap});f.session.setPhoto(f.photo());
+  if(failTrimap)await assert.rejects(f.session.run());
+  else{await f.session.run();await assert.rejects(f.session.save({kind:'transparent'}));}
+  assert.deepEqual(f.session.getState().lastFailure,{phase:failTrimap?'trimap':'export',modelRole:failTrimap?'hr':null,code:'runtime-error'});
+  assert.equal(f.session.getState().phase,'idle');assert.doesNotMatch(JSON.stringify(f.session.getState()),/private/);
+  assert.equal(f.gate.getState().busy,false);await f.session.close();
  }
 });
 

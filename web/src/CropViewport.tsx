@@ -38,5 +38,5 @@ export function CropViewport(props:Props){
   classes={{cropAreaClassName:props.guides?`portrait-guide${props.squareGuide?' square-guide':''}`:''}}
   mediaProps={{alt:t("選択した写真"),onError:props.onError}} cropperProps={{role:'group','aria-label':t("写真の切り抜き枠")}}
   onWheelRequest={()=>{if(!media||viewport?.aspect!==aspect)return false;beginInteraction('wheel');return true;}}
-  zoomWithScroll roundCropAreaPixels={false} cropShape="rect" showGrid={false}/>;
+  zoomWithScroll zoomSpeed={.1} roundCropAreaPixels={false} cropShape="rect" showGrid={false}/>;
 }

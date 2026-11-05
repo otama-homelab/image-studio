@@ -176,14 +176,13 @@ test('failed cache deletion or inspection invalidates old counts while keeping t
 test('before/after comparison changes display only and is removed when results become stale',async()=>{
  const f=setup();await upload();expect(screen.queryByRole('slider')).toBeNull();
  await startBackground();const saved=await screen.findByRole('link',{name:/^(?:透過|背景付き)PNGを保存$/});
- const slider=screen.getByRole('slider',{name:'仕上がりの表示範囲'});expect(slider.getAttribute('aria-valuetext')).toContain('左50%');
- fireEvent.change(slider,{target:{value:'25'}});expect(slider.getAttribute('aria-valuetext')).toContain('左25%');
- fireEvent.click(screen.getByRole('button',{name:'元の写真のみ'}));expect((slider as HTMLInputElement).value).toBe('0');
- fireEvent.click(screen.getByRole('button',{name:'仕上がりのみ'}));expect((slider as HTMLInputElement).value).toBe('100');
- fireEvent.change(screen.getByRole('combobox',{name:'プレビューの倍率'}),{target:{value:'2'}});expect(screen.getByRole('region',{name:'背景比較の表示領域'}).tabIndex).toBe(0);
- fireEvent.change(screen.getByRole('combobox',{name:'プレビューの倍率'}),{target:{value:'fit'}});expect(screen.getByRole('region',{name:'背景比較の表示領域'}).tabIndex).toBe(-1);
+ const slider=screen.getByRole('slider',{name:'背景比較の境界線'});expect(slider.getAttribute('aria-valuetext')).toContain('左50%');
+ fireEvent.keyDown(slider,{key:'ArrowLeft'});expect(slider.getAttribute('aria-valuetext')).toContain('左49%');
+ fireEvent.click(screen.getByRole('button',{name:'元の写真のみ'}));expect(slider.getAttribute('aria-valuenow')).toBe('0');
+ fireEvent.click(screen.getByRole('button',{name:'仕上がりのみ'}));expect(slider.getAttribute('aria-valuenow')).toBe('100');
+ expect(screen.queryByRole('combobox',{name:'プレビューの倍率'})).toBeNull();
  expect(screen.getByRole('link',{name:/^(?:透過|背景付き)PNGを保存$/})).toBe(saved);expect(f.session.run).toHaveBeenCalledOnce();expect(f.session.save).toHaveBeenCalledOnce();
- fireEvent.change(screen.getByLabelText('背景色'),{target:{value:'white'}});expect(screen.getByRole('slider',{name:'仕上がりの表示範囲'})).toBe(slider);expect(screen.getByRole('link',{name:'透過PNGを保存'})).toBe(saved);fireEvent.contextMenu(saved);expect(screen.getByRole('link',{name:'透過PNGを保存'})).toBe(saved);expect(f.session.run).toHaveBeenCalledOnce();expect(f.session.save).toHaveBeenCalledOnce();
+ fireEvent.change(screen.getByLabelText('背景色'),{target:{value:'white'}});expect(screen.getByRole('slider',{name:'背景比較の境界線'})).toBe(slider);expect(screen.getByRole('link',{name:'透過PNGを保存'})).toBe(saved);fireEvent.contextMenu(saved);expect(screen.getByRole('link',{name:'透過PNGを保存'})).toBe(saved);expect(f.session.run).toHaveBeenCalledOnce();expect(f.session.save).toHaveBeenCalledOnce();
  fireEvent.click(screen.getByLabelText('髪や服の輪郭を補正する'));expect(screen.queryByRole('slider')).toBeNull();expect(screen.queryByAltText('背景編集後の写真')).toBeNull();
 });
 

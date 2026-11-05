@@ -1,3 +1,3 @@
 import {defineConfig,mergeConfig} from 'vitest/config';
 import base from './vite.config.ts';
-export default mergeConfig(base,defineConfig({test:{environment:'jsdom',maxWorkers:1,fileParallelism:false,include:['tests/**/*.test.tsx']}}));
+export default mergeConfig(base,defineConfig({test:{environment:'jsdom',setupFiles:['./tests/setup-language.ts'],maxWorkers:1,fileParallelism:false,include:['tests/**/*.test.tsx']}}));

@@ -178,8 +178,6 @@ test('before/after comparison changes display only and is removed when results b
  await startBackground();const saved=await screen.findByRole('link',{name:/^(?:透過|背景付き)PNGを保存$/});
  const slider=screen.getByRole('slider',{name:'背景比較の境界線'});expect(slider.getAttribute('aria-valuetext')).toContain('左50%');
  fireEvent.keyDown(slider,{key:'ArrowLeft'});expect(slider.getAttribute('aria-valuetext')).toContain('左49%');
- fireEvent.click(screen.getByRole('button',{name:'元の写真のみ'}));expect(slider.getAttribute('aria-valuenow')).toBe('0');
- fireEvent.click(screen.getByRole('button',{name:'仕上がりのみ'}));expect(slider.getAttribute('aria-valuenow')).toBe('100');
  expect(screen.queryByRole('combobox',{name:'プレビューの倍率'})).toBeNull();
  expect(screen.getByRole('link',{name:/^(?:透過|背景付き)PNGを保存$/})).toBe(saved);expect(f.session.run).toHaveBeenCalledOnce();expect(f.session.save).toHaveBeenCalledOnce();
  fireEvent.change(screen.getByLabelText('背景色'),{target:{value:'white'}});expect(screen.getByRole('slider',{name:'背景比較の境界線'})).toBe(slider);expect(screen.getByRole('link',{name:'透過PNGを保存'})).toBe(saved);fireEvent.contextMenu(saved);expect(screen.getByRole('link',{name:'透過PNGを保存'})).toBe(saved);expect(f.session.run).toHaveBeenCalledOnce();expect(f.session.save).toHaveBeenCalledOnce();

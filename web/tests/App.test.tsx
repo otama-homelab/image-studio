@@ -289,11 +289,11 @@ test('cancelled header check cannot later invalidate a ready download or start a
  expect(mocks.invalidate).not.toHaveBeenCalled();expect(mocks.decode).toHaveBeenCalledTimes(1);expect(screen.getByRole('link',{name:'PNGを保存'}).getAttribute('href')).toBe('blob:ready');
 });
 
-test('saved matting example mounts only when opened and does not start processing',async()=>{
+test('home shows the comparison and requirements without expanding details or starting processing',()=>{
  const worker=vi.fn(),fetch=vi.fn();vi.stubGlobal('Worker',worker);vi.stubGlobal('fetch',fetch);render(<Root/>);
- const alt='MODNetで自動処理した架空人物の透過作例';expect(screen.queryByAltText(alt)).toBeNull();const details=screen.getByText('実際の背景除去結果を見る（約1.1MiB）').closest('details') as HTMLDetailsElement;
- details.open=true;fireEvent(details,new Event('toggle'));const image=await screen.findByAltText(alt);expect(image.getAttribute('src')).toBe('/examples/fictional-portrait-modnet-cpu-v1.webp');expect(image.getAttribute('loading')).toBe('lazy');
- details.open=false;fireEvent(details,new Event('toggle'));await waitFor(()=>expect(screen.queryByAltText(alt)).toBeNull());expect(worker).not.toHaveBeenCalled();expect(fetch).not.toHaveBeenCalled();expect(mocks.decode).not.toHaveBeenCalled();expect(mocks.prepare).not.toHaveBeenCalled();expect(URL.createObjectURL).not.toHaveBeenCalled();
+ const image=screen.getByAltText('MODNetで自動処理した架空人物の透過作例');expect(image.getAttribute('src')).toBe('/examples/portrait-cutout-small.webp');expect(image.closest('details')).toBeNull();
+ for(const name of ['必要な環境・入力','制約・確認してほしいこと'])expect(screen.getByRole('heading',{name}).closest('details')).toBeNull();
+ expect(worker).not.toHaveBeenCalled();expect(fetch).not.toHaveBeenCalled();expect(mocks.decode).not.toHaveBeenCalled();expect(mocks.prepare).not.toHaveBeenCalled();expect(URL.createObjectURL).not.toHaveBeenCalled();
 });
 
 test('home offers direct editor links without a navigation tab bar',()=>{

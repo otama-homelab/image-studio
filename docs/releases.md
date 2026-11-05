@@ -5,13 +5,10 @@
 | Push to `main` | Check, then deploy Pages Preview |
 | Stable `vX.Y.Z` tag | Check, deploy production, publish the exact static artifact and SHA256 to GitHub Release |
 | Pull request or manual web-check | Check and retain artifacts; no deployment |
-| Bump version | Synchronize version metadata, create the tag, and explicitly call the browser workflow |
 
-```sh
-gh workflow run version-bump.yaml --ref main -f bump=patch
-```
+Change `VERSION`, `web/package.json`, and both root version fields in `web/package-lock.json` together in a pull request. After CI and merge, an administrator may create the matching stable tag on that main commit. The build rejects mismatched versions. There is no workflow that writes main or creates tags automatically.
 
-The tag must match `VERSION` and both web package manifests, and point to a commit contained in `main`. Do not move published tags or silently replace release assets. Docker/GHCR publishing is retired.
+Main requires a PR and the trusted `web` CI check. Tags are administrator-created and cannot be changed/deleted through normal Git operations. Preview/production deployments require environment approval; Cloudflare credentials exist only in those environments. Production accepts `v*` tags, Preview accepts `main`. Release artifacts are uploaded to a draft, then published immutably. Existing tags/assets are not replaced. Docker/GHCR publishing is retired.
 
 ## Configuration
 
@@ -19,7 +16,7 @@ The tag must match `VERSION` and both web package manifests, and point to a comm
 - Production: https://image-studio.otama-playground.com/
 - Preview: https://preview.image-studio-c5u.pages.dev/
 - CNAME target: `image-studio-c5u.pages.dev` (including the assigned suffix).
-- Secrets: `CLOUDFLARE_API_TOKEN` with account Pages Read/Write; `CLOUDFLARE_ACCOUNT_ID`.
+- Environment secrets: `CLOUDFLARE_API_TOKEN` with account Pages Read/Write; `CLOUDFLARE_ACCOUNT_ID`.
 - Variable: `IMAGE_STUDIO_BUILD_INPUT`, pointing to immutable public HF input.
 
 DNS permissions are separate from Pages permissions. R2/S3 keys are not required. Never expose credentials in the browser, source, or build output.

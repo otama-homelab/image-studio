@@ -15,7 +15,6 @@ export function Landing({backgroundAvailable=false}:{backgroundAvailable?:boolea
  return <div className="app landing mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 md:px-8">
   <a className="skip" href="#home-content" onClick={event=>focusSection(event,'home-content')}>{t("内容へ移動")}</a>
   <header><Brand/><div className="flex items-center gap-3"><LanguageSwitcher/><StarLink/></div></header>
-  <nav aria-label={t("案内")}><a href="#usage-title" onClick={event=>focusSection(event,'usage-title')}>{t("操作の流れ")}</a><a href="#requirements-title" onClick={event=>focusSection(event,'requirements-title')}>{t("必要な環境")}</a></nav>
   <main id="home-content" tabIndex={-1} className="landing-content md:gap-32">
    <section aria-labelledby="landing-title" className="grid min-w-0 items-center gap-8 py-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:min-h-[calc(100svh-12rem)] md:gap-12 md:py-10">
     <div className="flex min-w-0 flex-col items-start gap-6">
@@ -38,11 +37,11 @@ export function Landing({backgroundAvailable=false}:{backgroundAvailable?:boolea
      <article className="min-w-0"><div className="flex min-h-64 items-center justify-center rounded-xl bg-subtle p-6"><figure className="m-0 w-36"><svg className="aspect-[3/4] w-full" viewBox={`${x} ${y} ${sampleCrop.width} ${sampleCrop.height}`} role="img" aria-label={t("30×40mmの切り抜き作例")}><image href={sample.url} width={sample.width} height={sample.height}/></svg><figcaption className="mt-3 text-center text-sm text-muted">30 × 40 mm</figcaption></figure></div><h3 className="mt-5">{t("必要なサイズに")}</h3><p className="text-sm text-muted">{t("用途別・カスタム寸法に調整して、300dpiのPNGで保存。")}</p><a className="section-link" href="#/crop">{t("サイズ調整へ進む")}</a></article>
      <article className="min-w-0"><div className="flex min-h-64 items-center justify-center rounded-xl bg-subtle p-6"><PaperPreview layout={samplePaper} picture={{...sample,crop:sampleCrop}}/></div><h3 className="mt-5">{t("用紙へ自動配置")}</h3><p className="text-sm text-muted">{t("A4・写真用紙に並べて、印刷用のPNGやPDFを作成。")}</p><a className="section-link" href="#/print">{t("直接印刷へ進む")}</a></article>
     </div>
-    <details className="mt-8 border-t border-line pt-6" aria-label={t("細部まで確認する")} onToggle={event=>setExampleOpen(event.currentTarget.open)}><summary>{t("実際の背景除去結果を見る（約1.1MiB）")}</summary>{exampleOpen&&<BackgroundComparison original="/examples/fictional-portrait-v1.webp" result="/examples/fictional-portrait-modnet-cpu-v1.webp" width={sample.width} height={sample.height} originalAlt={t("背景除去作例の処理前の架空人物")} resultAlt={t("MODNetで自動処理した架空人物の透過作例")} loading="lazy"/>}</details>
+    <details className="landing-disclosure mt-8" aria-label={t("細部まで確認する")} onToggle={event=>setExampleOpen(event.currentTarget.open)}><summary>{t("実際の背景除去結果を見る（約1.1MiB）")}</summary>{exampleOpen&&<BackgroundComparison original="/examples/fictional-portrait-v1.webp" result="/examples/fictional-portrait-modnet-cpu-v1.webp" width={sample.width} height={sample.height} originalAlt={t("背景除去作例の処理前の架空人物")} resultAlt={t("MODNetで自動処理した架空人物の透過作例")} loading="lazy"/>}</details>
    </section>
-   <aside className="grid min-w-0 gap-8 border-t border-line pt-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-    <article aria-labelledby="requirements-title"><h3 id="requirements-title" tabIndex={-1}>{t("必要な環境・入力")}</h3><details><summary>{t("対応ブラウザ・ファイル上限")}</summary><p className="text-sm text-muted">{t("JPEG/PNG、20MiBまで。サイズ調整・印刷はGPU不要。高画質HRはPC向けで、CPU処理は非常に遅く、多くのRAMを使います。")}</p></details></article>
-    <article aria-labelledby="limitations-title"><h3 id="limitations-title" tabIndex={-1}>{t("制約・確認してほしいこと")}</h3><details><summary>{t("保存・印刷・加工時の注意")}</summary><p className="text-sm text-muted">{t("再読み込みで写真と設定は失われます。先にファイルを保存してください。印刷は100%を指定し、提出先の寸法・加工条件も確認してください。")}</p></details></article>
+   <aside className="grid min-w-0 gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+    <article aria-labelledby="requirements-title"><details className="landing-disclosure"><summary><h3 id="requirements-title" tabIndex={-1} className="inline text-base">{t("必要な環境・入力")}</h3></summary><p className="pb-5 text-sm text-muted">{t("JPEG/PNG、20MiBまで。サイズ調整・印刷はGPU不要。高画質HRはPC向けで、CPU処理は非常に遅く、多くのRAMを使います。")}</p></details></article>
+    <article aria-labelledby="limitations-title"><details className="landing-disclosure"><summary><h3 id="limitations-title" tabIndex={-1} className="inline text-base">{t("制約・確認してほしいこと")}</h3></summary><p className="pb-5 text-sm text-muted">{t("再読み込みで写真と設定は失われます。先にファイルを保存してください。印刷は100%を指定し、提出先の寸法・加工条件も確認してください。")}</p></details></article>
    </aside>
   </main>
  </div>;

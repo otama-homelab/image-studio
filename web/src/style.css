@@ -3,6 +3,7 @@
  * axes: light/grotesk-sans/neutral · posture: photo workbench · v2.0.0 */
 /* Hallmark · pre-emit critique: P3 H4 E3 S4 R4 V3 · weakest: E, replace competing global grids with explicit Tailwind layout ownership. */
 /* Hallmark · waive 7b · existing white photo paper, checker grid and high-contrast controls · retain neutral photo comparison and the approved editor palette. */
+/* Hallmark · dismissed 77 · the photo tool has three direct workflows and compact support; more sections would repeat product facts instead of helping users. */
 /* Hallmark · answered F4 · file upload becomes secondary once a photo exists; the processing action is disabled before selection. */
 @import 'tailwindcss';
 @import '../../docs/browser/design-tokens.css';
@@ -128,6 +129,9 @@
  .diagnostic-preview { @apply overflow-auto whitespace-pre-wrap rounded-md bg-subtle p-3 text-sm; max-height:min(16rem,50svh); overflow-wrap:anywhere; }
  .landing nav { @apply flex flex-wrap gap-x-6 gap-y-2 border-b border-line py-3 text-sm; }
  .landing nav a { @apply inline-flex min-h-11 items-center text-muted; }
+ .landing-disclosure { @apply border-t border-line; }
+ .landing-disclosure>summary { @apply min-h-14 cursor-pointer py-4 text-base font-medium; }
+ .landing-disclosure[open]>summary { @apply mb-3; }
  .landing-content { @apply flex min-w-0 flex-col gap-12; }
  .landing-content h2 { @apply mb-4 text-2xl; }
  .landing-content h3 { @apply mb-2 text-base; }

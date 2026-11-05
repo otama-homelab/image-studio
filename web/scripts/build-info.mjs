@@ -23,7 +23,9 @@ export function createBuildInfo(webRoot,releaseDirectory=join(webRoot,'backgroun
   hash.update(name+'\0'+bytes.length+'\0').update(bytes);
  }
  const version=readFileSync(join(webRoot,'../VERSION'),'utf8').trim();
- if(JSON.parse(readFileSync(join(webRoot,'package.json'),'utf8')).version!==version)throw Error('Web package version must match VERSION');
+ const packageVersion=JSON.parse(readFileSync(join(webRoot,'package.json'),'utf8')).version;
+ const lock=JSON.parse(readFileSync(join(webRoot,'package-lock.json'),'utf8'));
+ if(packageVersion!==version||lock.version!==version||lock.packages?.['']?.version!==version)throw Error('Web package and lock versions must match VERSION');
  if(typeof version!=='string'||!/^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(version))throw Error('Invalid application version');
  return Object.freeze({schemaVersion:1,appVersion:version,sourceId:'sha256:'+hash.digest('hex')});
 }

@@ -43,31 +43,18 @@ on:
       - 'tests/fixtures/*.mjs'
       - 'LICENSE'
       - 'VERSION'
-      - '.github/workflows/version-bump.yaml'
       - '.github/workflows/web-check.yaml'
   push:
     branches: [main]
     tags: ['v*.*.*']
   workflow_dispatch:
-  workflow_call:
-    inputs:
-      release_tag:
-        description: Existing stable tag, called by version-bump after its atomic push
-        required: false
-        default: ''
-        type: string
-    secrets:
-      CLOUDFLARE_API_TOKEN:
-        required: false
-      CLOUDFLARE_ACCOUNT_ID:
-        required: false
 
 permissions:
   contents: read
 
 concurrency:
-  group: browser-check-${{ inputs.release_tag || github.ref }}
-  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') && !inputs.release_tag }}
+  group: browser-check-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
 
 jobs:
   web:
@@ -82,7 +69,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
-          ref: ${{ inputs.release_tag || github.sha }}
+          ref: ${{ github.sha }}
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version-file: web/.node-version
@@ -115,7 +102,6 @@ jobs:
           python3 -m unittest discover -s ../tests -p test_local_app_headers.py
           python3 -m unittest discover -s ../tests -p test_browser_model_archives.py
           python3 -m unittest discover -s ../tests -p test_browser_build_input.py
-          python3 -m unittest discover -s ../tests -p test_release_version_sync.py
       - name: Check CPU domain and worker contracts
         run: npm run test:domain
       - name: Check browser app contracts
@@ -146,20 +132,20 @@ jobs:
   deploy:
     name: Deploy checked Pages artifact
     needs: web
-    if: github.event_name == 'push' || inputs.release_tag
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: read
     environment:
-      name: ${{ (startsWith(github.ref, 'refs/tags/') || inputs.release_tag) && 'production' || 'preview' }}
+      name: ${{ startsWith(github.ref, 'refs/tags/') && 'production' || 'preview' }}
     concurrency:
-      group: image-studio-pages-${{ (startsWith(github.ref, 'refs/tags/') || inputs.release_tag) && 'production' || 'preview' }}
-      cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') && !inputs.release_tag }}
+      group: image-studio-pages-${{ startsWith(github.ref, 'refs/tags/') && 'production' || 'preview' }}
+      cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          ref: ${{ inputs.release_tag || github.sha }}
+          ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
@@ -169,7 +155,7 @@ jobs:
       - name: Validate deployment target
         id: target
         env:
-          DEPLOY_REF: ${{ inputs.release_tag && format('refs/tags/{0}', inputs.release_tag) || github.ref }}
+          DEPLOY_REF: ${{ github.ref }}
         run: |
           BRANCH=$(node web/scripts/deployment-target.mjs branch "$DEPLOY_REF" VERSION)
           if [ "$BRANCH" = production ]; then
@@ -210,7 +196,7 @@ jobs:
   release:
     name: Publish checked browser release
     needs: [web, deploy]
-    if: startsWith(github.ref, 'refs/tags/v') || inputs.release_tag
+    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -218,7 +204,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          ref: ${{ inputs.release_tag || github.sha }}
+          ref: ${{ github.sha }}
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
@@ -232,7 +218,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
+          RELEASE_TAG: ${{ github.ref_name }}
         run: |
           node web/scripts/release-inventory.mjs verify "$RUNNER_TEMP/image-studio-release/dist" "$RUNNER_TEMP/image-studio-release/inventory.json"
           VERSION=$(cat VERSION)
@@ -242,4 +228,5 @@ jobs:
           cd "$RUNNER_TEMP"
           sha256sum "image-studio-web-$VERSION.zip" > "image-studio-web-$VERSION.sha256"
           printf '%s\n' 'Browser application: https://image-studio.otama-playground.com/' '' 'The ZIP contains the exact checked static distribution and inventory. No server or container runtime is required. Dependency/model notices are included in dist; source is available at this tag.' > release-notes.md
-          gh release create "$RELEASE_TAG" --verify-tag --title "Image Studio $RELEASE_TAG" --notes-file release-notes.md "image-studio-web-$VERSION.zip" "image-studio-web-$VERSION.sha256"
+          gh release create "$RELEASE_TAG" --draft --verify-tag --title "Image Studio $RELEASE_TAG" --notes-file release-notes.md "image-studio-web-$VERSION.zip" "image-studio-web-$VERSION.sha256"
+          gh release edit "$RELEASE_TAG" --draft=false --latest

@@ -262,18 +262,11 @@
   "閉じて元の画面に戻る": "Close and return",
   "背景編集前の写真": "Photo before background editing",
   "背景編集後の写真": "Photo after background editing",
-  "プレビューの倍率": "Preview zoom",
-  "全体を表示": "Fit to view",
-  "100%（等倍）": "100% (actual pixels)",
   "背景比較の表示領域": "Background comparison viewport",
   "背景比較の境界線": "Background comparison divider",
-  "中央線をドラッグして比較。ホイール・ピンチで拡大縮小し、画像をドラッグして移動できます。": "Drag the divider to compare. Scroll or pinch to zoom; drag the image to pan.",
-  "表示だけが変わります。保存寸法は変わりません。": "Preview changes only. Saved dimensions are unchanged.",
-  "仕上がりの表示範囲": "Result reveal",
   "元の写真のみ": "Original only",
   "仕上がりのみ": "Result only",
   "左{{v0}}%が仕上がり、右{{v1}}%が元の写真": "Left {{v0}}% shows the result; right {{v1}}% shows the original",
-  "全体表示に戻す": "Reset view",
   "輪郭補正モデル": "Edge-refinement model",
   "背景除去モデル": "Background removal model",
   "モデル": "Model",
@@ -464,5 +457,5 @@
   "写真のサイズ調整・印刷": "Photo resizing and printing",
   "写真のサイズ調整と印刷配置をブラウザ内で行うImage Studio。PNG/PDF保存に対応。": "Resize photos and prepare print layouts in your browser with Image Studio. Save as PNG or PDF.",
   "ドラッグで移動、ホイール・ピンチで拡大縮小": "Drag to move; scroll or pinch to zoom",
-  "画像の表示操作": "Image view controls"
+  "中央線をドラッグ、または左右キーで比較": "Drag the divider or use the arrow keys to compare."
 }

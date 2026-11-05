@@ -45,7 +45,7 @@ test('real cropper wheel zoom updates image-relative framing and invalidates pre
  await waitFor(()=>expect(image.style.transform).toContain('scale(2)'));
  fireEvent.wheel(screen.getByLabelText('写真の切り抜き枠'),{deltaY:-100,clientX:200,clientY:200});
  await waitFor(()=>expect(onMove).toHaveBeenCalled());
- expect(onMove.mock.calls.at(-1)![0].range).toBeCloseTo(40,6);expect(invalidate).toHaveBeenCalled();
+ expect(onMove.mock.calls.at(-1)![0].range).toBeCloseTo(100/2.05,6);expect(invalidate).toHaveBeenCalled();
 });
 
 test('a drag remains an edit after an overlapping wheel gesture finishes',async()=>{

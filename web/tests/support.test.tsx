@@ -70,9 +70,9 @@ test('WebAssembly reporting checks API presence without compiling or instantiati
 test('release runtime failure keeps the manual editor and print route available with a fixed recovery notice',()=>{
  render(<Root backgroundConfigurationFailed/>);
  expect(screen.getByRole('alert').textContent).toContain('背景機能を読み込めませんでした。');
- expect(screen.getByRole('heading',{name:'写真を、必要なサイズに整える'})).toBeTruthy();
- expect(within(screen.getByRole('heading',{name:'写真を、必要なサイズに整える'}).closest('.app') as HTMLElement).getByLabelText('写真を選ぶ')).toBeTruthy();
+ expect(screen.getByRole('heading',{name:'サイズを整える'})).toBeTruthy();
+ expect(within(screen.getByRole('heading',{name:'サイズを整える'}).closest('.app') as HTMLElement).getByLabelText('写真を選ぶ')).toBeTruthy();
  act(()=>{location.hash='#/print';dispatchEvent(new HashChangeEvent('hashchange'));});
- expect(screen.getByRole('heading',{name:'加工済み写真を、用紙に並べる'})).toBeTruthy();
- expect(within(screen.getByRole('heading',{name:'加工済み写真を、用紙に並べる'}).closest('.app') as HTMLElement).getByLabelText('写真を選ぶ')).toBeTruthy();expectPassive();
+ expect(screen.getByRole('heading',{name:'写真を印刷する'})).toBeTruthy();
+ expect(within(screen.getByRole('heading',{name:'写真を印刷する'}).closest('.app') as HTMLElement).getByLabelText('写真を選ぶ')).toBeTruthy();expectPassive();
 });

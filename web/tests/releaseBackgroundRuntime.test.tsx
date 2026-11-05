@@ -48,3 +48,18 @@ test('a failed release runtime still mounts manual tools with a fixed error flag
  await import('../src/main');await vi.waitFor(()=>expect(render).toHaveBeenCalledTimes(2));
  const root=render.mock.calls.at(-1)![0].props.children;expect(root.props.backgroundRuntime).toBeUndefined();expect(root.props.backgroundConfigurationFailed).toBe(true);
 });
+
+for(const [ua,touch,mobile,expected] of [
+ ['iPhone',5,undefined,2],['Android',5,undefined,2],['Macintosh',5,undefined,2],
+ ['Windows NT',10,false,4],['Windows NT',0,undefined,4],['unknown',0,true,2],
+] as const)test(`HR product availability: ${ua}/${touch}/${mobile}`,()=>{
+ vi.stubGlobal('navigator',{userAgent:ua,maxTouchPoints:touch,userAgentData:{mobile}});
+ const runtime=createReleaseBackgroundRuntime(fixture(),'https://app.invalid')!;
+ expect(runtime.models).toHaveLength(expected);
+ if(expected===2){
+  expect(()=>runtime.checkEnvironment?.('hr-cpu')).toThrow('unknown-background-model');
+  const session=runtime.createSession(()=>{});
+  expect(()=>session.setModel?.('hr-cpu')).toThrow();
+  void session.close();
+ }
+});

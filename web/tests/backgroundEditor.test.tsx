@@ -112,7 +112,7 @@ test('staged HR displays current completion and retains a reachable cancel actio
 test('switching model preserves photo and color but removes old download and replaces unavailable refinement with guidance',async()=>{
  const f=setup({withModels:true});await upload();fireEvent.change(screen.getByLabelText('背景色'),{target:{value:'blue'}});await startBackground();await screen.findByRole('link',{name:/^(?:透過|背景付き)PNGを保存$/});
  const saved=screen.getByRole('link',{name:'背景付きPNGを保存'});fireEvent.change(screen.getByLabelText('背景除去モデル'),{target:{value:'hr'}});expect(screen.getByRole('link',{name:'背景付きPNGを保存'})).toBe(saved);expect(f.session.run).toHaveBeenCalledOnce();
- fireEvent.change(screen.getByLabelText('背景除去モデル'),{target:{value:'light'}});expect(screen.queryByRole('link',{name:/^(?:透過|背景付き)PNGを保存$/})).toBeNull();expect(screen.getByAltText('背景編集前の写真')).toBeTruthy();expect((screen.getByLabelText('背景色') as HTMLSelectElement).value).toBe('blue');expect(screen.queryByLabelText('髪や服の輪郭を補正する')).toBeNull();expect(screen.getByText('このモデルは輪郭補正に対応していません。背景除去のみ行います。')).toBeTruthy();expect(screen.getByText('人物用の小さいモデル')).toBeTruthy();expect(f.runtime.decodePhoto).toHaveBeenCalledOnce();
+ fireEvent.change(screen.getByLabelText('背景除去モデル'),{target:{value:'light'}});expect(screen.queryByRole('link',{name:/^(?:透過|背景付き)PNGを保存$/})).toBeNull();expect(screen.getByAltText('背景編集前の写真')).toBeTruthy();expect((screen.getByLabelText('背景色') as HTMLSelectElement).value).toBe('blue');expect(screen.queryByLabelText('髪や服の輪郭を補正する')).toBeNull();expect(screen.getByText('人物用の小さいモデル')).toBeTruthy();expect(f.runtime.decodePhoto).toHaveBeenCalledOnce();
 });
 
  test('cancel during white handoff preserves transparent download and discards late completion',async()=>{
@@ -242,10 +242,10 @@ test('late storage estimate cannot restore cache information after pagehide',asy
  expect(f.session.run).not.toHaveBeenCalled();
 });
 
-test('model preparation precedes photo selection and inspection starts no session, image decode or inference',async()=>{
+test('photo selection precedes optional model details and inspection starts no session, image decode or inference',async()=>{
  const f=setup({withCache:true,withModels:true});
- const panel=screen.getByRole('region',{name:'モデルの準備'}),photo=screen.getByLabelText('背景編集の写真を選ぶ');
- expect(panel.compareDocumentPosition(photo)&Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+ const panel=screen.getByText('モデルと保存データ').closest('details')!,photo=screen.getByLabelText('背景編集の写真を選ぶ');
+ expect(photo.compareDocumentPosition(panel)&Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
  expect(panel.contains(screen.getByLabelText('背景除去モデル'))).toBe(true);
  expect(panel.contains(screen.getByRole('button',{name:'保存状況を確認'}))).toBe(true);
  expect(f.runtime.inspectCache).not.toHaveBeenCalled();
@@ -386,7 +386,7 @@ test('configured index leads to model preparation without contradictory not-avai
  expect(screen.getByRole('heading',{name:'背景編集を試す（検証用）'})).toBeTruthy();
  expect(screen.queryByText(/現在のWeb版ではモデルを取得しません/)).toBeNull();expect(screen.queryByRole('heading',{name:'背景編集は準備中'})).toBeNull();
  expect(screen.getByText(/背景を編集する場合：モデルと保存状況を確認/)).toBeTruthy();
- fireEvent.click(screen.getByRole('link',{name:'モデルの準備へ進む'}));await screen.findByRole('region',{name:'モデルの準備'});
+ fireEvent.click(screen.getByRole('link',{name:'モデルの準備へ進む'}));await screen.findByText('モデルと保存データ');
  expect(screen.getByLabelText('背景編集の写真を選ぶ')).toBeTruthy();expect(inspectCache).not.toHaveBeenCalled();expect(createSession).not.toHaveBeenCalled();expect(decodePhoto).not.toHaveBeenCalled();expect(worker).not.toHaveBeenCalled();expect(fetch).not.toHaveBeenCalled();
 });
 

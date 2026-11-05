@@ -23,6 +23,10 @@ function processingNotice(background:BrowserOptions['prepareBackground'],matte:B
 export function createBackgroundRuntime({thumbnailWorker,downloadDescription,modelLabel,modelNoticesHref,executionProvider='webgpu',...options}:Options):BackgroundRuntime{
  const thumbnail=createResizeWorkerClient({gate:imageWorkGate,createWorker:()=>new Worker(thumbnailWorker,{type:'module'})});
  const input=createBackgroundInput({resizeOriginal:(image,signal)=>thumbnail.resize(image,{...thumbnailSize(image.width,image.height),thumbnail:true},{signal})});
+ // Product policy: HR is offered on PCs; viewport size and touch alone do not identify a phone/tablet.
+ const nav=globalThis.navigator as Navigator&{userAgentData?:{mobile?:boolean}};
+ const mobile=nav?.userAgentData?.mobile===true||/Android|iPhone|iPad|iPod/i.test(nav?.userAgent??'')||(/Macintosh/i.test(nav?.userAgent??'')&&(nav?.maxTouchPoints??0)>1);
+ if(mobile)options.modelVariants=options.modelVariants?.filter(item=>item.prepareBackground.model!=='hr');
  const primary=options.prepareBackground??options.prepareHr;
  if(!primary)throw Error('background-model-required');
  const configurations=[{id:primary.modelVersion,background:primary,matte:options.prepareMatte,provider:executionProvider},...(options.modelVariants??[]).map(item=>({id:item.prepareBackground.modelVersion,background:item.prepareBackground,matte:item.prepareMatte,provider:item.executionProvider??'webgpu'}))];

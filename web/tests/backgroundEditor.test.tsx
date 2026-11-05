@@ -421,7 +421,7 @@ test('generic failure shows the retained refinement stage and fixed code while p
  await startBackground();const alert=await screen.findByRole('alert');
  expect(alert.textContent).toContain('失敗した段階：輪郭補正');expect(alert.textContent).toContain('コード：runtime-error');
  expect(alert.textContent).not.toContain('private');expect(screen.getByAltText('背景編集前の写真')).toBeTruthy();
- expect(screen.getByRole('link',{name:'背景を変えずにサイズ調整'}).getAttribute('href')).toBe('#/crop');
+ expect(screen.getByRole('link',{name:'サイズ・配置'}).getAttribute('href')).toBe('#/crop');
  fireEvent.change(screen.getByLabelText('背景除去モデル'),{target:{value:'light'}});expect(screen.queryByRole('alert')).toBeNull();
 });
 

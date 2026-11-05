@@ -338,3 +338,17 @@ test.each([['crop',true],['crop',false],['original',true],['original',false]] as
   expect(screen.getByAltText(alt).getAttribute('src')).toBe(oldUrl);
  }else expect(screen.queryByAltText(alt)).toBeNull();
 });
+
+test('switching language preserves the photo, crop controls and current route',async()=>{
+ history.replaceState(null,'','#/crop');render(<Root/>);await choose();finish();
+ const image=screen.getByAltText('test preview').getAttribute('src');
+ fireEvent.change(screen.getByRole('slider',{name:'横位置のスライダー'}),{target:{value:'30'}});
+ fireEvent.change(screen.getByRole('combobox',{name:'表示言語'}),{target:{value:'en'}});
+ await screen.findByRole('heading',{name:'Resize a photo'});
+ expect(screen.getByAltText('test preview').getAttribute('src')).toBe(image);
+ expect((screen.getByRole('slider',{name:'Horizontal position slider'}) as HTMLInputElement).value).toBe('30');
+ expect(location.hash).toBe('#/crop');expect(document.documentElement.lang).toBe('en');expect(mocks.decode).toHaveBeenCalledOnce();
+ fireEvent.change(screen.getByRole('combobox',{name:'Language'}),{target:{value:'ja'}});
+ await screen.findByRole('heading',{name:'サイズを整える'});expect(screen.getByAltText('test preview').getAttribute('src')).toBe(image);
+ expect((screen.getByRole('slider',{name:'横位置のスライダー'}) as HTMLInputElement).value).toBe('30');
+});

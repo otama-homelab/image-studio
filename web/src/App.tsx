@@ -1,3 +1,5 @@
+import {useTranslation} from 'react-i18next';
+import {t} from './i18n';
 import {useEffect,useRef,useState,useId,useImperativeHandle} from 'react';
 import type {EditorActivity} from './editorActivity';
 import {CropViewport} from './CropViewport';
@@ -6,7 +8,7 @@ import {FramingControls} from './FramingControls';
 import {usePhotoSize} from './usePhotoSize';
 import {PhotoSizeControls} from './PhotoSizeControls';
 import {PaperPreview} from './PaperPreview';
-import {Brand,EditorNavigation} from './SiteChrome';
+import {Brand,EditorNavigation,LanguageSwitcher} from './SiteChrome';
 import {focusSection} from './navigation';
 import {PhotoReplaceDialog} from './PhotoReplaceDialog';
 import {decodePreview} from './decodePreview';
@@ -22,11 +24,12 @@ type Preview={id:number;url:string;width:number;height:number};
 type HeldPreview={preview:Preview;file:Blob;origin:(()=>boolean)|null};
 type Props={backgroundAvailable?:boolean;onSupport?:()=>void;onPrint?:(transfer:PhotoTransfer)=>void;onRevision?:()=>void;onRefreshOrigin?:()=>void;sessionRef?:Ref<EditorHandle>;onRecover?:(file:Blob)=>void;active?:boolean;requestedMode?:'crop'|'original';onNavigate?:(mode:'crop'|'original')=>void;onActivity?:(activity:EditorActivity)=>void};
 export default function App({backgroundAvailable=false,active=true,requestedMode,onNavigate,onActivity,sessionRef,onRecover,onPrint,onRevision,onRefreshOrigin,onSupport}:Props={}){
+ useTranslation();
  const prefix=useId();const section=(name:string)=>`${prefix}-${name}`;
  const [source,setSource]=useState<Preview|null>(null),[loadedId,setLoadedId]=useState<number|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState(''),[guides,setGuides]=useState(true);
  const [inputNotice,setInputNotice]=useState('');
  const [inputStage,setInputStage]=useState<'waiting'|'checking'>('checking');
- const inputProgress=inputStage==='waiting'?'前の処理の終了を待っています…':'画像を確認しています…';
+ const inputProgress=inputStage==='waiting'?t("前の処理の終了を待っています…"):t("画像を確認しています…");
  const [mode,setMode]=useState<'crop'|'original'>(requestedMode??'crop');
  const directPrint=mode==='original';
  const [outputKind,setOutputKind]=useState<'crop'|'paper-png'|'paper-pdf'>('crop'),[paper,setPaper]=useState<PaperKind>('l');
@@ -68,9 +71,9 @@ export default function App({backgroundAvailable=false,active=true,requestedMode
  const held=useRef<HeldPreview|null>(null),awaitingView=useRef<number|null>(null),verifiedId=useRef<number|null>(null);
  const verifyingView=!!source&&awaitingView.current===source.id;
  useImperativeHandle(sessionRef,()=>({hasPhoto:()=>!!preview.current,importPhoto:choose,getCropArtifact}));
- function cancelInput(){generation.current++;pending.current?.abort();pending.current=null;if(awaitingView.current!==null)restorePreview(awaitingView.current);setBusy(false);setInputNotice('写真の読み込みを中止しました。編集中の写真と設定はそのままです。');}
+ function cancelInput(){generation.current++;pending.current?.abort();pending.current=null;if(awaitingView.current!==null)restorePreview(awaitingView.current);setBusy(false);setInputNotice(t("写真の読み込みを中止しました。編集中の写真と設定はそのままです。"));}
  useEffect(()=>{if(requestedMode&&requestedMode!==mode){invalidateAll();setMode(requestedMode);if(requestedMode==='original'&&outputKind==='crop')setOutputKind('paper-png');}},[requestedMode]);
- useEffect(()=>{onActivity?.({busy:busy||verifyingView||exportBusy,cancelling:exportCancelling,label:busy?inputProgress:verifyingView?'写真の表示を確認しています…':exportCancelling?'中止しています。処理の終了を待っています…':'ファイルを作成しています…',cancel:()=>{if(busy||verifyingView)cancelInput();else cancelExport();}});},[busy,verifyingView,exportBusy,exportCancelling,inputProgress,onActivity]);
+ useEffect(()=>{onActivity?.({busy:busy||verifyingView||exportBusy,cancelling:exportCancelling,label:busy?inputProgress:verifyingView?t("写真の表示を確認しています…"):exportCancelling?t("中止しています。処理の終了を待っています…"):t("ファイルを作成しています…"),cancel:()=>{if(busy||verifyingView)cancelInput();else cancelExport();}});},[busy,verifyingView,exportBusy,exportCancelling,inputProgress,onActivity]);
  useEffect(()=>{
   const clear=()=>{candidate.current=null;setReplaceOpen(false);generation.current++;pending.current?.abort();releasePreviews();setSource(null);setLoadedId(null);setBusy(false);setInputNotice('');};
   addEventListener('pagehide',clear);return()=>{removeEventListener('pagehide',clear);candidate.current=null;generation.current++;pending.current?.abort();releasePreviews();};
@@ -90,7 +93,7 @@ export default function App({backgroundAvailable=false,active=true,requestedMode
   if(preview.current?.id!==id||![width,height].every(value=>Number.isSafeInteger(value)&&value>0))return;
   if(awaitingView.current===id&&!validOrigin()){
    invalidateAll();const restored=restorePreview(id);
-   setError(restored?'元の画像が変更されました。元の写真と調整内容は保持しています。最新画像を作り直してから渡してください。':'元の画像が変更されました。最新画像を作り直してから渡してください。');return;
+   setError(restored?t("元の画像が変更されました。元の写真と調整内容は保持しています。最新画像を作り直してから渡してください。"):t("元の画像が変更されました。最新画像を作り直してから渡してください。"));return;
   }
   if(awaitingView.current===id){if(held.current)URL.revokeObjectURL(held.current.preview.url);held.current=null;awaitingView.current=null;framing.reset();}
   verifiedId.current=id;const next={...preview.current,width,height};preview.current=next;setSource(next);setLoadedId(id);
@@ -99,7 +102,7 @@ export default function App({backgroundAvailable=false,active=true,requestedMode
   if(preview.current?.id!==id)return;invalidateAll();
   const wasCandidate=awaitingView.current===id,restored=restorePreview(id);
   if(!wasCandidate){verifiedId.current=null;setLoadedId(null);}
-  setError(restored?'新しい写真を表示できませんでした。元の写真と調整内容は保持しています。':'画像を表示できませんでした。別のJPEG・PNGを選んでください。');
+  setError(restored?t("新しい写真を表示できませんでした。元の写真と調整内容は保持しています。"):t("画像を表示できませんでした。別のJPEG・PNGを選んでください。"));
  }
  function getCropArtifact():PhotoTransfer|null{
   const file=cropSave.getPreparedFile();if(!file||file.filename!=='image-studio-crop-300dpi.png'||draftPending||!photoReady||!validOrigin())return null;
@@ -126,55 +129,55 @@ export default function App({backgroundAvailable=false,active=true,requestedMode
    const next={id,...decoded};fileRef.current=blob;origin.current=fromOrigin??null;preview.current=next;awaitingView.current=id;verifiedId.current=null;setSource(next);setError('');setLoadedId(null);return true;
   }catch(cause){
    const code=(cause as Error)?.message;
-   if(id===generation.current&&!controller.signal.aborted)setError(code==='png-dimensions-too-large'?`このPNGは現在の処理上限を超えています。各辺4,096px以内・総画素400万以下に縮小したPNGを選んでください。${preview.current?'元の写真と調整内容は保持しています。':''}`:code==='image-dimensions-too-large'?`この画像は寸法の上限を超えています。JPEGは各辺16,384px以内・総画素2,400万以下、PNGは各辺4,096px以内・総画素400万以下に縮小してください。${preview.current?'元の写真と調整内容は保持しています。':''}`:code==='image-file-too-large'?`この画像はファイル容量の上限を超えています。20MiB以内のJPEG・PNGを選んでください。${preview.current?'元の写真と調整内容は保持しています。':''}`:code==='preview-busy'?'ほかの画像処理が進行中です。完了するか中止してから、写真を選び直してください。':code==='preview-unavailable'||code==='preview-cleanup-failed'?'処理の終了を確認できませんでした。必要なファイルを保存してから、ページを再読み込みしてください。':`この画像を読み込めませんでした。20MiB以内のJPEG・PNGを選んでください。${preview.current?'元の写真と調整内容は保持しています。':''}`);
+   if(id===generation.current&&!controller.signal.aborted)setError(code==='png-dimensions-too-large'?t("このPNGは現在の処理上限を超えています。各辺4,096px以内・総画素400万以下に縮小したPNGを選んでください。{{v0}}",{v0:preview.current?t("元の写真と調整内容は保持しています。"):''}):code==='image-dimensions-too-large'?t("この画像は寸法の上限を超えています。JPEGは各辺16,384px以内・総画素2,400万以下、PNGは各辺4,096px以内・総画素400万以下に縮小してください。{{v0}}",{v0:preview.current?t("元の写真と調整内容は保持しています。"):''}):code==='image-file-too-large'?t("この画像はファイル容量の上限を超えています。20MiB以内のJPEG・PNGを選んでください。{{v0}}",{v0:preview.current?t("元の写真と調整内容は保持しています。"):''}):code==='preview-busy'?t("ほかの画像処理が進行中です。完了するか中止してから、写真を選び直してください。"):code==='preview-unavailable'||code==='preview-cleanup-failed'?t("処理の終了を確認できませんでした。必要なファイルを保存してから、ページを再読み込みしてください。"):t("この画像を読み込めませんでした。20MiB以内のJPEG・PNGを選んでください。{{v0}}",{v0:preview.current?t("元の写真と調整内容は保持しています。"):''}));
   }finally{if(checking.current===ownCheck)checking.current=null;if(id===generation.current){pending.current=null;setBusy(false);}}
  }
  const placedWidth=directPrint&&source?source.width:photoWidth,placedHeight=directPrint&&source?source.height:photoHeight;
  let layout:ReturnType<typeof paperLayout>|null=null;
  if(output.kind==='paper'){try{layout=paperLayout({paper:output.paper,photoWidth:placedWidth,photoHeight:placedHeight,dpi:null});}catch{/* Offer another paper/size without discarding the photo. */}}
  const paperDoesNotFit=!!source&&output.kind==='paper'&&!layout;
- return <div className="app mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 md:px-8"><header><a className="skip" href={`#${section('editor')}`} onClick={event=>focusSection(event,section('editor'))}>編集へ移動</a><div><h1><Brand/></h1></div><span className="badge">プレビュー版</span></header>
+ return <div className="app mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 md:px-8"><header><a className="skip" href={`#${section('editor')}`} onClick={event=>focusSection(event,section('editor'))}>{t("編集へ移動")}</a><div><h1><Brand/></h1></div><div className="flex items-center gap-3"><span className="badge hidden sm:inline-flex">{t("プレビュー版")}</span><LanguageSwitcher/></div></header>
   <EditorNavigation current={directPrint?'print':'crop'} backgroundAvailable={backgroundAvailable}/>
-  <section className="journey flex flex-col gap-2" aria-labelledby={section('journey-title')}><h2 id={section('journey-title')} tabIndex={-1}>{directPrint?'写真を印刷する':'サイズを整える'}</h2><ol aria-label="作業手順"><li aria-current={!photoReady?'step':undefined}>1 写真を選ぶ</li><li aria-current={photoReady&&!exportBusy&&!save.link?'step':undefined}>2 {directPrint?'用紙と形式を選ぶ':'サイズと位置を調整'}</li><li aria-current={photoReady&&(exportBusy||save.link)?'step':undefined}>3 作成して保存</li></ol></section>
+  <section className="journey flex flex-col gap-2" aria-labelledby={section('journey-title')}><h2 id={section('journey-title')} tabIndex={-1}>{t(directPrint?t("写真を印刷する"):t("サイズを整える"))}</h2><ol aria-label={t("作業手順")}><li aria-current={!photoReady?'step':undefined}>{t("1 写真を選ぶ")}</li><li aria-current={photoReady&&!exportBusy&&!save.link?'step':undefined}>2 {t(directPrint?t("用紙と形式を選ぶ"):t("サイズと位置を調整"))}</li><li aria-current={photoReady&&(exportBusy||save.link)?'step':undefined}>{t("3 作成して保存")}</li></ol></section>
   <main className="grid min-w-0 grid-cols-1 items-start gap-6 lg:grid-cols-[20rem_minmax(0,1fr)]" id={section('editor')} tabIndex={-1}>
-  <aside className="panel" id={section('settings')} aria-labelledby={section('settings-title')}><h2 id={section('settings-title')} tabIndex={-1}>写真と設定</h2><label className={`file-button${source?' secondary':''}`}>{source?'写真を選び直す':'写真を選ぶ'}<input type="file" accept="image/jpeg,image/png" onChange={event=>{const file=event.currentTarget.files?.[0];event.currentTarget.value='';if(file)requestPhoto(file);}}/></label><details><summary>写真の使い方</summary><label>写真の使い方<select aria-describedby={onNavigate?section('mode-hint'):undefined} value={mode} onChange={event=>{const next=event.target.value as typeof mode;if(onNavigate){onNavigate(next);return;}invalidateAll();setMode(next);if(next==='original'&&outputKind==='crop')setOutputKind('paper-png');}}><option value="crop">サイズを整える</option><option value="original">切り抜かずに印刷へ</option></select></label>{onNavigate&&<p id={section('mode-hint')} className="hint">サイズ調整と印刷の写真・設定は別々に保持します。切り替えるだけでは写真を移しません。</p>}
-   </details><p role="status">{busy?inputProgress:verifyingView?'写真の表示を確認しています…':source?`${source.width} × ${source.height} px`:''}</p>{(busy||verifyingView)&&<button onClick={cancelInput}>読み込みを中止</button>}{inputNotice&&<p role="status" className="hint">{inputNotice}</p>}{error&&<div><p role="alert" className="error">{error}</p>{onSupport&&<button onClick={onSupport}>端末情報を確認</button>}</div>}
-   {photoReady&&<a className="section-link" href={`#${section('preview-title')}`} onClick={event=>focusSection(event,section('preview-title'))}>写真と仕上がりを先に確認</a>}
+  <aside className="panel" id={section('settings')} aria-labelledby={section('settings-title')}><h2 id={section('settings-title')} tabIndex={-1}>{t("写真と設定")}</h2><label className={`file-button${source?' secondary':''}`}>{t(source?t("写真を選び直す"):t("写真を選ぶ"))}<input type="file" accept="image/jpeg,image/png" onChange={event=>{const file=event.currentTarget.files?.[0];event.currentTarget.value='';if(file)requestPhoto(file);}}/></label><details><summary>{t("写真の使い方")}</summary><label>{t("写真の使い方")}<select aria-describedby={onNavigate?section('mode-hint'):undefined} value={mode} onChange={event=>{const next=event.target.value as typeof mode;if(onNavigate){onNavigate(next);return;}invalidateAll();setMode(next);if(next==='original'&&outputKind==='crop')setOutputKind('paper-png');}}><option value="crop">{t("サイズを整える")}</option><option value="original">{t("切り抜かずに印刷へ")}</option></select></label>{onNavigate&&<p id={section('mode-hint')} className="hint">{t("サイズ調整と印刷の写真・設定は別々に保持します。切り替えるだけでは写真を移しません。")}</p>}
+   </details><p role="status">{t(busy?inputProgress:verifyingView?t("写真の表示を確認しています…"):source?`${source.width} × ${source.height} px`:'')}</p>{(busy||verifyingView)&&<button onClick={cancelInput}>{t("読み込みを中止")}</button>}{inputNotice&&<p role="status" className="hint">{t(inputNotice)}</p>}{error&&<div><p role="alert" className="error">{t(error)}</p>{onSupport&&<button onClick={onSupport}>{t("端末情報を確認")}</button>}</div>}
+   {photoReady&&<a className="section-link" href={`#${section('preview-title')}`} onClick={event=>focusSection(event,section('preview-title'))}>{t("写真と仕上がりを先に確認")}</a>}
    {photoReady&&<>{!directPrint&&<><PhotoSizeControls value={dimensions}/>
    <FramingControls control={framing} disabled={!selection||busy}/>
-   <label className="guide-toggle"><input type="checkbox" checked={guides} onChange={event=>setGuides(event.target.checked)}/>顔位置の目安線を表示</label>
-   {guides&&<p className="hint">線は顔位置の目安です。規格への適合を判定するものではなく、写真には保存されません。</p>}
-   <p className="hint">ドラッグ・矢印キーで位置を調整</p>
-   {selection&&<p className="hint">切り抜き範囲：約{Math.round(selection.width)} × {Math.round(selection.height)} px</p>}
+   <label className="guide-toggle"><input type="checkbox" checked={guides} onChange={event=>setGuides(event.target.checked)}/>{t("顔位置の目安線を表示")}</label>
+   {guides&&<p className="hint">{t("線は顔位置の目安です。規格への適合を判定するものではなく、写真には保存されません。")}</p>}
+   <p className="hint">{t("ドラッグで移動、ホイール・ピンチで拡大縮小")}</p>
+   {selection&&<p className="hint">{t("切り抜き範囲：約")}{Math.round(selection.width)} × {Math.round(selection.height)} px</p>}
    </>}
-   {directPrint&&<details><summary>印刷サイズについて</summary><p className="hint">元の画素寸法で配置します。DPI情報がなければ300dpiで実寸を計算します。</p></details>}
-   <h2>保存するもの</h2><label>形式<select value={directPrint&&outputKind==='crop'?'paper-png':outputKind} onChange={event=>setOutputKind(event.target.value as typeof outputKind)}>{!directPrint&&<option value="crop">切り抜き PNG</option>}<option value="paper-png">用紙に並べた PNG</option><option value="paper-pdf">用紙に並べた PDF</option></select></label>
-   {output.format==='pdf'&&<p className="hint">PDF用プログラムは作成時に読み込みます。接続が必要な場合があります。写真は送信しません。</p>}
-   {output.kind==='paper'&&<><label>用紙<select value={paper} onChange={event=>setPaper(event.target.value as PaperKind)}><option value="l">L判</option><option value="2l">2L判</option><option value="postcard">はがき</option><option value="a4">A4</option></select></label>
+   {directPrint&&<details><summary>{t("印刷サイズについて")}</summary><p className="hint">{t("元の画素寸法で配置します。DPI情報がなければ300dpiで実寸を計算します。")}</p></details>}
+   <h2>{t("保存するもの")}</h2><label>{t("形式")}<select value={directPrint&&outputKind==='crop'?'paper-png':outputKind} onChange={event=>setOutputKind(event.target.value as typeof outputKind)}>{!directPrint&&<option value="crop">{t("切り抜き PNG")}</option>}<option value="paper-png">{t("用紙に並べた PNG")}</option><option value="paper-pdf">{t("用紙に並べた PDF")}</option></select></label>
+   {output.format==='pdf'&&<p className="hint">{t("PDF用プログラムは作成時に読み込みます。接続が必要な場合があります。写真は送信しません。")}</p>}
+   {output.kind==='paper'&&<><label>{t("用紙")}<select value={paper} onChange={event=>setPaper(event.target.value as PaperKind)}><option value="l">{t("L判")}</option><option value="2l">{t("2L判")}</option><option value="postcard">{t("はがき")}</option><option value="a4">A4</option></select></label>
    </>}
-   {upstreamStale&&<div className="save-recovery"><p role="alert" className="error">元の画像が変更されました。このプレビューは以前の画像です。サイズ調整でPNGを作り直し、最新画像を反映してください。</p>{onRefreshOrigin&&<button onClick={onRefreshOrigin}>最新画像を反映</button>}{onNavigate&&<button onClick={()=>onNavigate('crop')}>サイズ調整で作り直す</button>}</div>}
-   {paperDoesNotFit&&<p role="alert" className="error">この寸法の写真は用紙に収まりません。用紙または写真の寸法を変更してください。</p>}
+   {upstreamStale&&<div className="save-recovery"><p role="alert" className="error">{t("元の画像が変更されました。このプレビューは以前の画像です。サイズ調整でPNGを作り直し、最新画像を反映してください。")}</p>{onRefreshOrigin&&<button onClick={onRefreshOrigin}>{t("最新画像を反映")}</button>}{onNavigate&&<button onClick={()=>onNavigate('crop')}>{t("サイズ調整で作り直す")}</button>}</div>}
+   {paperDoesNotFit&&<p role="alert" className="error">{t("この寸法の写真は用紙に収まりません。用紙または写真の寸法を変更してください。")}</p>}
    </>}
-   {photoReady&&<a className="section-link" href={`#${section('preview-title')}`} onClick={event=>focusSection(event,section('preview-title'))}>プレビューで確認する</a>}
+   {photoReady&&<a className="section-link" href={`#${section('preview-title')}`} onClick={event=>focusSection(event,section('preview-title'))}>{t("プレビューで確認する")}</a>}
   </aside>
-  <div className="review-column grid min-w-0 gap-6"><div className="preview-region grid min-w-0 gap-3"><h2 id={section('preview-title')} tabIndex={-1}>仕上がりを確認</h2><section className="workspace" aria-label="写真プレビュー" aria-busy={busy||verifyingView}>
-   {source&&active?(directPrint?<img key={source.id} className="original-preview" src={source.url} alt="印刷する写真" onLoad={event=>{const image=event.currentTarget;displayReady(source.id,image.naturalWidth,image.naturalHeight);}} onError={()=>displayFailed(source.id)}/>:<CropViewport key={source.id} image={source.url} outputWidth={photoWidth} outputHeight={photoHeight} frame={framing.value} guides={guides} squareGuide={preset===3} invalidate={invalidateAll} onMove={next=>{if(preview.current?.id===source.id)framing.move(next);}} onReady={(width,height)=>displayReady(source.id,width,height)} onError={()=>displayFailed(source.id)}/>):<div className="empty"><h3>選んだ写真がここに表示されます</h3><p>JPEG・PNG、20MiBまで</p><p>写真は外部へ送信しません。</p></div>}
+  <div className="review-column grid min-w-0 gap-6"><div className="preview-region grid min-w-0 gap-3"><h2 id={section('preview-title')} tabIndex={-1}>{t("仕上がりを確認")}</h2><section className="workspace" aria-label={t("写真プレビュー")} aria-busy={busy||verifyingView}>
+   {source&&active?(directPrint?<img key={source.id} className="original-preview" src={source.url} alt={t("印刷する写真")} onLoad={event=>{const image=event.currentTarget;displayReady(source.id,image.naturalWidth,image.naturalHeight);}} onError={()=>displayFailed(source.id)}/>:<CropViewport key={source.id} image={source.url} outputWidth={photoWidth} outputHeight={photoHeight} frame={framing.value} guides={guides} squareGuide={preset===3} invalidate={invalidateAll} onMove={next=>{if(preview.current?.id===source.id)framing.move(next);}} onReady={(width,height)=>displayReady(source.id,width,height)} onError={()=>displayFailed(source.id)}/>):<div className="empty"><h3>{t("選んだ写真がここに表示されます")}</h3><p>{t("JPEG・PNG、20MiBまで")}</p><p>{t("写真は外部へ送信しません。")}</p></div>}
   </section>
-   {photoReady&&layout&&<><PaperPreview layout={layout} picture={source&&loadedId===source.id&&selection?{url:source.url,width:source.width,height:source.height,crop:directPrint?{x:0,y:0,width:source.width,height:source.height}:selection}:undefined} pngUrl={!upstreamStale&&!draftPending&&save.link?.mime==='image/png'?save.link.url:undefined}/><p className="hint">{layout.count}枚を自動配置・余白5mm／間隔3mm</p></>}
-   {photoReady&&<a className="section-link" href={`#${section('settings-title')}`} onClick={event=>focusSection(event,section('settings-title'))}>設定へ戻る</a>}
+   {photoReady&&layout&&<><PaperPreview layout={layout} picture={source&&loadedId===source.id&&selection?{url:source.url,width:source.width,height:source.height,crop:directPrint?{x:0,y:0,width:source.width,height:source.height}:selection}:undefined} pngUrl={!upstreamStale&&!draftPending&&save.link?.mime==='image/png'?save.link.url:undefined}/><p className="hint">{layout.count}{t("枚を自動配置・余白5mm／間隔3mm")}</p></>}
+   {photoReady&&<a className="section-link" href={`#${section('settings-title')}`} onClick={event=>focusSection(event,section('settings-title'))}>{t("設定へ戻る")}</a>}
   </div>
-  {photoReady&&<section className="output-panel" aria-labelledby={section('output-title')}><h2 id={section('output-title')} tabIndex={-1}>作成して保存</h2>
-   <button disabled={!source||!selection||draftPending||paperDoesNotFit||upstreamStale||busy||exportBusy} className={save.link?'secondary':'primary'} onClick={()=>{if(!validOrigin()||!fileRef.current||!source||!selection||draftPending||paperDoesNotFit)return;if(directPrint){if(output.kind==='paper')void save.prepare({mode:'original',file:fileRef.current,sourceWidth:source.width,sourceHeight:source.height,output});}else{void save.prepare({mode:'crop',file:fileRef.current,crop:selection,width:photoWidth,height:photoHeight,sourceWidth:source.width,sourceHeight:source.height,output});}}}>{exportBusy?'作成しています…':output.format==='pdf'?'PDFを作成':'PNGを作成'}</button>
-   {draftPending&&<p className="hint">入力中の数値を確定すると作成できます。「設定へ戻る」から確認してください。</p>}
-   {save.error&&<div className="save-recovery"><p role="alert" className="error">{save.error}</p>{onSupport&&<button onClick={onSupport}>端末情報を確認</button>}{directPrint&&save.recovery==='crop'&&<button onClick={()=>{if(onRecover&&fileRef.current){onRecover(fileRef.current);return;}if(onNavigate){onNavigate('crop');return;}invalidateAll();setMode('crop');}}>サイズを整えるへ</button>}</div>}
-   {output.kind==='paper'&&!upstreamStale&&<>{output.format==='pdf'&&paperPngSave.link&&<button onClick={()=>setOutputKind('paper-png')}>作成済みPNGに切り替える</button>}{output.format==='png'&&paperPdfSave.link&&<button onClick={()=>setOutputKind('paper-pdf')}>作成済みPDFに切り替える</button>}</>}
-   {save.phase==='stale'&&<p role="status" className="hint">保存用ファイルを作り直すと、最新の設定で保存できます。</p>}
-   {save.phase==='cancelled'&&<p role="status" className="hint">作成を中止しました。写真と設定はそのままです。もう一度作成できます。</p>}
-   {save.link&&<p role="status" className="hint">ファイルの準備ができました。下の「{output.format==='pdf'?'PDF':'PNG'}を保存」で端末に保存してください。</p>}
-   {exportBusy&&<><p role="status">{exportCancelling?'中止しています。処理の終了を待っています…':'保存用ファイルを作っています…'}</p><button disabled={exportCancelling} onClick={cancelExport}>{exportCancelling?'中止しています…':'中止'}</button></>}
-   {save.link&&!upstreamStale&&!draftPending&&<a className="download" href={save.link.url} download={save.link.filename} onClick={event=>{if(!validOrigin()||!save.beginDownload())event.preventDefault();}} onAuxClick={event=>{if(!validOrigin()||!save.beginDownload())event.preventDefault();}} onContextMenu={event=>{if(!validOrigin()||!save.beginDownload())event.preventDefault();}}>{output.format==='pdf'?'PDFを保存':'PNGを保存'}</a>}
-   {save.link&&!upstreamStale&&output.kind==='crop'&&<button onClick={()=>{if(onPrint){const transfer=getCropArtifact();if(transfer)onPrint(transfer);return;}setOutputKind('paper-png');}}>このサイズで用紙に並べる</button>}
-   {!directPrint&&<p className="hint">{size.width} × {size.height} mm・{photoWidth} × {photoHeight} px・300dpi。作成後に保存できます。</p>}{directPrint&&source&&<p className="hint">300dpiなら約{(source.width*25.4/300).toFixed(1)} × {(source.height*25.4/300).toFixed(1)} mmです。</p>}{output.kind==='paper'&&<details className="hint"><summary>印刷時の注意</summary><p>保存したPNG/PDFを開き、選択した用紙と同じ用紙サイズで印刷してください。「実際のサイズ（100%）」を選び、「用紙に合わせる」などの自動拡大・縮小はオフにします。</p><p>最初の1枚は写真の縦・横を定規で測り、指定した寸法になっているか確認してください。画面上のプレビューは実寸表示ではありません。</p></details>}
+  {photoReady&&<section className="output-panel" aria-labelledby={section('output-title')}><h2 id={section('output-title')} tabIndex={-1}>{t("作成して保存")}</h2>
+   <button disabled={!source||!selection||draftPending||paperDoesNotFit||upstreamStale||busy||exportBusy} className={save.link?'secondary':'primary'} onClick={()=>{if(!validOrigin()||!fileRef.current||!source||!selection||draftPending||paperDoesNotFit)return;if(directPrint){if(output.kind==='paper')void save.prepare({mode:'original',file:fileRef.current,sourceWidth:source.width,sourceHeight:source.height,output});}else{void save.prepare({mode:'crop',file:fileRef.current,crop:selection,width:photoWidth,height:photoHeight,sourceWidth:source.width,sourceHeight:source.height,output});}}}>{t(exportBusy?t("作成しています…"):output.format==='pdf'?t("PDFを作成"):t("PNGを作成"))}</button>
+   {draftPending&&<p className="hint">{t("入力中の数値を確定すると作成できます。「設定へ戻る」から確認してください。")}</p>}
+   {save.error&&<div className="save-recovery"><p role="alert" className="error">{t(save.error)}</p>{onSupport&&<button onClick={onSupport}>{t("端末情報を確認")}</button>}{directPrint&&save.recovery==='crop'&&<button onClick={()=>{if(onRecover&&fileRef.current){onRecover(fileRef.current);return;}if(onNavigate){onNavigate('crop');return;}invalidateAll();setMode('crop');}}>{t("サイズを整えるへ")}</button>}</div>}
+   {output.kind==='paper'&&!upstreamStale&&<>{output.format==='pdf'&&paperPngSave.link&&<button onClick={()=>setOutputKind('paper-png')}>{t("作成済みPNGに切り替える")}</button>}{output.format==='png'&&paperPdfSave.link&&<button onClick={()=>setOutputKind('paper-pdf')}>{t("作成済みPDFに切り替える")}</button>}</>}
+   {save.phase==='stale'&&<p role="status" className="hint">{t("保存用ファイルを作り直すと、最新の設定で保存できます。")}</p>}
+   {save.phase==='cancelled'&&<p role="status" className="hint">{t("作成を中止しました。写真と設定はそのままです。もう一度作成できます。")}</p>}
+   {save.link&&<p role="status" className="hint">{t("ファイルの準備ができました。下の「")}{t(output.format==='pdf'?'PDF':'PNG')}{t("を保存」で端末に保存してください。")}</p>}
+   {exportBusy&&<><p role="status">{t(exportCancelling?t("中止しています。処理の終了を待っています…"):t("保存用ファイルを作っています…"))}</p><button disabled={exportCancelling} onClick={cancelExport}>{t(exportCancelling?t("中止しています…"):t("中止"))}</button></>}
+   {save.link&&!upstreamStale&&!draftPending&&<a className="download" href={save.link.url} download={save.link.filename} onClick={event=>{if(!validOrigin()||!save.beginDownload())event.preventDefault();}} onAuxClick={event=>{if(!validOrigin()||!save.beginDownload())event.preventDefault();}} onContextMenu={event=>{if(!validOrigin()||!save.beginDownload())event.preventDefault();}}>{t(output.format==='pdf'?t("PDFを保存"):t("PNGを保存"))}</a>}
+   {save.link&&!upstreamStale&&output.kind==='crop'&&<button onClick={()=>{if(onPrint){const transfer=getCropArtifact();if(transfer)onPrint(transfer);return;}setOutputKind('paper-png');}}>{t("このサイズで用紙に並べる")}</button>}
+   {!directPrint&&<p className="hint">{size.width} × {size.height} {t("mm・")}{photoWidth} × {photoHeight} {t("px・300dpi。作成後に保存できます。")}</p>}{directPrint&&source&&<p className="hint">{t("300dpiなら約")}{t((source.width*25.4/300).toFixed(1))} × {t((source.height*25.4/300).toFixed(1))} {t("mmです。")}</p>}{output.kind==='paper'&&<details className="hint"><summary>{t("印刷時の注意")}</summary><p>{t("保存したPNG/PDFを開き、選択した用紙と同じ用紙サイズで印刷してください。「実際のサイズ（100%）」を選び、「用紙に合わせる」などの自動拡大・縮小はオフにします。")}</p><p>{t("最初の1枚は写真の縦・横を定規で測り、指定した寸法になっているか確認してください。画面上のプレビューは実寸表示ではありません。")}</p></details>}
   </section>}
   </div></main><PhotoReplaceDialog open={replaceOpen&&active} onKeep={keepPhoto} onReplace={replacePhoto}/></div>;
 }

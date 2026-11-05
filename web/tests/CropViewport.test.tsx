@@ -1,5 +1,5 @@
 import {afterEach,beforeEach,expect,test,vi} from 'vitest';
-import {cleanup,fireEvent,render,screen,waitFor} from '@testing-library/react';
+import {act,cleanup,fireEvent,render,screen,waitFor} from '@testing-library/react';
 import {CropViewport} from '../src/CropViewport';
 
 // Actual react-easy-crop component; only DOM layout/image decoding are simulated.
@@ -36,4 +36,27 @@ test('real cropper keyboard updates image-relative position and guide toggles pr
  view.rerender(<CropViewport {...props} frame={next} guides={false}/>);
  await waitFor(()=>expect(image.style.transform).toContain('translate(151px, -80px)'));
  expect(target.classList.contains('portrait-guide')).toBe(false);
+});
+
+test('real cropper wheel zoom updates image-relative framing and invalidates prepared output',async()=>{
+ const onMove=vi.fn(),invalidate=vi.fn();
+ render(<CropViewport image="blob:fixture" outputWidth={354} outputHeight={472} frame={{range:50,horizontal:20,vertical:70}} guides={false} squareGuide={false} onMove={onMove} onReady={vi.fn()} onError={vi.fn()} invalidate={invalidate}/>);
+ const image=screen.getByAltText('選択した写真');fireEvent.load(image);
+ await waitFor(()=>expect(image.style.transform).toContain('scale(2)'));
+ fireEvent.wheel(screen.getByLabelText('写真の切り抜き枠'),{deltaY:-100,clientX:200,clientY:200});
+ await waitFor(()=>expect(onMove).toHaveBeenCalled());
+ expect(onMove.mock.calls.at(-1)![0].range).toBeCloseTo(40,6);expect(invalidate).toHaveBeenCalled();
+});
+
+test('a drag remains an edit after an overlapping wheel gesture finishes',async()=>{
+ const onMove=vi.fn();
+ render(<CropViewport image="blob:fixture" outputWidth={354} outputHeight={472} frame={{range:50,horizontal:20,vertical:70}} guides={false} squareGuide={false} onMove={onMove} onReady={vi.fn()} onError={vi.fn()} invalidate={vi.fn()}/>);
+ const image=screen.getByAltText('選択した写真');fireEvent.load(image);
+ await waitFor(()=>expect(image.style.transform).toContain('scale(2)'));
+ const target=screen.getByLabelText('写真の切り抜き枠');fireEvent.wheel(target,{deltaY:-100,clientX:200,clientY:200});
+ fireEvent.mouseDown(target,{button:0,clientX:200,clientY:200});
+ await act(async()=>{await new Promise(resolve=>setTimeout(resolve,300));});
+ const count=onMove.mock.calls.length;fireEvent.mouseMove(document,{clientX:230,clientY:200});
+ await waitFor(()=>expect(onMove.mock.calls.length).toBeGreaterThan(count));
+ fireEvent.mouseUp(document);
 });

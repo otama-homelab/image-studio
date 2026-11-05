@@ -139,7 +139,7 @@ test('DPI failure recovery stays at the output and returns to sizing without res
 
 test('index explains the sample image flow, requirements and licenses without starting image processing',()=>{
  render(<Root/>);expect(screen.getByRole('heading',{level:1,name:'写真を、使いたいかたちに。'})).toBeTruthy();expect(screen.getByRole('heading',{name:'操作で画像がどう変わるか'})).toBeTruthy();expect(screen.getByRole('heading',{name:'必要な環境・入力'})).toBeTruthy();expect(screen.getByRole('heading',{name:'制約・確認してほしいこと'})).toBeTruthy();
- expect(screen.getAllByText('Client-side processing').length).toBeGreaterThan(0);expect(screen.getByRole('link',{name:'アプリ本体：MIT License'}).getAttribute('href')).toBe('/LICENSE.txt');expect(screen.getByRole('link',{name:'アプリ本体：MIT License'}).getAttribute('target')).toBe('_blank');const hash=location.hash;fireEvent.click(screen.getByRole('link',{name:'操作の流れ'}));expect(document.activeElement).toBe(screen.getByRole('heading',{name:'操作で画像がどう変わるか'}));expect(location.hash).toBe(hash);
+ expect(screen.getAllByText('Client-side processing').length).toBeGreaterThan(0);expect(screen.getByRole('link',{name:'アプリ本体：MIT License'}).getAttribute('href')).toBe('/LICENSE.txt');expect(screen.getByRole('link',{name:'アプリ本体：MIT License'}).getAttribute('target')).toBe('_blank');expect(screen.queryByRole('navigation',{name:'案内'})).toBeNull();
  const footer=screen.getByRole('contentinfo');expect(within(footer).getByRole('link',{name:'Star on GitHub'}).getAttribute('href')).toBe('https://github.com/otama-homelab/image-studio');expect(footer.textContent).toContain('Apache-2.0');expect(footer.textContent).toContain('搭載・配布していません');expect(mocks.prepare).not.toHaveBeenCalled();expect(URL.createObjectURL).not.toHaveBeenCalled();
 });
 
@@ -296,10 +296,11 @@ test('saved matting example mounts only when opened and does not start processin
  details.open=false;fireEvent(details,new Event('toggle'));await waitFor(()=>expect(screen.queryByAltText(alt)).toBeNull());expect(worker).not.toHaveBeenCalled();expect(fetch).not.toHaveBeenCalled();expect(mocks.decode).not.toHaveBeenCalled();expect(mocks.prepare).not.toHaveBeenCalled();expect(URL.createObjectURL).not.toHaveBeenCalled();
 });
 
-test('home navigation URLs resolve to real headings without relying on click interception',()=>{
+test('home offers direct editor links without a navigation tab bar',()=>{
  history.replaceState(null,'','#/');render(<Root/>);
- const links=within(screen.getByRole('navigation',{name:'案内'})).getAllByRole('link');
- for(const link of links){const id=link.getAttribute('href')?.slice(1);expect(id).toBeTruthy();expect(document.getElementById(id!)).not.toBeNull();}
+ expect(screen.queryByRole('navigation',{name:'案内'})).toBeNull();
+ expect(screen.getByRole('link',{name:'サイズを整える'}).getAttribute('href')).toBe('#/crop');
+ expect(screen.getByRole('link',{name:'印刷用に並べる'}).getAttribute('href')).toBe('#/print');
 });
 test.each([['#usage-title','usage-title'],['#requirements-title','requirements-title'],['#limitations-title','limitations-title'],['#usage','usage-title'],['#requirements','requirements-title'],['#limitations','limitations-title']])('home fragment %s opens the correct section and preserves a canonical bookmark',(fragment,id)=>{
  history.replaceState(null,'',fragment);render(<Root/>);expect(location.hash).toBe('#'+id);expect(document.activeElement).toBe(document.getElementById(id));

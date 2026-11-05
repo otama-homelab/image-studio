@@ -18,7 +18,7 @@ export function SiteFooter({onSupport,backgroundConfigured=false,modelNoticesHre
   <li><a href="https://huggingface.co/hustvl/vitmatte-base-distinctions-646/blob/b58373f8dbbfbeb58157456e2e4949f9f872aa18/README.md" target="_blank" rel="noopener noreferrer">ViTMatte Base Distinctions-646</a>{t("：Apache-2.0（輪郭補正の候補）")}</li>
  </ul><p>{t("提供開始時に、採用モデルの利用条件と権利表示を案内します。")}</p></details>
  <details><summary>{t("免責・利用上の注意")}</summary><p>{t("プレビュー版です。規格への適合、提出先での受理、印刷機での仕上がりを保証するものではありません。提出先の加工条件・寸法・印刷倍率を確認してください。再読み込みやタブを閉じる操作で、編集中の写真と設定は失われます。")}</p><p>{t("作例はAI生成の架空の人物を使った操作イメージです。背景除去の実測結果や、処理品質を保証する比較画像ではありません。")}</p></details>
- <p>© 2026 Image Studio contributors</p>
+ <div className="flex flex-wrap items-baseline justify-between gap-2"><p>© 2026 Image Studio contributors</p><small className="text-xs">v{__APP_BUILD__.appVersion}</small></div>
  </footer>;}
 
 export function EditorNavigation({current,backgroundAvailable=true}:{current:'background'|'crop'|'print';backgroundAvailable?:boolean}){

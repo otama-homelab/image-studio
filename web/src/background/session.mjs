@@ -4,6 +4,7 @@ import {createAlphaCommitter} from '../../../tools/browser-library-adapter/alpha
 import {createInferenceOperation} from '../../../tools/browser-library-adapter/inference-operation.mjs';
 import {createSerialInference} from '../../../tools/browser-library-adapter/serial-inference.mjs';
 import {createExportJobs} from '../../../tools/browser-library-adapter/export-job.mjs';
+import {workerFailure} from '../../../tools/browser-library-adapter/worker-failure.mjs';
 
 /** Application ownership only. Pixel operations, Workers and encoding stay in existing adapters.
  * No model/resource work occurs until run(). Factories receive the page's shared admission gate.
@@ -35,14 +36,19 @@ export function createBackgroundSession({gate,prepareHr,prepareBackground,prepar
   &&context?.key.modelVersion===backgroundMask.modelVersion;
 
  let model=null,foreground=null,exportClient=null,trimap=null;
- let phase='idle',modelRole=null,resourceProgress=null,resourceError=null,inferenceError=null,stageProgress=null;
+ let phase='idle',modelRole=null,resourceProgress=null,resourceError=null,inferenceError=null,stageProgress=null,lastFailure=null;
+ const retainFailure=(code='runtime-error')=>{lastFailure??=Object.freeze({
+  phase:['model-load','inference','releasing','trimap','foreground','export'].includes(phase)?phase:null,
+  modelRole:phase!=='export'&&['hr','modnet','portrait','lite','matte'].includes(modelRole)?modelRole:null,
+  code:workerFailure({},code).code,
+ });};
  const getCurrent=()=>current;
  const committer=createAlphaCommitter({registry,getCurrent});
  const publish=()=>{try{onChange(snapshot());}catch{}};
  const result=()=>{const value=committer.get();return value?.status==='valid'&&value.cutout?value:null;};
  function snapshot(){return Object.freeze({hasPhoto:!!current,hasBackgroundMask:matchingBackgroundMask(current),refine,modelId:hr.modelVersion,refineAvailable:!!matte&&(typeof makeTrimap==='function'||typeof createTrimapClient==='function'),running:operation.getState().running,
   busy:working||operation.getState().running||operation.getState().stopping||exports.getState().busy,
-  hasResult:!!result(),blocked:operation.getState().blocked||exports.getState().blocked||gate.getState().blocked,closed,phase,modelRole,resourceProgress,resourceError,inferenceError,stageProgress});}
+  hasResult:!!result(),blocked:operation.getState().blocked||exports.getState().blocked||gate.getState().blocked,closed,phase,modelRole,resourceProgress,resourceError,inferenceError,stageProgress,lastFailure});}
  const exports=createExportJobs({registry,getCurrent(options){
   const value=result();if(!value||!['transparent','background'].includes(options.kind))return null;
   return {assetId:value.cutout.id,dependencyKey:JSON.stringify(value.key)};
@@ -58,8 +64,8 @@ export function createBackgroundSession({gate,prepareHr,prepareBackground,prepar
   },
   async execute(context,hooks){
    const client=createModelClient({modelVersion:hr.modelVersion,gate:hooks.workerGate,onEvent:event=>{
-    if(model!==client)return;
-    if(event?.type==='error'){inferenceError=event.code==='device-lost'?'device-lost':null;publish();return;}
+    if(model!==client||!hooks.isCurrent())return;
+    if(event?.type==='error'){retainFailure(event.code);inferenceError=event.code==='device-lost'?'device-lost':null;publish();return;}
     if(event?.type==='progress'&&event.phase==='hr'&&phase==='inference'&&modelRole==='hr'
      &&Number.isSafeInteger(event.totalStages)&&event.totalStages>0&&event.totalStages<=MAX_HR_STAGES
      &&Number.isSafeInteger(event.completedStages)&&event.completedStages>=0&&event.completedStages<=event.totalStages){
@@ -84,7 +90,7 @@ export function createBackgroundSession({gate,prepareHr,prepareBackground,prepar
     phase='trimap';publish();
     const client=createTrimapClient({gate:workerGate});trimap=client;
     try{return await client.make(alpha);}finally{await client.close();if(trimap===client)trimap=null;}
-   }:makeTrimap;
+   }:typeof makeTrimap==='function'?async(...args)=>{phase='trimap';publish();return makeTrimap(...args);}:makeTrimap;
    const execute=createSerialInference({registry,client:observedClient,prepareBackground:hr,prepareMatte:matte,makeTrimap:make,
     getBackgroundAlpha(context){
      if(!matchingBackgroundMask(context))return null;
@@ -108,7 +114,7 @@ export function createBackgroundSession({gate,prepareHr,prepareBackground,prepar
   if(snapshot().blocked)throw Error('background-session-unavailable');
  };
  function invalidate(){
-  inferenceError=null;
+  inferenceError=null;lastFailure=null;
   if(current)current={...current,key:{...current.key,inferenceRevision:++revision},refine};
   committer.get();exports.reconcile();
  }
@@ -127,7 +133,7 @@ export function createBackgroundSession({gate,prepareHr,prepareBackground,prepar
    // Validate/register before releasing the accepted photo and its results.
    const asset=registry.register(image,owner),previous=current;clearBackgroundMask();
    current={rgbAssetId:asset.id,refine,key:{inputId:crypto.randomUUID(),inferenceRevision:++revision,modelVersion:hr.modelVersion}};
-   committer.get();exports.reconcile();if(previous)registry.release(previous.rgbAssetId,owner);resourceError=null;inferenceError=null;resourceProgress=null;publish();
+   committer.get();exports.reconcile();if(previous)registry.release(previous.rgbAssetId,owner);resourceError=null;inferenceError=null;lastFailure=null;resourceProgress=null;publish();
   },
   setRefine(value){
    idle();if(typeof value!=='boolean'||(value&&(!matte||(typeof makeTrimap!=='function'&&typeof createTrimapClient!=='function'))))throw Error('refinement-unavailable');
@@ -135,13 +141,17 @@ export function createBackgroundSession({gate,prepareHr,prepareBackground,prepar
   },
   async run(){
    idle();if(!current)throw Error('background-photo-required');
-   working=true;resourceError=null;inferenceError=null;resourceProgress=null;stageProgress=null;publish();
-   try{return await operation.start();}finally{working=false;phase='idle';exports.reconcile();publish();}
+   working=true;resourceError=null;inferenceError=null;lastFailure=null;resourceProgress=null;stageProgress=null;modelRole=null;publish();
+   try{return await operation.start();}
+   catch(error){if(!closed&&phase!=='stopping')retainFailure();throw error;}
+   finally{working=false;phase='idle';exports.reconcile();publish();}
   },
   async save(options){
    idle();if(!['transparent','background'].includes(options?.kind)||(options.kind==='background'&&!options.backgroundColor))throw Error('invalid-background-export');
-   working=true;phase='export';publish();
-   try{return await exports.start(options);}finally{working=false;phase='idle';publish();}
+   working=true;phase='export';lastFailure=null;publish();
+   try{return await exports.start(options);}
+   catch(error){if(!closed&&phase!=='stopping')retainFailure();throw error;}
+   finally{working=false;phase='idle';publish();}
   },
   getPrepared:options=>exports.getReady(options),
   async cancel(){

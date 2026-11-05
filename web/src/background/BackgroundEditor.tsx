@@ -6,12 +6,14 @@ import {PhotoReplaceDialog} from '../PhotoReplaceDialog';
 import {useNativeDialog} from '../useNativeDialog';
 import type {PhotoTransfer} from '../App';
 import {createDownloadLinks} from '../../../tools/browser-library-adapter/download-links.mjs';
+import {workerFailure} from '../../../tools/browser-library-adapter/worker-failure.mjs';
 
 type Pixels={width:number;height:number;format:'rgb-u8';data:ArrayBuffer};
 type State={hasBackgroundMask?:boolean;hasPhoto:boolean;hasResult:boolean;busy:boolean;blocked:boolean;closed:boolean;refine:boolean;
  phase?:string;modelRole?:string|null;resourceProgress?:{storedBytes:number;totalBytes:number}|null;resourceError?:string|null;inferenceError?:'device-lost'|null;
  modelId?:string;refineAvailable?:boolean;
- stageProgress?:{completedStages:number;totalStages:number}|null};
+ stageProgress?:{completedStages:number;totalStages:number}|null;
+ lastFailure?:{phase:string|null;modelRole:string|null;code:string}|null};
 type Options={kind:'transparent'}|{kind:'background';backgroundColor:number[]};
 type Png={bytes:Uint8Array;width:number;height:number;mime:string;filename:string};
 type Session={getState:()=>State;setPhoto:(image:Pixels)=>void;setModel?:(id:string)=>void;setRefine:(value:boolean)=>void;
@@ -34,6 +36,17 @@ export type BackgroundRuntime={
 const empty:State={hasPhoto:false,hasResult:false,busy:false,blocked:false,closed:false,refine:false};
 type Props={active:boolean;runtime?:BackgroundRuntime;onCrop:(value:PhotoTransfer)=>void;onRevision:()=>void;
  onActivity:(value:EditorActivity)=>void};
+
+function failureDetails(failure:State['lastFailure']){
+ if(!failure)return '';
+ const background=['hr','modnet','portrait','lite'].includes(failure.modelRole??'');
+ const model=failure.modelRole==='matte'?'輪郭補正モデル':background?'背景除去モデル':'モデル';
+ const stages=new Map([
+  ['model-load',`${model}の読み込み・検証`],['inference',failure.modelRole==='matte'?'輪郭補正':background?'背景除去':'モデルの実行'],
+  ['releasing','モデルの終了処理'],['trimap','輪郭補正範囲の作成'],['foreground','透過部分の色の調整'],['export','PNGの作成'],
+ ]);
+ return ` 失敗した段階：${stages.get(failure.phase??'')??'処理段階不明'}（コード：${workerFailure({},failure.code).code}）。`;
+}
 
 export function BackgroundEditor({active,runtime,onCrop,onRevision,onActivity}:Props){
  const session=useRef<Session|null>(null),epoch=useRef(0),pending=useRef<AbortController|null>(null);
@@ -189,13 +202,13 @@ export function BackgroundEditor({active,runtime,onCrop,onRevision,onActivity}:P
    const link=links.current.acquire(selected,'background-view');linkId.current=link.id;setOutput({url:link.url,file,kind:selected.kind});
    setNotice('PNGを作成しました。仕上がりを確認して保存、またはサイズ調整へ進んでください。');
   }catch{if(epoch.current===generation){const failure=owner.getState(),reason=failure.inferenceError??failure.resourceError;
-   setError(reason==='device-lost'?'GPUとの接続が失われました。写真と設定は保持しています。もう一度実行してください。繰り返す場合は、端末情報を確認してください。'
+   setError((reason==='device-lost'?'GPUとの接続が失われました。写真と設定は保持しています。もう一度実行してください。繰り返す場合は、端末情報を確認してください。'
     :reason==='cache-quota-exceeded'?'モデルを保存する空き容量が足りません。モデルの保存データを削除するか、端末の空き容量を増やしてください。写真は保持しています。'
     :['checksum-mismatch','bytes-mismatch','bytes-overflow'].includes(reason??'')?'モデルの内容を検証できませんでした。保存データを削除してから、もう一度実行してください。写真は保持しています。'
     :reason==='resource-rate-limited'?'モデル配信先が取得を一時的に制限しています。しばらく待ってから、もう一度実行してください。写真と設定は保持しています。'
     :reason==='resource-access-denied'?'モデル配信先から取得を拒否されました。写真と設定は保持しています。別のモデルを選んで試してください。'
     :reason==='transport-failed'?'モデルを取得できませんでした。接続を確認して、もう一度実行してください。写真と設定は保持しています。'
-    :'処理を完了できませんでした。写真と設定を保持しています。実行用プログラムの取得に接続が必要な場合があります。接続と端末情報を確認して、もう一度実行してください。');}}
+    :'処理を完了できませんでした。写真と設定を保持しています。実行用プログラムの取得に接続が必要な場合があります。接続と端末情報を確認して、もう一度実行してください。')+failureDetails(failure.lastFailure));}}
   finally{actionBusy.current=false;setActing(false);if(session.current===owner)setState(owner.getState());}
  }
  async function transferToCrop(){

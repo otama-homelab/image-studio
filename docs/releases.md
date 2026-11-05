@@ -1,49 +1,33 @@
-# バージョン更新とリリース
+# Releases
 
-[ドキュメント一覧](../README.md#ドキュメント)
-
-ブラウザ版のみを公開します。DockerイメージとGHCRへの公開は廃止しました。
-
-| 起点 | 検査・配信 |
+| Trigger | Result |
 |---|---|
-| `main`へのpush | 全検査後、Pages `preview`へ配信 |
-| 安定`vX.Y.Z`タグ | 同じ検査後、Pages `production`へ配信し、GitHub Releaseへ静的成果物を添付 |
-| PR・web-check手動実行 | 検査と成果物保存のみ |
-| Bump version | VERSION/package/lockを同期し、タグ作成後にブラウザworkflowを明示呼出 |
-
-## 通常のリリース
-
-1. 変更をmainへ反映し、Previewで必要な確認を済ませます。
-2. **Bump version**をmainに対して実行します。patch/minor/majorを指定できます。
-3. ブラウザ検査、Pages本番配信、GitHub Releaseを確認します。
+| Push to `main` | Check, then deploy Pages Preview |
+| Stable `vX.Y.Z` tag | Check, deploy production, publish the exact static artifact and SHA256 to GitHub Release |
+| Pull request or manual web-check | Check and retain artifacts; no deployment |
+| Bump version | Synchronize version metadata, create the tag, and explicitly call the browser workflow |
 
 ```sh
 gh workflow run version-bump.yaml --ref main -f bump=patch
 ```
 
-Bump versionは`VERSION`、`web/package.json`、`web/package-lock.json`を同期してコミット・タグをatomic pushします。GITHUB_TOKENのtag pushは別workflowを起動しないため、web-checkを直接呼びます。版を先に同期済みの場合は、そのmain内commitへ一致する安定タグを一度だけ付けます。公開済みタグを動かしません。
+The tag must match `VERSION` and both web package manifests, and point to a commit contained in `main`. Do not move published tags or silently replace release assets. Docker/GHCR publishing is retired.
 
-## 検査と配布物
+## Configuration
 
-`web-check.yaml`がscripts・型・domain/Worker・UI・依存audit・モデル入力・build・配布guardを検査します。同じ実行が保存した`dist/`と`inventory.json`をdeploy jobで全bytes/SHA照合し、再buildせずPagesへ配信します。モデルは固定HF commit、private marker・25MiB上限・出力契約のguardを維持します。
+- Project: `image-studio`; Pages production branch: `production`.
+- Production: https://image-studio.otama-playground.com/
+- Preview: https://preview.image-studio-c5u.pages.dev/
+- CNAME target: `image-studio-c5u.pages.dev` (including the assigned suffix).
+- Secrets: `CLOUDFLARE_API_TOKEN` with account Pages Read/Write; `CLOUDFLARE_ACCOUNT_ID`.
+- Variable: `IMAGE_STUDIO_BUILD_INPUT`, pointing to immutable public HF input.
 
-タグ公開時は同じ検査済み成果物を`image-studio-web-X.Y.Z.zip`とSHA256としてGitHub Releaseへ添付します。既存Release/添付の黙った上書きはしません。公開済みassetがある場合は照合してから個別に復旧してください。ソースはタグのGitHub source archiveから取得できます。
+DNS permissions are separate from Pages permissions. R2/S3 keys are not required. Never expose credentials in the browser, source, or build output.
 
-## Pages設定
+The same run's checked `dist/` and `inventory.json` are verified before deployment and release packaging. Deploy jobs do not rebuild. Keep private-artifact, integrity, license, and 25 MiB guards enabled.
 
-- Project：`image-studio`。Production branch：`production`。
-- 本番：**https://image-studio.otama-playground.com/**
-- Preview：https://preview.image-studio-c5u.pages.dev/
-- Pages標準domain：`image-studio-c5u.pages.dev`。CNAMEの転送先にもこの完全な名前を使用します。
-- Secrets：対象アカウントのPages Read/Writeを持つ`CLOUDFLARE_API_TOKEN`、`CLOUDFLARE_ACCOUNT_ID`。
-- Variable：固定HF配布入力を示す`IMAGE_STUDIO_BUILD_INPUT`。R2・S3キーは不要です。
+## Recovery
 
-DNS・独自domainの変更権限はPages公開権限と別です。アカウントトークンへ認証値を埋め込んだり、ブラウザへ渡したりしません。
+Roll back to a verified **production** deployment and compare commit, sourceId, and inventory. Never attach the public domain to Preview. The first verified baseline is v1.2.0, commit `630bb43a90186c3aa9a1574f84926fb7b84e887e`, deployment `265e3a7b-5573-4f42-b128-e85197ac213e`.
 
-## 復帰と履歴
-
-問題時は確認済みの**production** deploymentへCloudflare Pagesで戻し、commit・sourceId・artifact inventoryを照合します。Previewを本番domainへ接続しません。初回の確認済み本番はv1.2.0/commit630bb43a90186c3aa9a1574f84926fb7b84e887e、deployment265e3a7b-5573-4f42-b128-e85197ac213eです。
-
-サーバー側の復帰は、すでに開いているタブ内の写真やJavaScriptを巻き戻しません。未保存写真のあるタブを強制reloadせず、既存タブの保存と新しいタブの動作を別々に確認します。写真はreloadで失われる仕様です。
-
-旧サーバー版のイメージ・タグは履歴です。新規イメージは作りません。既存タグやモデル/NOTICE/sourceの不変資産、必要な復帰証拠は削除しません。
+Server rollback does not replace JavaScript or unsaved photos in existing tabs. Check an existing tab's save and a newly opened tab separately; never force reload a tab holding a photo. Reload loses in-memory photos by design. Preserve immutable model/source/license assets and required recovery evidence.

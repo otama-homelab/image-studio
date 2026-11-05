@@ -379,11 +379,10 @@ test('configured index leads to model preparation without contradictory not-avai
  history.replaceState(null,'','#/');const createSession=vi.fn(),decodePhoto=vi.fn(),inspectCache=vi.fn(),fetch=vi.fn(),worker=vi.fn();
  vi.stubGlobal('fetch',fetch);vi.stubGlobal('Worker',worker);
  render(<Root backgroundRuntime={{createSession,decodePhoto,inspectCache,refineAvailable:false,downloadDescription:'比較用モデル構成。'}}/>);
- expect(screen.getByRole('link',{name:'背景を編集する（検証用）'}).getAttribute('href')).toBe('#/background');
- expect(screen.getByRole('heading',{name:'背景編集を試す（検証用）'})).toBeTruthy();
+ expect(screen.getByRole('link',{name:'背景を消す'}).getAttribute('href')).toBe('#/background');
+ expect(screen.getByAltText('背景を除いたサンプル写真')).toBeTruthy();
  expect(screen.queryByText(/現在のWeb版ではモデルを取得しません/)).toBeNull();expect(screen.queryByRole('heading',{name:'背景編集は準備中'})).toBeNull();
- expect(screen.getByText(/背景を編集する場合：モデルと保存状況を確認/)).toBeTruthy();
- fireEvent.click(screen.getByRole('link',{name:'モデルの準備へ進む'}));await screen.findByText('モデルと保存データ');
+ fireEvent.click(screen.getByRole('link',{name:'背景を消す'}));await screen.findByText('モデルと保存データ');
  expect(screen.getByLabelText('背景編集の写真を選ぶ')).toBeTruthy();expect(inspectCache).not.toHaveBeenCalled();expect(createSession).not.toHaveBeenCalled();expect(decodePhoto).not.toHaveBeenCalled();expect(worker).not.toHaveBeenCalled();expect(fetch).not.toHaveBeenCalled();
 });
 

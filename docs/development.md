@@ -1,33 +1,35 @@
-# 開発と処理の構成
+# Development
 
-[ドキュメント一覧](../README.md#ドキュメント)
-
-本体は`web/`の静的ブラウザアプリです。画面はReact、画像処理はWorkerと共有adapter、モデル配布は固定HF入力、公開はPagesが所有します。詳細は[責務・変更先](browser/modules-and-ownership.md)と[状態機械](browser/state-machine.md)を参照してください。
-
-## 開発・確認
-
-Nodeは`web/.node-version`、依存はlockfileで固定します。
+Use `web/.node-version` and locked dependencies. No Python server, Docker image, or external image-processing API runs the app.
 
 ```sh
 cd web
 npm ci --ignore-scripts
+npm run dev
 npm test
 npm run test:scripts
 npm run test:domain
 npm run build
-npm run dev
 ```
 
-`npm run dev`はloopbackで起動します。`npm test`は画面、`test:scripts`はbuild/配布、`test:domain`は共有処理・Worker・状態契約を確認します。これらは実機GPU推論、一般画質や物理印刷の保証ではありません。
+The dev server binds to loopback. UI, build/distribution, and shared Worker/state tests are separate; passing them does not establish device compatibility or general image quality.
 
-## モデル付きビルド
+## Ownership
 
-`web/background-release/`は固定入力から生成する作業用directoryで、ソースへ追加しません。CIは`IMAGE_STUDIO_BUILD_INPUT`から匿名取得・整合性確認を行い、`tools/browser-build/`の固定依存でWorkerを組み立てます。入力不正時は失敗し、背景機能なしへ黙って切り替えません。
+| Module | Responsibility |
+|---|---|
+| `web/src/Root.tsx` | Routes and explicit photo transfers |
+| `web/src/background/` | Background editor and session ownership |
+| `web/src/App.tsx`, `CropViewport.tsx` | Resize/print UI and framing |
+| `tools/browser-library-adapter/` | Shared image, inference, export, resource, and cancellation contracts |
+| `web/scripts/`, `tools/build_browser_*` | Checked static build and immutable model input |
+| `tools/browser-build/` | Locked Worker build dependencies |
+| `tests/`, `web/tests/` | Contract and UI regression tests |
 
-[Web開発メモ](../web/README.md)、[ビルド依存](../tools/browser-build/README.md)、[公開runtime接続](browser/public-runtime-integration.md)を参照してください。
+[State contracts](browser/state-machine.md) define cancellation, photo adoption, stale results, and saving. Keep those decisions in their owning modules, not in individual buttons.
 
-## 開発用ツールと履歴
+## Model builds
 
-`tools/export_browser_*.py`、参照画像生成、WASMビルド等は開発時だけ使用します。PythonやPyTorchを公開サイトの実行依存にしません。出力は指定された非公開評価directoryへ保存し、写真やモデル原本をソースへ混入させません。
+CI prepares `web/background-release/` from `IMAGE_STUDIO_BUILD_INPUT`, checks hashes, and builds Workers using `tools/browser-build/`. Invalid input fails the build; it does not silently produce a background-free release. Local builds without this generated directory support manual resize/print only.
 
-旧サーバーを前提とした起動・ROCm/ExecuTorch比較・Vulkanエクスポートと、その専用patch群は廃止しました。既存の比較結果とライセンス証拠は保持します。過去の手順は当時のタグに対応する履歴であり、現行構成の起動手順ではありません。
+Python model conversion, native reference generation, and WASM build tools are development-only. Keep their outputs and private photos outside the source tree. Retain model/runtime notices and pinned fixtures in `docs/browser/`; do not rewrite license texts or remove data consumed by build guards. Historical investigation notes are not required to build or use the app.

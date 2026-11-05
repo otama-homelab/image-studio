@@ -29,3 +29,11 @@ test('denied preference storage does not block language switching or alter unkno
  vi.spyOn(Storage.prototype,'setItem').mockImplementation(()=>{throw new DOMException('Denied','SecurityError');});
  setLanguage('en');expect(i18n.resolvedLanguage).toBe('en');expect(t('blob:private-photo')).toBe('blob:private-photo');const object={id:'private'};expect(t(object)).toBe(object);
 });
+
+test.each([null,'en','ja','invalid'])('initial language respects saved preference %s, otherwise defaults to English',async(saved)=>{
+ vi.resetModules();localStorage.clear();
+ if(saved!==null)localStorage.setItem('image-studio-language',saved);
+ const fresh=(await import('../src/i18n')).default;
+ expect(fresh.resolvedLanguage).toBe(saved==='ja'?'ja':'en');
+ expect(document.documentElement.lang).toBe(saved==='ja'?'ja':'en');
+});

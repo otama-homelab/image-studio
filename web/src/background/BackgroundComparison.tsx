@@ -19,6 +19,5 @@ export function BackgroundComparison({original,result,width,height,originalAlt=t
      </Slider.Root></Slider.Provider>
   </div>
   <p id={hint}>{t("中央線をドラッグ、または左右キーで比較")}</p>
-  <div className="background-comparison-actions"><button onClick={()=>slider.setPosition(0)}>{t("元の写真のみ")}</button><button onClick={()=>slider.setPosition(100)}>{t("仕上がりのみ")}</button></div>
  </div>;
 }

@@ -5,9 +5,9 @@ import en from './locales/en.json';
 
 export type Language='ja'|'en';
 const storageKey='image-studio-language';
-let initial:Language='ja';
-try{if(globalThis.localStorage?.getItem(storageKey)==='en')initial='en';}catch{/* Language selection also works without storage. */}
-void i18n.use(initReactI18next).init({lng:initial,fallbackLng:'ja',supportedLngs:['ja','en'],resources:{ja:{translation:ja},en:{translation:en}},keySeparator:false,nsSeparator:false,interpolation:{escapeValue:false},initAsync:false});
+let initial:Language='en';
+try{if(globalThis.localStorage?.getItem(storageKey)==='ja')initial='ja';}catch{/* Language selection also works without storage. */}
+void i18n.use(initReactI18next).init({lng:initial,fallbackLng:'en',supportedLngs:['ja','en'],resources:{ja:{translation:ja},en:{translation:en}},keySeparator:false,nsSeparator:false,interpolation:{escapeValue:false},initAsync:false});
 
 // Existing sessions retain formatted notice strings. Resolve either language at the UI boundary so a switch preserves those sessions.
 const englishKeys=new Map(Object.entries(en).map(([key,value])=>[value,key]));

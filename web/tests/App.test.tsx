@@ -293,7 +293,6 @@ test('saved matting example mounts only when opened and does not start processin
  const worker=vi.fn(),fetch=vi.fn();vi.stubGlobal('Worker',worker);vi.stubGlobal('fetch',fetch);render(<Root/>);
  const alt='MODNetで自動処理した架空人物の透過作例';expect(screen.queryByAltText(alt)).toBeNull();const details=screen.getByText('実際の背景除去結果を見る（約1.1MiB）').closest('details') as HTMLDetailsElement;
  details.open=true;fireEvent(details,new Event('toggle'));const image=await screen.findByAltText(alt);expect(image.getAttribute('src')).toBe('/examples/fictional-portrait-modnet-cpu-v1.webp');expect(image.getAttribute('loading')).toBe('lazy');
- fireEvent.click(screen.getByRole('button',{name:'仕上がりのみ'}));expect(screen.getByRole('slider',{name:'背景比較の境界線'}).getAttribute('aria-valuenow')).toBe('100');
  details.open=false;fireEvent(details,new Event('toggle'));await waitFor(()=>expect(screen.queryByAltText(alt)).toBeNull());expect(worker).not.toHaveBeenCalled();expect(fetch).not.toHaveBeenCalled();expect(mocks.decode).not.toHaveBeenCalled();expect(mocks.prepare).not.toHaveBeenCalled();expect(URL.createObjectURL).not.toHaveBeenCalled();
 });
 

@@ -1,7 +1,8 @@
-/* Hallmark · shape: app screen · genre: modern-minimal · theme: brand · redesign: full
+/* Hallmark · shape: photo workbench · genre: modern-minimal · theme: brand · surface: absolute · redesign: full
  * nav: shared workflow links · signature: photo canvas and printed sheet · states: empty, loading, error, ready
  * axes: light/grotesk-sans/neutral · posture: photo workbench · v2.0.0 */
 /* Hallmark · pre-emit critique: P3 H4 E3 S4 R4 V3 · weakest: E, replace competing global grids with explicit Tailwind layout ownership. */
+/* Hallmark · waive 7b · existing white photo paper, checker grid and high-contrast controls · retain neutral photo comparison and the approved editor palette. */
 /* Hallmark · answered F4 · file upload becomes secondary once a photo exists; the processing action is disabled before selection. */
 @import 'tailwindcss';
 @import '../../docs/browser/design-tokens.css';
@@ -130,30 +131,6 @@
  .landing-content h2 { @apply mb-4 text-2xl; }
  .landing-content h3 { @apply mb-2 text-base; }
  .landing-content p { @apply my-2; }
- .landing-hero { @apply grid min-w-0 grid-cols-1 items-center gap-8 rounded-2xl bg-subtle p-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:p-10; }
- .landing-hero h1 { @apply mb-5 text-3xl leading-tight md:text-4xl; }
- .hero-copy { @apply max-w-prose text-base text-muted; }
- .landing-actions { @apply mt-6 flex flex-col gap-3; }
- .landing-actions>a { @apply justify-between; }
- .hero-sample { @apply m-0 flex min-w-0 flex-col items-center gap-3 text-center text-sm text-muted; }
- .hero-sample img { @apply block max-h-112 w-full rounded-xl object-contain; }
- .capabilities { @apply grid min-w-0 grid-cols-1 gap-6 md:grid-cols-3; }
- .capabilities article { @apply min-w-0 border-b border-line pb-6; }
- .capabilities h2 { @apply text-lg; }
- .capabilities p { @apply text-sm text-muted; }
- .example-flow { @apply m-0 grid list-none grid-cols-1 gap-6 p-0 sm:grid-cols-2 lg:grid-cols-4; }
- .example-flow li { @apply min-w-0; }
- .example-flow p { @apply text-sm text-muted; }
- .flow-photo { @apply block h-64 w-full rounded-lg bg-subtle object-contain; }
- .flow-paths { @apply mt-6 grid grid-cols-1 gap-6 md:grid-cols-2; }
- .flow-paths article { @apply min-w-0 border-t border-line pt-5; }
- .flow-paths p { @apply text-sm text-muted; }
- .flow-paths a { @apply inline-flex min-h-11 items-center text-sm; }
- .processing-flow { @apply flex list-decimal flex-col gap-2 pl-5 text-sm; }
- .requirements-grid { @apply grid grid-cols-1 gap-8 md:grid-cols-2; }
- .requirements-grid article { @apply min-w-0; }
- .requirements-grid ul { @apply list-disc pl-5 text-sm text-muted; }
- .requirements-grid li { @apply my-3; }
 }
 
 /* Output guides are functional overlays, separate from layout. */

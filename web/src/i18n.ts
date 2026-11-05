@@ -31,7 +31,8 @@ function syncLanguage(){
  const language=i18n.resolvedLanguage==='en'?'en':'ja';
  if(typeof document!=='undefined'){
   document.documentElement.lang=language;document.title=`Image Studio | ${t('写真のサイズ調整・印刷')}`;
-  document.querySelector('meta[name="description"]')?.setAttribute('content',t('写真のサイズ調整と印刷配置をブラウザ内で行うImage Studio。PNG/PDF保存に対応。'));
+  const description=t('写真のサイズ調整と印刷配置をブラウザ内で行うImage Studio。PNG/PDF保存に対応。');
+  for(const [selector,value] of [['meta[name="description"]',description],['meta[property="og:title"]',document.title],['meta[property="og:description"]',description],['meta[name="twitter:title"]',document.title],['meta[name="twitter:description"]',description]])document.querySelector(selector)?.setAttribute('content',value);
  }
  try{globalThis.localStorage?.setItem(storageKey,language);}catch{/* Do not block the editor when storage is denied. */}
 }

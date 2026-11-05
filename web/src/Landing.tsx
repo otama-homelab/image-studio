@@ -6,25 +6,47 @@ import {Brand,StarLink,LanguageSwitcher} from './SiteChrome';
 import {focusSection} from './navigation';
 import {PaperPreview} from './PaperPreview';
 import {cropBox,paperLayout} from '../../tools/browser-library-adapter/print-geometry.mjs';
-const sample={url:'/examples/fictional-portrait-v1.webp',width:1086,height:1448};
+const sample={url:'/examples/portrait-small.webp',width:1086,height:1448};
 const [x,y,right,bottom]=cropBox({width:sample.width,height:sample.height,outputWidth:354,outputHeight:472,range:80,horizontal:50,vertical:25});
 const sampleCrop={x,y,width:right-x,height:bottom-y};
 const samplePaper=paperLayout({paper:'a4',photoWidth:354,photoHeight:472,dpi:[300,300]});
 export function Landing({backgroundAvailable=false}:{backgroundAvailable?:boolean}={}){
- useTranslation();const [exampleOpen,setExampleOpen]=useState(false);return <div className="app landing mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 md:px-8">
- <a className="skip" href="#home-content" onClick={event=>focusSection(event,'home-content')}>{t("内容へ移動")}</a>
- <header><Brand/><div className="flex items-center gap-3"><LanguageSwitcher/><StarLink/></div></header>
- <nav aria-label={t("案内")}><a href="#usage-title" onClick={event=>focusSection(event,'usage-title')}>{t("操作の流れ")}</a><a href="#requirements-title" onClick={event=>focusSection(event,'requirements-title')}>{t("必要な環境")}</a><a href="#limitations-title" onClick={event=>focusSection(event,'limitations-title')}>{t("制約")}</a></nav>
- <main id="home-content" tabIndex={-1} className="landing-content">
- <section className="landing-hero" aria-labelledby="landing-title"><div><h1 id="landing-title" tabIndex={-1}>{t("写真を、使いたいかたちに。")}</h1><p className="hero-copy">{t("サイズを整える。用紙に並べる。")}<br/>{t("あなたの写真は、あなたのブラウザの中で扱います。")}</p><div className="landing-actions">{backgroundAvailable&&<a className="primary-link" href="#/background">{t("背景を編集する（検証用）")}</a>}<a className={backgroundAvailable?"secondary-link":"primary-link"} href="#/crop">{t("サイズを整える")}</a><a className="secondary-link" href="#/print">{t("加工済み写真を印刷する")}</a></div><p className="hint">{t(backgroundAvailable?t("インストール不要の検証版。背景編集を比較検証できます。通常公開版とは提供範囲が異なります。"):t("インストール不要のWeb版・プレビュー版。背景編集は準備中です。"))}</p></div><figure className="hero-sample"><img src={sample.url} width={sample.width} height={sample.height} alt={t("AI生成の架空の人物写真。黒髪、眼鏡、濃い色の服を着た正面の人物")}/><figcaption>{t("操作説明用のAI生成サンプル")}</figcaption></figure></section>
- <section className="capabilities" aria-label={t("できること")}><article><h2>{t("必要なサイズに")}</h2><p>{t("30×40・35×45・24×30・50.8×50.8mmとカスタム寸法。写真の位置と写る範囲を調整し、300dpiのPNGを作ります。")}</p></article><article><h2>{t("用紙へ自動配置")}</h2><p>{t("A4・L判・2L判・はがきへ余白を保って配置。PNGまたはPDFで保存できます。サイズ済みの写真は切り抜かずに使えます。")}</p></article><article><h2>{t(backgroundAvailable?t("背景編集を試す（検証用）"):t("背景編集は準備中"))}</h2><p>{t(backgroundAvailable?t("写真から背景を除去し、透過PNGや背景色を選んで保存できます。"):t("人物の背景変更・透過PNG・輪郭補正は、現在のWeb版ではまだ使えません。サイズ調整と印刷は背景処理なしで利用できます。"))}</p><a href="#/background">{t(backgroundAvailable?t("モデルの準備へ進む"):t("背景編集の準備状況"))}</a></article></section>
- <section aria-labelledby="usage-title"><h2 id="usage-title" tabIndex={-1}>{t("操作で画像がどう変わるか")}</h2><p>{t("同じサンプル写真を使った操作イメージです。実際の書き出し結果・画質評価ではありません。")}</p><ol className="example-flow">
-  <li><h3>{t("1 写真を選ぶ")}</h3><img className="flow-photo" src={sample.url} width={sample.width} height={sample.height} loading="lazy" alt={t("調整前のサンプル写真")}/><p>{t("元の写真を読み込みます。アップロードはしません。")}</p></li>
-  <li><h3>{t("2 範囲と位置を調整")}</h3><svg className="flow-photo" viewBox={`0 0 ${sample.width} ${sample.height}`} role="img" aria-label={t("元写真に写る範囲80パーセントの切り抜き枠を重ねた例")}><image href={sample.url} width={sample.width} height={sample.height}/><rect x={x} y={y} width={sampleCrop.width} height={sampleCrop.height} fill="none" stroke="#175c91" strokeWidth="12" strokeDasharray="28 16"/></svg><p>{t("例：範囲80%・横50%・縦25%。枠の中が保存されます。")}</p></li>
-  <li><h3>{t("3 写真PNGを作成")}</h3><svg className="flow-photo" viewBox={`${x} ${y} ${sampleCrop.width} ${sampleCrop.height}`} role="img" aria-label={t("選択範囲を30かける40ミリ相当の写真にしたイメージ")}><image href={sample.url} width={sample.width} height={sample.height}/></svg><p>{t("30×40mmなら354×472px・300dpi。「PNGを保存」で端末に保存します。")}</p></li>
-  <li><h3>{t("4 必要なら用紙へ")}</h3><PaperPreview layout={samplePaper} picture={{...sample,crop:sampleCrop}}/><p>{t("A4に36枚の配置例。用紙PNG/PDFを作成・保存し、印刷は100%で行います。")}</p></li>
- </ol><div className="flow-paths"><article><h3>{t("サイズを整える")}</h3><p>{t("写真選択 → 寸法・位置を調整 → PNG作成 → 保存")}</p><a href="#/crop">{t("サイズ調整へ進む")}</a></article><article><h3>{t("サイズ済みなら直接印刷")}</h3><p>{t("写真選択 → 用紙・形式を選択 → 配置確認 → PNG/PDF作成 → 保存")}</p><a href="#/print">{t("直接印刷へ進む")}</a></article></div>{backgroundAvailable&&<p>{t("背景を編集する場合：モデルと保存状況を確認 → 写真選択 → 背景を自動判定・除去 → 仕上がり確認 → 透過・背景付きPNGを保存 → 必要ならサイズ調整・印刷へ進みます。")}</p>}</section>
- <section aria-labelledby="background-example-title"><h2 id="background-example-title">{t("背景除去の検証作例")}</h2><p>{t("上のAI生成写真をMODNetで自動処理した保存結果です。髪や眼鏡の仕上がりは写真によって異なります。")}</p><p>{t(backgroundAvailable?t("保存済みの作例を表示します。背景編集では選んだモデルによって結果が異なります。"):t("現在の通常Web版では背景編集は準備中です。この作例を見る操作で、モデルの取得や推論は行いません。"))}</p><details onToggle={event=>setExampleOpen(event.currentTarget.open)}><summary>{t("実際の背景除去結果を見る（約1.1MiB）")}</summary>{exampleOpen&&<BackgroundComparison original={sample.url} result="/examples/fictional-portrait-modnet-cpu-v1.webp" width={sample.width} height={sample.height} originalAlt={t("背景除去作例の処理前の架空人物")} resultAlt={t("MODNetで自動処理した架空人物の透過作例")} loading="lazy"/>}</details></section>
- <details className="border-y border-line py-3"><summary>{t("端末内処理のしくみ")}</summary><section aria-labelledby="processing-title"><h2 id="processing-title">{t("ブラウザの中で行うこと")}</h2><ol className="processing-flow"><li>{t("ファイルを端末内で読み込む")}</li><li>{t("切り抜き・拡縮、または元寸法のまま配置")}</li><li>{t("PNG/PDFをブラウザ内で生成")}</li><li>{t("利用者が保存先へダウンロード")}</li></ol><p>{t("画像処理はWeb Workerなどのブラウザ機能を使います。Pythonサーバーや外部の画像処理APIは使いません。ページ・作例・プログラムの取得通信は発生します。")}</p><p>{t(backgroundAvailable?t("背景編集は、明示操作後にモデルを取得・検証し、この端末で推論します。GPU・CPUの対応はモデルごとに異なります。保存状況と端末条件を確認してから開始してください。写真は送信しません。"):t("背景編集は、モデルを取得して端末内で背景を自動判定する方式を検証中です。GPU・CPUそれぞれの対応モデル、必要メモリ、処理時間を確認してから提供します。現在のWeb版ではモデルを取得しません。"))}</p></section>
- </details><section className="requirements-grid"><article aria-labelledby="requirements-title"><h2 id="requirements-title" tabIndex={-1}>{t("必要な環境・入力")}</h2><details><summary>{t("対応ブラウザ・ファイル上限")}</summary><ul><li>{t("Web Worker・OffscreenCanvasなどが使えるデスクトップブラウザを想定。Windows版Chromeを中心に確認中です。")}</li><li>{t("サイズ調整・印刷にはWebGPUは不要です。")}</li>{backgroundAvailable&&<li>{t("背景編集では、長辺が2000pxを超える写真を縦横比を保って縮小し、その寸法でPNGを保存します。元ファイルは変更しません。")}</li>}<li>{t("JPEG/PNG、1ファイル20MiBまで。JPEGは各辺16,384px・総画素2,400万以下、PNGは各辺4,096px・総画素400万以下です。")}</li><li>{t("現在のPNG保存処理はRGB/RGBAの8/16bit、グレースケールの1/2/4/8/16bit、パレットPNGの1/2/4/8bit（低bitは非インターレースのみ）、各辺4,096px以内・総画素400万以下が対象です。16bit入力は8bitへ変換して処理します。")}</li></ul></details></article><article aria-labelledby="limitations-title"><h2 id="limitations-title" tabIndex={-1}>{t("制約・確認してほしいこと")}</h2><details><summary>{t("保存・印刷・加工時の注意")}</summary><ul><li>{t("対応環境を検証しているプレビュー版です。画像の色・向き・仕上がりは、保存後にも確認してください。")}</li><li>{t("直接印刷は300dpiの写真を使います。DPI情報がない場合は300dpiとして計算し、非300dpiならサイズ調整へ戻れます。")}</li><li>{t("編集中の写真・設定を永続保存する機能はありません。再読み込みやタブを閉じると失われます。")}</li><li>{t(backgroundAvailable?t("背景編集は比較検証用です。髪・眼鏡・半透明部分などは保存前に仕上がりを確認してください。顔の自動配置・完全オフライン動作は提供していません。"):t("背景編集、顔の自動配置、完全オフライン動作は現在提供していません。必要GPU/VRAM・モデル取得量は未確定です。"))}</li><li>{t("提出先が画像加工を認めているか、寸法・背景・印刷倍率を確認してください。")}</li></ul></details></article></section>
- </main></div>;}
+ useTranslation();const [exampleOpen,setExampleOpen]=useState(false);
+ return <div className="app landing mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 md:px-8">
+  <a className="skip" href="#home-content" onClick={event=>focusSection(event,'home-content')}>{t("内容へ移動")}</a>
+  <header><Brand/><div className="flex items-center gap-3"><LanguageSwitcher/><StarLink/></div></header>
+  <nav aria-label={t("案内")}><a href="#usage-title" onClick={event=>focusSection(event,'usage-title')}>{t("操作の流れ")}</a><a href="#requirements-title" onClick={event=>focusSection(event,'requirements-title')}>{t("必要な環境")}</a></nav>
+  <main id="home-content" tabIndex={-1} className="landing-content">
+   <section aria-labelledby="landing-title" className="grid min-w-0 items-center gap-8 py-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:gap-12 md:py-10">
+    <div className="flex min-w-0 flex-col items-start gap-6">
+     <h1 id="landing-title" tabIndex={-1} className="max-w-[14ch] text-4xl leading-[1.08] font-semibold tracking-tight sm:text-5xl lg:text-6xl">{t("写真を、使いたいかたちに。")}</h1>
+     <p className="max-w-lg text-lg text-muted">{t("背景を消す。サイズを整える。印刷まで、ブラウザひとつで。")}</p>
+     <div className="flex flex-wrap gap-3">{backgroundAvailable&&<a className="primary-link" href="#/background">{t("背景を消す")}</a>}<a className={backgroundAvailable?'secondary-link':'primary-link'} href="#/crop">{t("サイズを整える")}</a><a className="secondary-link" href="#/print">{t("印刷用に並べる")}</a></div>
+     <p className="text-sm text-muted">{t("インストール不要。写真はアップロードしません。")}</p>
+    </div>
+    <figure className="m-0 min-w-0">
+     <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-3">
+      <div className="min-w-0"><img className="aspect-[3/4] w-full rounded-lg bg-subtle object-cover" src={sample.url} width="480" height="640" fetchPriority="high" alt={t("背景除去前のサンプル写真")}/><p className="text-sm text-muted">{t("元の写真")}</p></div>
+      <div className="min-w-0"><div className="background-comparison-result overflow-hidden rounded-lg"><img className="aspect-[3/4] w-full object-cover" src="/examples/portrait-cutout-small.webp" width="480" height="640" alt={t("背景を除いたサンプル写真")}/></div><p className="text-sm text-muted">{t("背景除去後")}</p></div>
+     </div>
+     <figcaption className="mt-3 text-sm text-muted">{t("架空の人物写真をMODNetで処理した作例。仕上がりは写真によって異なります。")}</figcaption>
+    </figure>
+   </section>
+   <section aria-labelledby="usage-title" className="border-t border-line pt-8">
+    <h2 id="usage-title" tabIndex={-1}>{t("操作で画像がどう変わるか")}</h2>
+    <div className="grid min-w-0 gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+     <article className="min-w-0"><div className="flex min-h-64 items-center justify-center rounded-xl bg-subtle p-6"><figure className="m-0 w-36"><svg className="aspect-[3/4] w-full" viewBox={`${x} ${y} ${sampleCrop.width} ${sampleCrop.height}`} role="img" aria-label={t("30×40mmの切り抜き作例")}><image href={sample.url} width={sample.width} height={sample.height}/></svg><figcaption className="mt-3 text-center text-sm text-muted">30 × 40 mm</figcaption></figure></div><h3 className="mt-5">{t("必要なサイズに")}</h3><p className="text-sm text-muted">{t("用途別・カスタム寸法に調整して、300dpiのPNGで保存。")}</p><a className="section-link" href="#/crop">{t("サイズ調整へ進む")}</a></article>
+     <article className="min-w-0"><div className="flex min-h-64 items-center justify-center rounded-xl bg-subtle p-6"><PaperPreview layout={samplePaper} picture={{...sample,crop:sampleCrop}}/></div><h3 className="mt-5">{t("用紙へ自動配置")}</h3><p className="text-sm text-muted">{t("A4・写真用紙に並べて、印刷用のPNGやPDFを作成。")}</p><a className="section-link" href="#/print">{t("直接印刷へ進む")}</a></article>
+    </div>
+   </section>
+   <section aria-labelledby="background-example-title" className="border-t border-line pt-8">
+    <h2 id="background-example-title">{t("細部まで確認する")}</h2>
+    <details onToggle={event=>setExampleOpen(event.currentTarget.open)}><summary>{t("実際の背景除去結果を見る（約1.1MiB）")}</summary>{exampleOpen&&<BackgroundComparison original="/examples/fictional-portrait-v1.webp" result="/examples/fictional-portrait-modnet-cpu-v1.webp" width={sample.width} height={sample.height} originalAlt={t("背景除去作例の処理前の架空人物")} resultAlt={t("MODNetで自動処理した架空人物の透過作例")} loading="lazy"/>}</details>
+   </section>
+   <section className="grid min-w-0 gap-8 border-t border-line pt-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+    <article aria-labelledby="requirements-title"><h2 id="requirements-title" tabIndex={-1}>{t("必要な環境・入力")}</h2><details><summary>{t("対応ブラウザ・ファイル上限")}</summary><p className="text-sm text-muted">{t("JPEG/PNG、20MiBまで。サイズ調整・印刷はGPU不要。高画質HRはPC向けで、CPU処理は非常に遅く、多くのRAMを使います。")}</p></details></article>
+    <article aria-labelledby="limitations-title"><h2 id="limitations-title" tabIndex={-1}>{t("制約・確認してほしいこと")}</h2><details><summary>{t("保存・印刷・加工時の注意")}</summary><p className="text-sm text-muted">{t("再読み込みで写真と設定は失われます。先にファイルを保存してください。印刷は100%を指定し、提出先の寸法・加工条件も確認してください。")}</p></details></article>
+   </section>
+  </main>
+ </div>;
+}

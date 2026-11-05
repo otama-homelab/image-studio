@@ -1,12 +1,15 @@
+import {useTranslation} from 'react-i18next';
+import {t} from './i18n';
 import {useEffect,useRef,useState} from 'react';
-import Cropper,{getInitialCropFromCroppedAreaPercentages,type Area,type MediaSize,type Size} from 'react-easy-crop';
+import Cropper,{getInitialCropFromCroppedAreaPercentages,type Area,type MediaSize,type Size,type CropperInteractionSource} from 'react-easy-crop';
 import {cropBox} from '../../tools/browser-library-adapter/print-geometry.mjs';
 import type {Framing} from './useFraming';
 type Props={image:string;outputWidth:number;outputHeight:number;frame:Framing;guides:boolean;squareGuide:boolean;onMove:(frame:Framing)=>void;onReady:(width:number,height:number)=>void;onError:()=>void;invalidate:()=>void};
 export function CropViewport(props:Props){
+ useTranslation();
  const [media,setMedia]=useState<MediaSize|null>(null),[viewport,setViewport]=useState<{aspect:number;size:Size}|null>(null);
  const [crop,setCrop]=useState({x:0,y:0}),[zoom,setZoom]=useState(1);
- const interacting=useRef(false),imageRef=useRef<{current:HTMLImageElement|null}|null>(null);
+ const interacting=useRef(new Set<CropperInteractionSource>()),imageRef=useRef<{current:HTMLImageElement|null}|null>(null);
  const aspect=props.outputWidth/props.outputHeight;
  useEffect(()=>{
   if(!media||!viewport||viewport.aspect!==aspect)return;
@@ -16,8 +19,9 @@ export function CropViewport(props:Props){
   setCrop(current=>Math.abs(current.x-next.crop.x)<1e-9&&Math.abs(current.y-next.crop.y)<1e-9?current:next.crop);
   setZoom(next.zoom);
  },[media,viewport,aspect,props.outputWidth,props.outputHeight,props.frame]);
+ function beginInteraction(source:CropperInteractionSource='mouse'){if(!interacting.current.has(source))props.invalidate();interacting.current.add(source);}
  function moved(area:Area){
-  if(!interacting.current||!media)return;
+  if(!interacting.current.size||!media)return;
   const width=media.naturalWidth,height=media.naturalHeight;
   const cw=area.width*width/100,ch=area.height*height/100;
   const limit=(value:number,min=0)=>Math.min(100,Math.max(min,value));
@@ -25,13 +29,14 @@ export function CropViewport(props:Props){
   if(Object.values(next).every(Number.isFinite))props.onMove(next);
  }
  return <Cropper image={props.image} crop={crop} zoom={zoom} minZoom={1} maxZoom={10} aspect={aspect}
-  onCropChange={next=>{if(interacting.current)props.invalidate();setCrop(next);}} onZoomChange={setZoom}
+  onCropChange={next=>{if(interacting.current.size)props.invalidate();setCrop(next);}} onZoomChange={setZoom}
   setMediaSize={next=>{if(Object.values(next).every(value=>Number.isFinite(value)&&value>0))setMedia(current=>current&&Object.keys(next).every(key=>current[key as keyof MediaSize]===next[key as keyof MediaSize])?current:next);}}
   onCropSizeChange={size=>{if(Object.values(size).every(value=>Number.isFinite(value)&&value>0))setViewport(current=>current?.aspect===aspect&&current.size.width===size.width&&current.size.height===size.height?current:{aspect,size});}}
   setImageRef={ref=>{imageRef.current=ref;}}
   onMediaLoaded={next=>{if(imageRef.current?.current?.src===props.image&&next.naturalWidth>0&&next.naturalHeight>0)props.onReady(next.naturalWidth,next.naturalHeight);}}
-  onCropAreaChange={moved} onInteractionStart={()=>{interacting.current=true;props.invalidate();}} onInteractionEnd={()=>{interacting.current=false;}}
+  onCropAreaChange={moved} onInteractionStart={interaction=>beginInteraction(interaction?.source)} onInteractionEnd={interaction=>{interacting.current.delete(interaction?.source??'mouse');}}
   classes={{cropAreaClassName:props.guides?`portrait-guide${props.squareGuide?' square-guide':''}`:''}}
-  mediaProps={{alt:'選択した写真',onError:props.onError}} cropperProps={{role:'group','aria-label':'写真の切り抜き枠'}}
-  zoomWithScroll={false} roundCropAreaPixels={false} cropShape="rect" showGrid={false}/>;
+  mediaProps={{alt:t("選択した写真"),onError:props.onError}} cropperProps={{role:'group','aria-label':t("写真の切り抜き枠")}}
+  onWheelRequest={()=>{if(!media||viewport?.aspect!==aspect)return false;beginInteraction('wheel');return true;}}
+  zoomWithScroll roundCropAreaPixels={false} cropShape="rect" showGrid={false}/>;
 }

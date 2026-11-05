@@ -1,3 +1,4 @@
+import {t} from './i18n';
 import {isPrivateValidationOrigin} from '../../tools/browser-library-adapter/private-validation-origin.mjs';
 import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
@@ -17,7 +18,7 @@ Object.defineProperty(window,'__imageStudioValidation',{value:()=>({...trace.rea
 const baseRuntime=createBackgroundRuntime({executionProvider:config.executionProvider,modelNoticesHref:config.modelNoticesHref,foregroundCancellation:config.foregroundCancellation,trimapCancellation:config.trimapCancellation,modelCancellation:config.modelCancellation,prepareHr:config.prepareHr,prepareBackground:config.prepareBackground,modelLabel:config.modelLabel,modelVariants:config.modelVariants?.map(item=>({...item,modelWorker:new URL(item.modelWorker)})),prepareMatte:config.prepareMatte,onModelEvent:trace.onEvent,
  modelWorker:new URL(config.workers.model),foregroundWorker:new URL(config.workers.foreground),
  exportWorker:new URL(config.workers.export),thumbnailWorker:new URL(config.workers.thumbnail),trimapWorker:config.workers.trimap?new URL(config.workers.trimap):undefined,
- downloadDescription:`ローカル検証用の固定モデル約${Math.ceil(config.modelResourceBytes/1024/1024)}MiBを利用します。`});
+ downloadDescription:t("ローカル検証用の固定モデル約{{v0}}MiBを利用します。",{v0:Math.ceil(config.modelResourceBytes/1024/1024)})});
 const runtime={...baseRuntime,createSession(onChange:Parameters<typeof baseRuntime.createSession>[0]){
  return baseRuntime.createSession(state=>{trace.onState(state);onChange(state);});
 }};

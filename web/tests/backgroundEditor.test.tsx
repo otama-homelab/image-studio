@@ -183,7 +183,7 @@ test('before/after comparison changes display only and is removed when results b
  fireEvent.change(screen.getByRole('combobox',{name:'プレビューの倍率'}),{target:{value:'2'}});expect(screen.getByRole('region',{name:'背景比較の表示領域'}).tabIndex).toBe(0);
  fireEvent.change(screen.getByRole('combobox',{name:'プレビューの倍率'}),{target:{value:'fit'}});expect(screen.getByRole('region',{name:'背景比較の表示領域'}).tabIndex).toBe(-1);
  expect(screen.getByRole('link',{name:/^(?:透過|背景付き)PNGを保存$/})).toBe(saved);expect(f.session.run).toHaveBeenCalledOnce();expect(f.session.save).toHaveBeenCalledOnce();
- fireEvent.change(screen.getByLabelText('背景色'),{target:{value:'white'}});expect(screen.getByRole('slider')).toBe(slider);expect(screen.getByRole('link',{name:'透過PNGを保存'})).toBe(saved);fireEvent.contextMenu(saved);expect(screen.getByRole('link',{name:'透過PNGを保存'})).toBe(saved);expect(f.session.run).toHaveBeenCalledOnce();expect(f.session.save).toHaveBeenCalledOnce();
+ fireEvent.change(screen.getByLabelText('背景色'),{target:{value:'white'}});expect(screen.getByRole('slider',{name:'仕上がりの表示範囲'})).toBe(slider);expect(screen.getByRole('link',{name:'透過PNGを保存'})).toBe(saved);fireEvent.contextMenu(saved);expect(screen.getByRole('link',{name:'透過PNGを保存'})).toBe(saved);expect(f.session.run).toHaveBeenCalledOnce();expect(f.session.save).toHaveBeenCalledOnce();
  fireEvent.click(screen.getByLabelText('髪や服の輪郭を補正する'));expect(screen.queryByRole('slider')).toBeNull();expect(screen.queryByAltText('背景編集後の写真')).toBeNull();
 });
 

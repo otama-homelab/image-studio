@@ -1,3 +1,4 @@
+import {t} from '../i18n';
 import {createBrowserBackgroundSession} from './browserSession';
 import {createBackgroundInput} from './input';
 import type {BackgroundRuntime} from './BackgroundEditor';
@@ -12,9 +13,9 @@ type Options=Omit<BrowserOptions,'onChange'>&{thumbnailWorker:URL;executionProvi
 
 function processingNotice(background:BrowserOptions['prepareBackground'],matte:BrowserOptions['prepareMatte'],provider:'webgpu'|'wasm'){
  if(background?.model!=='hr'||!matte)return undefined;
- if(provider==='webgpu')return 'この構成にはWebGPU対応GPUが必要です。';
+ if(provider==='webgpu')return t("この構成にはWebGPU対応GPUが必要です。");
  // Reference: validation/2026-11-03-cpu-threephase-main-square-success.json; one image, no end-to-end timing guarantee.
- return 'HR＋ViTMatteの高画質処理は、CPUでは処理に長い時間がかかります。参考：AMD CPU・最大2スレッドの検証では、2000×2000pxの主要処理に約6分22秒、ブラウザ各プロセスのRSS合計は最大約6.3GiBでした（共有メモリの重複を含みます）。初回のモデル取得・その他の準備・前景色処理・PNG保存には別途時間がかかります。端末や画像によってさらに遅くなる場合や、メモリ不足で処理できない場合があります。';
+ return t("HR＋ViTMatteの高画質処理は、CPUでは処理に長い時間がかかります。参考：AMD CPU・最大2スレッドの検証では、2000×2000pxの主要処理に約6分22秒、ブラウザ各プロセスのRSS合計は最大約6.3GiBでした（共有メモリの重複を含みます）。初回のモデル取得・その他の準備・前景色処理・PNG保存には別途時間がかかります。端末や画像によってさらに遅くなる場合や、メモリ不足で処理できない場合があります。");
 }
 
 /** Called only with a trusted release's descriptors, artifacts and reference input resize.
@@ -38,10 +39,10 @@ export function createBackgroundRuntime({thumbnailWorker,downloadDescription,mod
  }));
  if(caches.size!==configurations.length)throw Error('duplicate-background-model');
  const cacheFor=(id=primary.modelVersion)=>{const actions=caches.get(id);if(!actions)throw Error('unknown-model-cache-scope');return actions;};
- const capacity=(id:string)=>`この構成${cacheFor(id).matte?'全体（輪郭補正用を含む）':''}のモデル資源は約${Math.ceil(cacheFor(id).all.getScope().expectedBytes/1024/1024)}MiBです。`;
+ const capacity=(id:string)=>t("この構成{{v0}}のモデル資源は約{{v1}}MiBです。",{v0:cacheFor(id).matte?t("全体（輪郭補正用を含む）"):'',v1:Math.ceil(cacheFor(id).all.getScope().expectedBytes/1024/1024)});
  return {
   downloadDescription:capacity(primary.modelVersion),modelLabel,modelNoticesHref,processingNotice:processingNotice(primary,options.prepareMatte,executionProvider),
-  models:options.modelVariants?.length?[{id:(options.prepareBackground??options.prepareHr)!.modelVersion,label:modelLabel??'標準モデル',description:downloadDescription,processingNotice:processingNotice(primary,options.prepareMatte,executionProvider),downloadDescription:capacity(primary.modelVersion)},...options.modelVariants.map(item=>({id:item.prepareBackground.modelVersion,label:item.label,description:item.description,processingNotice:processingNotice(item.prepareBackground,item.prepareMatte,item.executionProvider??'webgpu'),downloadDescription:capacity(item.prepareBackground.modelVersion)}))]:undefined,
+  models:options.modelVariants?.length?[{id:(options.prepareBackground??options.prepareHr)!.modelVersion,label:modelLabel??t("標準モデル"),description:downloadDescription,processingNotice:processingNotice(primary,options.prepareMatte,executionProvider),downloadDescription:capacity(primary.modelVersion)},...options.modelVariants.map(item=>({id:item.prepareBackground.modelVersion,label:item.label,description:item.description,processingNotice:processingNotice(item.prepareBackground,item.prepareMatte,item.executionProvider??'webgpu'),downloadDescription:capacity(item.prepareBackground.modelVersion)}))]:undefined,
   inspectCache:async(id,selection)=>{
    const scope=cacheFor(id);
    if(!selection)return scope.all.inspect();
@@ -61,7 +62,7 @@ export function createBackgroundRuntime({thumbnailWorker,downloadDescription,mod
    const caps=readBrowserCapabilities(),missing:string[]=[];
    if(!caps.worker)missing.push('Worker');if(!caps.objectURLs)missing.push('Blob URL');if(!caps.fileAPI)missing.push('File / Blob');
    if(!caps.webAssembly)missing.push('WebAssembly');
-   if(config.provider==='webgpu'){if(!caps.secureContext)missing.push('安全な接続（HTTPS等）');if(!caps.webgpuAPI)missing.push('WebGPU');}
+   if(config.provider==='webgpu'){if(!caps.secureContext)missing.push(t("安全な接続（HTTPS等）"));if(!caps.webgpuAPI)missing.push('WebGPU');}
    return {mode:config.provider==='wasm'?'cpu':'gpu',missing};
   },
   refineAvailable:!!options.prepareMatte&&!!options.trimapWorker,

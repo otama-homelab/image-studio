@@ -20,7 +20,7 @@ const runtimePath=extension=>{const f=runtimeFile(extension);return `/runtime/or
 const members=files=>files.map(({name,bytes,sha256})=>({name,bytes,sha256})).sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0);
 
 export function bindReleaseModels({config,catalog,bindings,assets}){
- config=parseBackgroundRelease(config);if(config===null||catalog?.format!=='zip-stored-v1'||!Array.isArray(catalog.models)||catalog.models.length!==5||!Array.isArray(bindings)||bindings.length!==4||!Array.isArray(assets))fail();
+ config=parseBackgroundRelease(config);if(config===null||catalog?.format!=='zip-stored-v1'||!Array.isArray(catalog.models)||catalog.models.length!==config.modelVariants.length+2||!Array.isArray(bindings)||bindings.length!==config.modelVariants.length+1||!Array.isArray(assets))fail();
  const files=new Map(assets.map(file=>[file.path,file]));if(files.size!==assets.length)fail();
  const asset=(route,expected)=>{const file=files.get(route);if(!file||!['bytes','sha256'].every(key=>file[key]===expected[key]))fail();return file;};
  for(const route of [...Object.values(config.workers),config.modelNoticesHref,...config.modelVariants.map(choice=>choice.modelWorker)]){const file=files.get(route);if(!file||route.split('/')[2]!==file.sha256)fail();}
@@ -30,7 +30,7 @@ export function bindReleaseModels({config,catalog,bindings,assets}){
  for(const choice of choices){
   const matches=bindings.filter(binding=>binding.worker===choice.modelWorker);if(matches.length!==1||seen.has(choice.modelWorker))fail();seen.add(choice.modelWorker);
   const binding=matches[0],{policy,report}=binding;
-  keys(policy,['localModelPath','wasmOrigin','runtimeAssets','profiles','models','enableModnetInference','enableHrInference','enableMatteInference','modnetProcessor','modnetResizeMaxMemoryBytes','hrResizeMaxMemoryBytes','matteProcessor','stagedHr','phasedMatte']);
+  keys(policy,['localModelPath','wasmOrigin','runtimeAssets','profiles','models','enableModnetInference','enableRvmInference','rvmResizeMaxMemoryBytes','enableHrInference','enableMatteInference','modnetProcessor','modnetResizeMaxMemoryBytes','hrResizeMaxMemoryBytes','matteProcessor','stagedHr','phasedMatte']);
   if(report?.status!=='built-not-executed'||report.policySha256!==sha(JSON.stringify(policy))||report.cancellationProtocol!=='cooperative-model-cancel-v1'||choice.modelWorker.split('/')[2]!==report.bundleSha256)fail();
   asset(choice.modelWorker,{bytes:report.bundleBytes,sha256:report.bundleSha256});
   const hub=choice.prepareBackground.source.archive.url.match(/^(https:\/\/huggingface\.co\/[\w.-]+\/[\w.-]+\/resolve\/[a-f0-9]{40})\//)[1];
@@ -56,11 +56,11 @@ export function bindReleaseModels({config,catalog,bindings,assets}){
    for(const key of ['workerLifetime','maxStagesPerWorker','stages'])same(child[key],stage[key]);
    same(stage.profile,policy.profiles.hr);same(stage.runtimeAssets,policy.runtimeAssets);same(stage.wasmOrigin,policy.wasmOrigin);
    for(const file of built.assets)asset(file.path,file);
-  }else if(binding.stage||policy.stagedHr||policy.enableModnetInference!==true)fail();
+  }else if(binding.stage||policy.stagedHr||(choice.prepareBackground.model==='rvm'?policy.enableRvmInference!==true||policy.enableModnetInference===true:policy.enableModnetInference!==true||policy.enableRvmInference===true))fail();
   for(const notice of report.libraryNotices??[])asset(path.posix.dirname(choice.modelWorker)+'/'+notice.file,notice);
   policies.push({worker:choice.modelWorker,policySha256:report.policySha256});
  }
- if(packs.size!==5)fail();
+ if(packs.size!==choices.length+1)fail();
  return {choices:choices.length,roles,archives:packs.size,policies};
 }
 

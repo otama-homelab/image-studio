@@ -13,7 +13,7 @@ export function createBackgroundSession({gate,prepareHr,prepareBackground,prepar
  createModelClient,createForegroundClient,createExportClient,createTrimapClient=/** @type {Function|null} */ (null),onChange=/** @type {(state: any) => void} */ ((_state)=>{})}){
  if((prepareHr&&prepareBackground)||(prepareHr&&prepareHr.model!=='hr'))throw Error('invalid-model-set');
  const validate=(background,matte)=>{
-  if(!['hr','modnet','portrait','lite'].includes(background?.model)||typeof background.modelVersion!=='string'||!background.modelVersion
+  if(!['hr','modnet','portrait','lite','rvm'].includes(background?.model)||typeof background.modelVersion!=='string'||!background.modelVersion
    ||(matte&&(background.model!=='hr'||matte.model!=='matte'||matte.modelVersion!==background.modelVersion)))throw Error('invalid-model-set');
  };
  let hr=structuredClone(prepareBackground??prepareHr),matte=prepareMatte?structuredClone(prepareMatte):null;
@@ -39,7 +39,7 @@ export function createBackgroundSession({gate,prepareHr,prepareBackground,prepar
  let phase='idle',modelRole=null,resourceProgress=null,resourceError=null,inferenceError=null,stageProgress=null,lastFailure=null;
  const retainFailure=(code='runtime-error')=>{lastFailure??=Object.freeze({
   phase:['model-load','inference','releasing','trimap','foreground','export'].includes(phase)?phase:null,
-  modelRole:phase!=='export'&&['hr','modnet','portrait','lite','matte'].includes(modelRole)?modelRole:null,
+  modelRole:phase!=='export'&&['hr','modnet','portrait','lite','rvm','matte'].includes(modelRole)?modelRole:null,
   code:workerFailure({},code).code,
  });};
  const getCurrent=()=>current;

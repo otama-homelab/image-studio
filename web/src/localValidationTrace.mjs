@@ -7,7 +7,7 @@ export function createLocalValidationTrace(){
   onState(value){state=Object.freeze(Object.fromEntries(['hasPhoto','hasResult','busy','blocked','closed','refine'].map(key=>[key,value?.[key]===true])));},
   onEvent(value){
    if(!['prepared','result','disposed','progress','error','resource-state'].includes(value?.type))return;
-   if(value.type==='prepared'){role=['hr','matte','modnet','portrait','lite'].includes(value.model)?value.model:null;if(role==='hr'){stageTimes.clear();completedElapsedMs=null;}}
+   if(value.type==='prepared'){role=['hr','matte','modnet','portrait','lite','rvm'].includes(value.model)?value.model:null;if(role==='hr'){stageTimes.clear();completedElapsedMs=null;}}
    const event={type:value.type,role,atMs:performance.now()};
    if(value.type==='error')event.code=workerFailure({},value.code).code;
    if(value.type==='progress'&&['initializing','hr','trimap','matte','releasing'].includes(value.phase))event.phase=value.phase;

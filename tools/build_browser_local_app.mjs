@@ -26,7 +26,7 @@ if(policy.scope!=='local-validation-only-not-approved-for-distribution'||policy.
 const liteGraph=liteGraphProfile(policy.liteGraphFormat);
 if(liteGraph&&policy.profiles.lite?.executionProvider==='webgpu'){const limits=policy.profiles.lite.requiredLimits;if(!limits||!['maxBufferSize','maxStorageBufferBindingSize'].every(name=>Number.isSafeInteger(limits[name])&&limits[name]>=liteGraph.knownTensorBytes))throw Error('Static Lite known tensor exceeds declared GPU limits');}
 const commands=JSON.parse(fs.readFileSync(path.join(policyDirectory,'local-prepare-commands.json'))),mounts=[];
-const singleModelRole=commands.length===1&&['modnet','portrait','lite'].includes(commands[0].model)?commands[0].model:null;const singleModel=!!singleModelRole;
+const singleModelRole=commands.length===1&&['modnet','portrait','lite','rvm'].includes(commands[0].model)?commands[0].model:null;const singleModel=!!singleModelRole;
 if(spec.privateLanHttps===true&&(singleModelRole!=='modnet'||policy.profiles.modnet.executionProvider!=='wasm'||spec.modelVariants?.length))throw Error('Private LAN validation requires CPU-only MODNet');
 if(!singleModel&&(commands.length!==2||!commands.some(c=>c.model==='hr')||!commands.some(c=>c.model==='matte')))throw Error('Explicit HR/matte or isolated MODNet model set required');
 const add=(url,source,expected,{model=false}={})=>{
@@ -88,8 +88,8 @@ for(const file of runtime.notices){
 // These documents do not approve any model or replace runtime/binary notice audits.
 const {modelNoticeSources,modelNoticeFiles}=readModelNoticeDocuments(path.join(repo,'docs/browser/model-notices'));
 const config={privateLanHttps:spec.privateLanHttps===true,modelNoticesHref:'/validation-notices/model-candidates/MODEL_CANDIDATE_NOTICES.txt',executionProvider:singleModelRole?(policy.profiles[singleModelRole].executionProvider??'webgpu'):(policy.profiles.hr.executionProvider??'webgpu'),scope:policy.scope,distributionApproved:false,appOrigin:origin.origin,modelCancellation,...auxiliaryCancellation,workers,
- prepareHr:commands.find(command=>command.model==='hr'),prepareBackground:commands.find(command=>['modnet','portrait','lite'].includes(command.model)),prepareMatte:commands.find(command=>command.model==='matte'),
- modelLabel:singleModel?(singleModelRole==='lite'?`BiRefNet lite ${policy.liteInputSize??1024}px（${policy.profiles.lite.executionProvider==='webgpu'?'GPU':'CPU'}・比較検証）`:singleModelRole==='portrait'?(policy.allowPortraitCpuFallback===true?'人物向けモデル（BiRefNet portrait・GPU/CPU併用検証）':'人物向けモデル（BiRefNet portrait）'):(policy.profiles.modnet.executionProvider==='wasm'?'人物向け軽量モデル（MODNet・CPU）':'人物向け軽量モデル（MODNet・GPU）')):'高解像度モデル（BiRefNet HR）',
+ prepareHr:commands.find(command=>command.model==='hr'),prepareBackground:commands.find(command=>['modnet','portrait','lite','rvm'].includes(command.model)),prepareMatte:commands.find(command=>command.model==='matte'),
+ modelLabel:singleModel?(singleModelRole==='rvm'?'RVM＋軽量復元（人物向け・CPU）':singleModelRole==='lite'?`BiRefNet lite ${policy.liteInputSize??1024}px（${policy.profiles.lite.executionProvider==='webgpu'?'GPU':'CPU'}・比較検証）`:singleModelRole==='portrait'?(policy.allowPortraitCpuFallback===true?'人物向けモデル（BiRefNet portrait・GPU/CPU併用検証）':'人物向けモデル（BiRefNet portrait）'):(policy.profiles.modnet.executionProvider==='wasm'?'人物向け軽量モデル（MODNet・CPU）':'人物向け軽量モデル（MODNet・GPU）')):'高解像度モデル（BiRefNet HR）',
  modelResourceBytes:commands.flatMap(command=>command.source.resources).reduce((sum,file)=>sum+file.bytes,0)};
 // Reuse already assembled private releases; no new loader, model conversion or weight copy.
 if(spec.modelVariants){
@@ -102,7 +102,7 @@ if(spec.modelVariants){
   if(!isDeepStrictEqual(other.runtimeVerification,runtimeVerification))throw Error('Variant runtime verification differs from primary');
   if(source.modelCancellation!==undefined&&source.modelCancellation!=='cooperative-model-cancel-v1')throw Error('Unknown variant model cancellation protocol');
   const background=source.prepareBackground??source.prepareHr;
-  if(!['hr','modnet','portrait','lite'].includes(background?.model)||versions.has(background.modelVersion))throw Error('Duplicate/invalid local variant');versions.add(background.modelVersion);
+  if(!['hr','modnet','portrait','lite','rvm'].includes(background?.model)||versions.has(background.modelVersion))throw Error('Duplicate/invalid local variant');versions.add(background.modelVersion);
   const thumbnail=new URL(source.workers.thumbnail);
   if(thumbnail.origin!==origin.origin||!/^\/validation-workers\/[a-f0-9]{64}\/thumbnail-worker\.js$/.test(thumbnail.pathname))throw Error('Invalid variant thumbnail Worker');
   // The primary configuration owns thumbnail processing for every model choice.

@@ -10,7 +10,7 @@ export function createSerialInference({registry,client,prepareHr,prepareBackgrou
  return async function execute(context,{isCurrent,workerGate}){
   const requireCurrent=()=>{if(!isCurrent())throw new SerialInferenceError('operation-stale');};
   requireCurrent();
-  if(!['hr','modnet','portrait','lite'].includes(background?.model)||background.modelVersion!==context.key.modelVersion
+  if(!['hr','modnet','portrait','lite','rvm'].includes(background?.model)||background.modelVersion!==context.key.modelVersion
    ||(context.refine&&(background.model!=='hr'||prepareMatte?.model!=='matte'||prepareMatte.modelVersion!==context.key.modelVersion||typeof makeTrimap!=='function')))throw new SerialInferenceError('invalid-model-set');
   const input=registry.get(context.rgbAssetId);
   if(input.format!=='rgb-u8'||input.width>2000||input.height>2000)throw new SerialInferenceError('invalid-input');

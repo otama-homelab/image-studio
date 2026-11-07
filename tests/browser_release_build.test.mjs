@@ -6,7 +6,7 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {loadBackgroundBuildInput,compileBackgroundRelease} from '../tools/build_browser_release.mjs';
 import {verifyReleaseFilesUnchanged} from '../tools/verify_browser_release_bindings.mjs';
-import {browserReleaseFixture,addRvmChoice} from './fixtures/browser-release.mjs';
+import {browserReleaseFixture} from './fixtures/browser-release.mjs';
 
 function fixture(){
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'studio-release-input-'));
@@ -41,8 +41,4 @@ test('build input rejects unknown fields, missing roles, traversal, symlinks and
   f=>{f.write('static/assets/'+'b'.repeat(64)+'/NOTICE.txt','changed asset');},
   f=>{f.write('config.json',{...browserReleaseFixture(),trace:true});},
  ]){const f=fixture();try{mutate(f);await assert.rejects(loadBackgroundBuildInput(f.root));assert.equal(fs.existsSync(path.join(f.root,'dist')),false);}finally{f.close();}}
-});
-
-test('build input accepts exactly the fifth RVM parent when its CPU choice exists',async()=>{
- const f=fixture();try{f.write('config.json',addRvmChoice(browserReleaseFixture()));f.manifest.parents['rvm-cpu']='rvm-cpu.json';f.write('rvm-cpu.json',{});f.write('release.json',f.manifest);assert.equal(Object.keys((await loadBackgroundBuildInput(f.root)).parents).length,5);delete f.manifest.parents['rvm-cpu'];f.write('release.json',f.manifest);await assert.rejects(loadBackgroundBuildInput(f.root));}finally{f.close();}
 });

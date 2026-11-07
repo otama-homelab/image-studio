@@ -6,9 +6,9 @@ declare module 'image-studio-local-config' {
   foregroundCancellation?:'cooperative-foreground-cancel-v1';trimapCancellation?:'cooperative-trimap-cancel-v1';
   modelLabel?:string;modelNoticesHref?:string;modelCancellation?:'cooperative-model-cancel-v1';
   prepareHr?:{type:'prepare';model:'hr';modelVersion:string;[field:string]:unknown};
-  prepareBackground?:{type:'prepare';model:'modnet'|'portrait'|'lite'|'rvm';modelVersion:string;[field:string]:unknown};
+  prepareBackground?:{type:'prepare';model:'modnet'|'portrait'|'lite';modelVersion:string;[field:string]:unknown};
   prepareMatte?:{type:'prepare';model:'matte';modelVersion:string;[field:string]:unknown};
-  modelVariants?:{defaultRefine?:boolean;executionProvider?:'webgpu'|'wasm';modelCancellation?:'cooperative-model-cancel-v1';label:string;description:string;modelWorker:string;prepareBackground:{type:'prepare';model:'hr'|'modnet'|'portrait'|'lite'|'rvm';modelVersion:string;[field:string]:unknown};prepareMatte?:{type:'prepare';model:'matte';modelVersion:string;[field:string]:unknown}}[];
+  modelVariants?:{defaultRefine?:boolean;executionProvider?:'webgpu'|'wasm';modelCancellation?:'cooperative-model-cancel-v1';label:string;description:string;modelWorker:string;prepareBackground:{type:'prepare';model:'hr'|'modnet'|'portrait'|'lite';modelVersion:string;[field:string]:unknown};prepareMatte?:{type:'prepare';model:'matte';modelVersion:string;[field:string]:unknown}}[];
   workers:{model:string;foreground:string;export:string;thumbnail:string;trimap?:string}};
  export default config;
 }

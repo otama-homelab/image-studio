@@ -27,12 +27,12 @@ export function createOrtRuntimeBootstrap({ort,gpu,origin,runtimeAssets,required
  if(!requiredLimits||(executionProvider==='webgpu'&&!Object.keys(requiredLimits).length)||Object.entries(requiredLimits).some(([key,value])=>!allowed.includes(key)||!Number.isSafeInteger(value)||value<1))invalid();
  const limits=Object.freeze({...requiredLimits});let used=false;
  return async function configureRuntime(env,{onDeviceLost=()=>{},model,precision}={}){
-  if(used||env?.backends?.onnx?.wasm!==ort.env.wasm||env?.backends?.onnx?.webgpu!==ort.env.webgpu||!['hr','matte','modnet','portrait','lite','rvm'].includes(model)||(model==='rvm'&&executionProvider!=='wasm')||(model==='lite'&&executionProvider!=='wasm'&&!liteGraph)||precision!==(['hr','portrait'].includes(model)?'float16':'float32')||typeof onDeviceLost!=='function')invalid();used=true;
+  if(used||env?.backends?.onnx?.wasm!==ort.env.wasm||env?.backends?.onnx?.webgpu!==ort.env.webgpu||!['hr','matte','modnet','portrait','lite'].includes(model)||(model==='lite'&&executionProvider!=='wasm'&&!liteGraph)||precision!==(['hr','portrait'].includes(model)?'float16':'float32')||typeof onDeviceLost!=='function')invalid();used=true;
   // Each pinned static Lite format has a known tensor minimum. This is only a minimum,
   // not a bound on unknown shapes, workspace or total device memory.
   if(model==='lite'&&executionProvider==='webgpu'&&(limits.maxBufferSize<liteGraph.knownTensorBytes||limits.maxStorageBufferBindingSize<liteGraph.knownTensorBytes||limits.maxBufferSize===undefined||limits.maxStorageBufferBindingSize===undefined))throw Error('gpu-limits-insufficient');
   if(executionProvider==='wasm'){
-   if(!['modnet','lite','hr','matte','rvm'].includes(model))invalid();
+   if(!['modnet','lite','hr','matte'].includes(model))invalid();
    ort.env.logLevel='fatal';ort.env.debug=false;ort.env.wasm.numThreads=numThreads===2&&globalThis.crossOriginIsolated===true&&typeof SharedArrayBuffer==='function'?2:1;ort.env.wasm.proxy=false;ort.env.wasm.wasmPaths={...assets};
    return Object.freeze({executionProvider:'wasm',sessionOptions:{executionProviders:['wasm'],...(model==='hr'?{enableCpuMemArena:false,enableMemPattern:false,graphOptimizationLevel:'disabled',executionMode:'sequential'}:{}),...(dimensions?{freeDimensionOverrides:{...dimensions}}:{}),extra:{session:{disable_cpu_ep_fallback:'0'}}},dispose:async()=>{}});
   }

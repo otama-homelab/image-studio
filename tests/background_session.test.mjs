@@ -109,7 +109,7 @@ test('stage progress reaches session state, ignores regression, and repeated con
  assert.ok(counts.includes(0)&&counts.includes(12)&&counts.includes(46));assert.ok(!counts.includes(11));await f.session.close();
 });
 
-for(const role of ['modnet','lite'])test(role+' uses the same app ownership, recovery and PNG export without enabling unvalidated refinement',async()=>{
+for(const role of ['modnet','lite','rvm'])test(role+' uses the same app ownership, recovery and PNG export without enabling unvalidated refinement',async()=>{
  const f=setup({backgroundModel:role});f.session.setPhoto(f.photo());assert.throws(()=>f.session.setRefine(true),/refinement-unavailable/);
  assert.equal((await f.session.run()).status,'committed');const options={kind:'transparent'};assert.equal((await f.session.save(options)).status,'ready');assert.ok(f.session.getPrepared(options));assert.deepEqual(f.events,[role,'foreground','transparent']);
  f.session.setPhoto(f.photo());assert.equal(f.session.getPrepared(options),null);await f.session.close();assert.equal(f.gate.getState().busy,false);

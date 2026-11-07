@@ -7,7 +7,7 @@ const keys=(value,allowed)=>{if(!value||typeof value!=='object'||Array.isArray(v
 const text=(value,max)=>{if(typeof value!=='string'||!value.trim()||value.length>max)invalid();};
 const id=value=>{if(typeof value!=='string'||!/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(value))invalid();};
 const unused=()=>{throw Error('Build validation must not access network, cache, models or GPU');};
-/** Validate the serialized four-choice release contract. This is not a live Hub or rights approval. */
+/** Validate the serialized release contract (four choices plus optional RVM CPU). This is not a live Hub or rights approval. */
 export function parseBackgroundRelease(definition){
  try{
   const config=typeof definition==='string'?JSON.parse(definition):definition??null;
@@ -16,7 +16,7 @@ export function parseBackgroundRelease(definition){
   keys(config.workers,['model','foreground','export','thumbnail','trimap']);
   for(const role of ['model','foreground','export','thumbnail','trimap'])releaseAssetPath(config.workers[role],'js');
   releaseAssetPath(config.modelNoticesHref,'txt');text(config.modelLabel,200);text(config.downloadDescription,2000);
-  if(config.foregroundCancellation!=='cooperative-foreground-cancel-v1'||config.trimapCancellation!=='cooperative-trimap-cancel-v1'||!Array.isArray(config.modelVariants)||config.modelVariants.length!==3)invalid();
+  if(config.foregroundCancellation!=='cooperative-foreground-cancel-v1'||config.trimapCancellation!=='cooperative-trimap-cancel-v1'||!Array.isArray(config.modelVariants)||![3,4].includes(config.modelVariants.length))invalid();
   const choices=[{...config,modelWorker:config.workers.model},...config.modelVariants],versions=new Set(),pairs=new Set(),workers=new Set(),archives=new Map(),resources=new Map(),releases=[];
   let hub=null,totalArchiveBytes=0;
   const fixedUrl=value=>{
@@ -49,14 +49,15 @@ export function parseBackgroundRelease(definition){
   for(const [index,choice] of choices.entries()){
    if(index>0){keys(choice,['modelWorker','label','description','executionProvider','modelCancellation','defaultRefine','prepareBackground','prepareMatte']);text(choice.label,200);text(choice.description,2000);}
    releaseAssetPath(choice.modelWorker,'js');if(workers.has(choice.modelWorker))invalid();workers.add(choice.modelWorker);
-   if(!['wasm','webgpu'].includes(choice.executionProvider)||choice.modelCancellation!=='cooperative-model-cancel-v1'||!['hr','modnet'].includes(choice.prepareBackground?.model))invalid();
+   if(!['wasm','webgpu'].includes(choice.executionProvider)||choice.modelCancellation!=='cooperative-model-cancel-v1'||!['hr','modnet','rvm'].includes(choice.prepareBackground?.model))invalid();
    const model=command(choice.prepareBackground,choice.prepareBackground.model),pair=model.model+':'+choice.executionProvider;
+   if(model.model==='rvm'&&(choice.executionProvider!=='wasm'||model.source.resources.length!==2||!['model.onnx','restore.onnx'].every(name=>model.source.resources.some(file=>file.name===name))))invalid();
    if(pairs.has(pair)||versions.has(model.modelVersion))invalid();pairs.add(pair);versions.add(model.modelVersion);
    if(model.model==='hr'){
     const matte=command(choice.prepareMatte,'matte');if(choice.defaultRefine!==true||matte.modelVersion!==model.modelVersion)invalid();
    }else if(choice.prepareMatte!==undefined||(choice.defaultRefine!==undefined&&choice.defaultRefine!==false))invalid();
   }
-  if(config.prepareBackground.model!=='modnet'||config.executionProvider!=='wasm'||archives.size!==5)invalid();
+  if(config.prepareBackground.model!=='modnet'||config.executionProvider!=='wasm'||archives.size!==choices.length+1||!['modnet:wasm','modnet:webgpu','hr:wasm','hr:webgpu'].every(pair=>pairs.has(pair)))invalid();
   const light=choices.filter(choice=>choice.prepareBackground.model==='modnet').map(choice=>choice.prepareBackground.source);
   if(light[0].cacheNamespace!==light[1].cacheNamespace||light[0].archive.url!==light[1].archive.url)invalid();
   const scope=createModelCacheActions({releases,gate:{tryAcquire:unused},cacheStorage:unused}).getScope();

@@ -41,7 +41,7 @@ type Props={active:boolean;runtime?:BackgroundRuntime;onCrop:(value:PhotoTransfe
 
 function failureDetails(failure:State['lastFailure']){
  if(!failure)return '';
- const background=['hr','modnet','portrait','lite'].includes(failure.modelRole??'');
+ const background=['hr','modnet','portrait','lite','rvm'].includes(failure.modelRole??'');
  const model=failure.modelRole==='matte'?t("輪郭補正モデル"):background?t("背景除去モデル"):t("モデル");
  const stages=new Map([
   ['model-load',t("{{v0}}の読み込み・検証",{v0:model})],['inference',failure.modelRole==='matte'?t("輪郭補正"):background?t("背景除去"):t("モデルの実行")],

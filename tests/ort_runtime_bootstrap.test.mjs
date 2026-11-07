@@ -152,7 +152,3 @@ test('runtime paths work unchanged on preview and production while Hub WASM stay
  }
  const bad=fixture();bad.policy.wasmOrigin='https://huggingface.co';bad.policy.runtimeAssets={wasm,mjs:wasm.replace('.wasm','.mjs')};assert.throws(()=>createOrtRuntimeBootstrap(bad.policy));
 });
-test('RVM owns a WASM-only runtime without requesting a GPU',async()=>{
- const f=fixture();const runtime=await createOrtRuntimeBootstrap({...f.policy,executionProvider:'wasm',requiredLimits:{}})(f.env,{model:'rvm',precision:'float32'});assert.equal(runtime.executionProvider,'wasm');assert.equal(f.stats().requests,0);await runtime.dispose();
- const gpu=fixture();await assert.rejects(createOrtRuntimeBootstrap(gpu.policy)(gpu.env,{model:'rvm',precision:'float32'}));assert.equal(gpu.stats().requests,0);
-});

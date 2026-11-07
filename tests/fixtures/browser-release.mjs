@@ -6,11 +6,3 @@ export function browserReleaseFixture(){
  const primary=variant('modnet','wasm');
  return {workers:{model:primary.modelWorker,foreground:asset('foreground-worker.js'),export:asset('export-worker.js'),thumbnail:asset('thumbnail-worker.js'),trimap:asset('trimap-worker.js')},modelNoticesHref:asset('MODEL_NOTICES.txt'),executionProvider:'wasm',modelLabel:'軽量 CPU',downloadDescription:'説明',modelCancellation:primary.modelCancellation,foregroundCancellation:'cooperative-foreground-cancel-v1',trimapCancellation:'cooperative-trimap-cancel-v1',prepareBackground:primary.prepareBackground,modelVariants:[variant('modnet','webgpu'),variant('hr','webgpu'),variant('hr','wasm')]};
 }
-export function addRvmChoice(config){
- const source=structuredClone(config.prepareBackground.source),base=source.archive.url.replace(/packs\/[^/]+$/,'rvm/');
- source.releaseId='rvm-alpha-fgf-v1';source.cacheNamespace='image-studio-rvm-alpha-fgf-v1';
- source.resources=['model.onnx','restore.onnx'].map(name=>({name,url:base+name,bytes:4,sha256:'c'.repeat(64)}));
- source.archive={url:base+'rvm-fp32.zip',bytes:208,sha256:'e'.repeat(64)};
- config.modelVariants.push({modelWorker:asset('rvm-wasm.js'),label:'RVM CPU',description:'説明',executionProvider:'wasm',modelCancellation:'cooperative-model-cancel-v1',defaultRefine:false,prepareBackground:{type:'prepare',model:'rvm',modelVersion:'rvm-alpha-fgf-v1',source}});
- return config;
-}

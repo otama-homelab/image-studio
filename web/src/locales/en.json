@@ -476,8 +476,5 @@
   "白背景の作例": "White background example",
   "背景を消す・色を変える": "Remove or change the background",
   "背景を自動で除去。透過PNG、白や好きな色の背景で保存。": "Remove the background automatically. Save a transparent PNG or choose white or another background color.",
-  "背景編集へ進む": "Open Background",
-  "：GPL-3.0（人物向け軽量モデル・ソースと変更履歴）": ": GPL-3.0 (lightweight portrait model, source and changes)",
-  "人物向け最軽量モデル（RVM＋軽量復元・CPU）": "Smallest portrait model (RVM + lightweight restoration · CPU)",
-  "低解像度の人物マットを軽量フィルタで元の解像度へ復元します。モデル約14.3 MiB。": "Restores a low-resolution portrait matte to the original resolution with a lightweight filter. Models: about 14.3 MiB."
+  "背景編集へ進む": "Open Background"
 }

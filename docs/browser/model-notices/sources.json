@@ -124,20 +124,6 @@
       "bytes": 1141,
       "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
       "scope": "MIT full text for Microsoft Swin code carrying its original copyright header inside the pinned BiRefNet remote source; not a claim of unchanged upstream source or separately downloaded backbone weights"
-    },
-    {
-      "file": "RVM-code-LICENSE.txt",
-      "url": "https://raw.githubusercontent.com/PeterL1n/RobustVideoMatting/53d74c6826735f01f4406b5ca9075eee27bec094/LICENSE",
-      "scope": "upstream RVM code GPL-3.0; no separate permissive model-weight grant inferred",
-      "bytes": 35148,
-      "sha256": "8b1ba204bb69a0ade2bfcf65ef294a920f6bb361b317dba43c7ef29d96332b9b"
-    },
-    {
-      "file": "RVM-artifact-CHANGES.txt",
-      "url": "https://github.com/PeterL1n/RobustVideoMatting/issues/191",
-      "scope": "project-authored artifact provenance and changes; upstream weight license clarification remains recorded",
-      "bytes": 1839,
-      "sha256": "5824423e97d3f7b6046df91d056d33d887a46b17e8557a839e58cd370d475d1c"
     }
   ],
   "models": [

@@ -8,10 +8,10 @@ import {readFileSync} from 'node:fs';
 const runtime=JSON.parse(readFileSync(new URL('../docs/browser/runtime-assets.candidate.json',import.meta.url)));
 const runtimePath=ext=>{const f=runtime.files.find(f=>f.name.endsWith('.'+ext));return `/runtime/ort/1.31.1/${f.sha256}/${f.name}`;};
 import {bindReleaseModels,verifyReleaseAssets,verifyBrowserReleaseBindings} from '../tools/verify_browser_release_bindings.mjs';
-import {browserReleaseFixture,addRvmChoice} from './fixtures/browser-release.mjs';
+import {browserReleaseFixture} from './fixtures/browser-release.mjs';
 const sha=value=>createHash('sha256').update(value).digest('hex');
-function fixture(rvm=false){
- const config=rvm?addRvmChoice(browserReleaseFixture()):browserReleaseFixture(),assets=[],catalog={format:'zip-stored-v1',models:[]},bindings=[];
+function fixture(){
+ const config=browserReleaseFixture(),assets=[],catalog={format:'zip-stored-v1',models:[]},bindings=[];
  const add=(route,bytes,sha256)=>{if(!assets.some(file=>file.path===route))assets.push({path:route,bytes,sha256});};
  for(const url of [...Object.values(config.workers),config.modelNoticesHref])add(url,12,'b'.repeat(64));
  for(const [index,choice] of [{...config,modelWorker:config.workers.model},...config.modelVariants].entries()){
@@ -27,7 +27,7 @@ function fixture(rvm=false){
    const configuration=command.model==='modnet'?'modnet':choice.executionProvider==='wasm'?'cpu':'gpu';
    if(!catalog.models.some(item=>item.role===command.model&&item.configuration===configuration))catalog.models.push({role:command.model,configuration,archive:{path:new URL(command.source.archive.url).pathname.split('/resolve/'+'a'.repeat(40)+'/')[1],bytes:command.source.archive.bytes,sha256:command.source.archive.sha256},entries:command.source.resources.map(({name,bytes,sha256})=>({name,bytes,sha256}))});
   }
-  if(choice.prepareBackground.model==='hr'){policy.enableHrInference=true;policy.enableMatteInference=true;}else if(choice.prepareBackground.model==='rvm')policy.enableRvmInference=true;else policy.enableModnetInference=true;
+  if(choice.prepareBackground.model==='hr'){policy.enableHrInference=true;policy.enableMatteInference=true;}else policy.enableModnetInference=true;
   const binding={worker:choice.modelWorker,policy,report:{status:'built-not-executed',bundleBytes:12,bundleSha256:'b'.repeat(64),cancellationProtocol:'cooperative-model-cancel-v1',libraryNotices:[]}};
   if(choice.prepareBackground.model==='hr'){
    const source=choice.prepareBackground.source;
@@ -79,9 +79,4 @@ test('malformed metadata cannot echo its contents through JSON parse errors',asy
  const root=await fs.mkdtemp(path.join(os.tmpdir(),'studio-bind-metadata-'));
  try{const file=path.join(root,'spec.json');await fs.writeFile(file,'{secret-sentinel');await assert.rejects(verifyBrowserReleaseBindings(root,file),error=>error.message==='invalid-release-resource-binding');}
  finally{await fs.rm(root,{recursive:true,force:true});}
-});
-
-test('binds the optional isolated RVM CPU pair and rejects backend or archive drift',()=>{
- const input=fixture(true);assert.equal(bindReleaseModels(input).choices,5);assert.equal(bindReleaseModels(input).archives,6);
- for(const mutate of [x=>{x.config.modelVariants.at(-1).executionProvider='webgpu';},x=>{x.config.modelVariants.at(-1).prepareBackground.source.resources.pop();},x=>{x.bindings.at(-1).policy.enableModnetInference=true;x.bindings.at(-1).report.policySha256=sha(JSON.stringify(x.bindings.at(-1).policy));},x=>{x.catalog.models.at(-1).archive.sha256='f'.repeat(64);}]){const broken=structuredClone(input);mutate(broken);assert.throws(()=>bindReleaseModels(broken));}
 });

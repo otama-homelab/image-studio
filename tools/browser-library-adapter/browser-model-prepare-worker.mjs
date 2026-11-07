@@ -18,8 +18,6 @@ import {MAX_STAGE_WORKER_SCRIPT_BYTES,resolveStageWorker,createStagedHrPreparati
 import {createPhasedMattePreparation} from './phased-matte-prepare.mjs';
 import {createPortraitInference,createLiteInference} from './birefnet-inference.mjs';
 import {createModnetInference} from './modnet-inference.mjs';
-import {createRvmInference} from './rvm-inference.mjs';
-import {createRvmPreparation} from './rvm-prepare.mjs';
 import {storeModelArchive} from './model-archive.mjs';
 import {groupResourceStates} from './resource-policy.mjs';
 const library={env,PreTrainedModel,VitMatteForImageMatting,RawImage,ImageProcessor,Tensor,interpolate,VitMatteImageProcessor};
@@ -28,7 +26,6 @@ let reportStage=null;
 const matteInference=policy.enableMatteInference===true?createVitMatteInference({...library,processorConfig:policy.matteProcessor}):null;
 const hrInference=policy.enableHrInference===true?createHrInference({...library,createBilinearResizer:()=>createPillowResizeRuntime(hrResizeBytes,{maxMemoryBytes:policy.hrResizeMaxMemoryBytes,filter:'bilinear',growthImport:'foreground_memory_grow'})}):null;
 const modnetInference=policy.enableModnetInference===true?createModnetInference({...library,processorConfig:policy.modnetProcessor,createBilinearResizer:()=>createPillowResizeRuntime(hrResizeBytes,{maxMemoryBytes:policy.modnetResizeMaxMemoryBytes,filter:'bilinear',growthImport:'foreground_memory_grow'})}):null;
-const rvmInference=policy.enableRvmInference===true?createRvmInference({Tensor:ort.Tensor,createBilinearResizer:()=>createPillowResizeRuntime(hrResizeBytes,{maxMemoryBytes:policy.rvmResizeMaxMemoryBytes,filter:'bilinear',growthImport:'foreground_memory_grow'})}):null;
 const portraitInference=policy.enablePortraitInference===true?createPortraitInference({...library,createBilinearResizer:()=>createPillowResizeRuntime(hrResizeBytes,{maxMemoryBytes:policy.portraitResizeMaxMemoryBytes,filter:'bilinear',growthImport:'foreground_memory_grow'})}):null;
 const liteInference=policy.enableLiteInference===true?createLiteInference({...library,inputSize:policy.liteInputSize,createBilinearResizer:()=>createPillowResizeRuntime(hrResizeBytes,{maxMemoryBytes:policy.liteResizeMaxMemoryBytes,filter:'bilinear',growthImport:'foreground_memory_grow'})}):null;
 const handle=createWorkerHandler({
@@ -51,10 +48,6 @@ const handle=createWorkerHandler({
    return createStagedHrPreparation({library,stages:policy.stagedHr.stages,workerLifetime:policy.stagedHr.workerLifetime??'per-stage',maxStagesPerWorker:policy.stagedHr.maxStagesPerWorker,cancellationProtocol:policy.stagedHr.cancellationProtocol,...(workerScript?{workerScript}:{}),createWorker:()=>workerScript?workerScript.createWorker():new Worker(workerUrl),fetchImpl:self.fetch.bind(self),cache,makeHasher,onStage:event=>reportStage?.(event)})(release,hooks);
   }
   const configureRuntime=createOrtRuntimeBootstrap({ort,gpu:navigator.gpu,origin:self.location.origin,wasmOrigin:policy.wasmOrigin,runtimeAssets:policy.runtimeAssets,requiredLimits:profile.requiredLimits,executionProvider:profile.executionProvider,numThreads:profile.numThreads,liteGraphFormat:policy.liteGraphFormat,storageBufferCacheMode:profile.storageBufferCacheMode,maxNumPendingDispatches:profile.maxNumPendingDispatches,allowPortraitCpuFallback:policy.allowPortraitCpuFallback===true,freeDimensionOverrides:profile.freeDimensionOverrides});
-  if(release.model==='rvm'){
-   if(!rvmInference||profile.executionProvider!=='wasm')throw Error('invalid-rvm-backend');
-   return createRvmPreparation({ort,env:library.env,fetchImpl:self.fetch.bind(self),cache,makeHasher,configureRuntime})(release,hooks);
-  }
   if(release.model==='matte'&&policy.phasedMatte===true){
    if(!['wasm','webgpu'].includes(profile.executionProvider))throw Error('invalid-phased-matte-backend');
    return createPhasedMattePreparation({library,ort,fetchImpl:self.fetch.bind(self),cache,makeHasher,configureRuntime})(release,hooks);
@@ -68,7 +61,7 @@ const handle=createWorkerHandler({
    }})(release,hooks);
  },
  infer:async(handle,request,release,{emit,signal})=>{
-  const infer={hr:hrInference,matte:matteInference,modnet:modnetInference,rvm:rvmInference,portrait:portraitInference,lite:liteInference}[release.model];
+  const infer={hr:hrInference,matte:matteInference,modnet:modnetInference,portrait:portraitInference,lite:liteInference}[release.model];
   if(!infer)throw Error('inference-not-configured');
   const started=performance.now();
   if(release.model==='hr'&&policy.stagedHr)reportStage=event=>emit({type:'progress',phase:'hr',elapsedMs:performance.now()-started,completedStages:event.index+(event.phase==='complete'?1:0),totalStages:event.count,...(event.timing?{stageTiming:event.timing}:{})});
@@ -78,7 +71,7 @@ const handle=createWorkerHandler({
 });
 self.addEventListener('message',event=>{
  const command=event.data;
- if(command?.type==='infer'&&!matteInference&&!hrInference&&!modnetInference&&!portraitInference&&!liteInference&&!rvmInference){
+ if(command?.type==='infer'&&!matteInference&&!hrInference&&!modnetInference&&!portraitInference&&!liteInference){
   self.postMessage(workerFailure({workerId:command.workerId,jobId:command.jobId},'unsupported-model'));return;
  }
  void handle(command);

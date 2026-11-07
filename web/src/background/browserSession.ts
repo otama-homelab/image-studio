@@ -8,7 +8,7 @@ import type {BackgroundRuntime} from './BackgroundEditor';
 import {createTrimapWorkerClient} from '../../../tools/browser-library-adapter/trimap-worker.mjs';
 
 type Gate=typeof imageWorkGate;
-type PrepareCommand={type:'prepare';model:'hr'|'matte'|'modnet'|'portrait'|'lite'|'rvm';modelVersion:string;[field:string]:unknown};
+type PrepareCommand={type:'prepare';model:'hr'|'matte'|'modnet'|'portrait'|'lite';modelVersion:string;[field:string]:unknown};
 const stopModelWorker=createCooperativeWorkerStop({requestType:'cancel',responseType:'cancelled',timeoutMs:120000});
 type Options={
  defaultRefine?:boolean;

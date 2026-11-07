@@ -10,7 +10,7 @@ import {parseBackgroundRelease} from '../web/scripts/background-release.mjs';
 import {readBounded,relativePath,verifyReleaseAssets,verifyReleaseFilesUnchanged,bindReleaseModels} from './verify_browser_release_bindings.mjs';
 
 const repo=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const baseRoles=['modnet-cpu','modnet-gpu','hr-gpu','hr-cpu'];
+const roles=['modnet-cpu','modnet-gpu','hr-gpu','hr-cpu'];
 const invalid=()=>{throw Error('invalid-background-build-input');};
 const keys=(object,names)=>{if(!object||Array.isArray(object)||Object.keys(object).sort().join(',')!==[...names].sort().join(','))invalid();};
 const sha=body=>createHash('sha256').update(body).digest('hex');
@@ -22,9 +22,8 @@ export async function loadBackgroundBuildInput(directory){
   const record=await readBounded(root,path.join(root,relativePath(name)),8*1024*1024,true);records.push(record);
   try{return JSON.parse(record.data.toString('utf8'));}catch{invalid();}
  };
- const manifest=await json('release.json');keys(manifest,['config','catalog','parents','stages','resize','assets']);keys(manifest.stages,['cpu','gpu']);
+ const manifest=await json('release.json');keys(manifest,['config','catalog','parents','stages','resize','assets']);keys(manifest.parents,roles);keys(manifest.stages,['cpu','gpu']);
  const config=parseBackgroundRelease(await json(manifest.config));if(config===null)invalid();
- const roles=[...baseRoles,...(config.modelVariants.some(choice=>choice.prepareBackground.model==='rvm')?['rvm-cpu']:[])];keys(manifest.parents,roles);
  const catalog=await json(manifest.catalog),parents={},stages={};
  for(const role of roles)parents[role]=await json(manifest.parents[role]);
  for(const role of ['cpu','gpu'])stages[role]=await json(manifest.stages[role]);
@@ -62,7 +61,7 @@ export async function compileBackgroundRelease(directory,output){
    const report=JSON.parse(await readFile(path.join(target,'stage-worker.json'),'utf8'));children[role]={policy,report};
    for(const file of report.assets)await add(file.path,path.join(target,file.path.slice(1)),file);
   }
-  for(const role of Object.keys(input.parents)){
+  for(const role of roles){
    const policy=input.parents[role];let stage;
    if(role.startsWith('hr-')){
     stage=children[role.endsWith('cpu')?'cpu':'gpu'];
@@ -77,7 +76,7 @@ export async function compileBackgroundRelease(directory,output){
    bindings.push({worker,policy,report,...(stage?{stage}:{})});
   }
   const config=input.config;config.workers.model=parents['modnet-cpu'];
-  for(const variant of config.modelVariants){const role=variant.prepareBackground.model==='rvm'?'rvm-cpu':variant.prepareBackground.model==='modnet'?'modnet-gpu':variant.executionProvider==='wasm'?'hr-cpu':'hr-gpu';variant.modelWorker=parents[role];}
+  for(const variant of config.modelVariants){const role=variant.prepareBackground.model==='modnet'?'modnet-gpu':variant.executionProvider==='wasm'?'hr-cpu':'hr-gpu';variant.modelWorker=parents[role];}
   assets.sort((a,b)=>a.path<b.path?-1:a.path>b.path?1:0);
   const bound=bindReleaseModels({config,catalog:input.catalog,bindings,assets});
   await verifyReleaseAssets(publish,assets);await verifyReleaseFilesUnchanged(input.records);
